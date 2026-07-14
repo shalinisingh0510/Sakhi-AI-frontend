@@ -1,7 +1,7 @@
 type InfoCardProps = {
   title: string;
   body: string;
-  tone?: "cream" | "blush" | "ink";
+  tone?: "cream" | "blush" | "lavender" | "mint" | "ink";
 };
 
 const toneStyles = {
@@ -11,14 +11,24 @@ const toneStyles = {
     body: "text-ink/70",
   },
   blush: {
-    shell: "bg-blush/60",
+    shell: "bg-blush/75",
     title: "text-ink",
     body: "text-ink/70",
   },
+  lavender: {
+    shell: "bg-lavender/70",
+    title: "text-berry",
+    body: "text-ink/70",
+  },
+  mint: {
+    shell: "bg-mint/70",
+    title: "text-moss",
+    body: "text-ink/70",
+  },
   ink: {
-    shell: "bg-ink",
+    shell: "bg-gradient-to-br from-berry via-rose to-ink",
     title: "text-cream",
-    body: "text-cream/80",
+    body: "text-cream/84",
   },
 } as const;
 
