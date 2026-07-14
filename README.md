@@ -1,16 +1,16 @@
-# 🌸 Sakhi AI – Frontend Development Master Prompt
+# Sakhi AI - Frontend Development Master Prompt
 
 ## Project Overview
 
-You are building the frontend of **Sakhi AI**, an AI-powered multilingual women's health education platform designed to educate, support, and empower girls and women with accurate, easy-to-understand, culturally sensitive health information.
+Sakhi AI is an AI-powered women's health and hygiene education application designed to educate, support, and empower girls and women with accurate, easy-to-understand, culturally sensitive health information.
 
-The goal is **not** to build a medical application or an e-commerce platform.
+The frontend is responsible for presenting trusted educational content, supportive AI conversations, and a calm user experience that helps users feel safe, informed, confident, and respected.
 
-The goal is to build a trusted AI companion that makes girls and women feel safe, informed, confident, and supported.
+The goal is not to build a medical application or an e-commerce platform.
 
 ---
 
-# Vision
+## Vision
 
 Every girl deserves a trusted guide who explains women's health with kindness, empathy, and scientific accuracy.
 
@@ -18,31 +18,31 @@ Sakhi AI should feel like an elder sister who educates without judgment and supp
 
 ---
 
-# Mission
+## Mission
 
-Build an accessible, multilingual, AI-powered learning platform that provides trusted health education through conversational AI, interactive lessons, voice support, animations, and personalized learning experiences.
+Build an accessible, multilingual, AI-powered learning platform that provides trusted health education through conversational AI, interactive lessons, voice support, and personalized learning experiences.
 
 ---
 
-# Target Users
+## Target Users
 
-- Girls (10–13 years)
-- Teenagers (14–18 years)
+- Girls (10-13 years)
+- Teenagers (14-18 years)
 - Women (18+)
 - Mothers
 - Caregivers
 
 ---
 
-# Frontend Goal
+## Frontend Goal
 
-Develop a modern, responsive, scalable, and accessible React application that delivers a friendly, educational, and engaging user experience.
+Develop a modern, responsive, scalable, and accessible web application that delivers a friendly, educational, and engaging user experience.
 
 The UI should prioritize simplicity, trust, clarity, and emotional comfort over visual complexity.
 
 ---
 
-# Sakhi AI Personality
+## Sakhi AI Personality
 
 The AI guide should always be:
 
@@ -59,7 +59,7 @@ Never use fear-based or shame-based messaging.
 
 ---
 
-# UI Design Principles
+## UI Design Principles
 
 The interface should feel:
 
@@ -75,30 +75,29 @@ Avoid cluttered layouts and overwhelming screens.
 
 ---
 
-# Design Theme
+## Design Theme
 
-Use soft pastel colors inspired by healthcare and wellness.
+Use a soft wellness-inspired palette with warm neutrals and gentle accent colors.
 
-Suggested palette:
+Recommended approach:
 
-- Lavender
-- Soft Pink
-- White
-- Sky Blue
-- Mint Green
+- Cream or ivory background
+- Blush and rose accents
+- Deep ink for readable text
+- Soft green or moss accents for trust and balance
 
-Rounded corners, smooth spacing, gentle animations, and accessible typography should be used consistently.
+Rounded corners, smooth spacing, subtle gradients, and accessible typography should be used consistently.
 
 ---
 
-# Core Frontend Features
+## Core Frontend Features
 
 Build reusable UI for:
 
 - Authentication
 - User onboarding
 - Home dashboard
-- AI Chat with Sakhi
+- AI chat with Sakhi
 - Animated health lessons
 - Voice interaction
 - Health education modules
@@ -109,11 +108,11 @@ Build reusable UI for:
 - Language selection
 - Search
 - FAQ
-- Help & Support
+- Help and support
 
 ---
 
-# Localization
+## Localization
 
 Support multiple languages from the beginning.
 
@@ -134,7 +133,7 @@ Never hardcode user-facing text.
 
 ---
 
-# Accessibility
+## Accessibility
 
 Ensure the application is accessible by following WCAG guidelines.
 
@@ -148,7 +147,7 @@ Support:
 
 ---
 
-# Responsive Design
+## Responsive Design
 
 The application must work seamlessly on:
 
@@ -161,23 +160,31 @@ Mobile-first development is preferred.
 
 ---
 
-# Frontend Architecture
+## Frontend Architecture
 
 Use:
 
-- React.js
+- Next.js App Router
 - TypeScript
-- Vite
-- React Router
-- Redux Toolkit or Context API
-- Axios
-- Tailwind CSS (or project-approved styling system)
+- Tailwind CSS
+- Component-driven React architecture
+- Server and client components where appropriate
+- Lightweight, maintainable state management
+- Reusable service modules for API calls
 
-Organize code into reusable and maintainable components.
+Organize code into reusable and maintainable folders such as:
+
+- `app/`
+- `components/`
+- `features/`
+- `lib/`
+- `public/`
+
+Keep UI, business logic, and data access separated wherever possible.
 
 ---
 
-# Development Guidelines
+## Development Guidelines
 
 Always:
 
@@ -192,7 +199,7 @@ Always:
 
 ---
 
-# User Experience Principles
+## User Experience Principles
 
 Every screen should help users feel:
 
@@ -206,7 +213,7 @@ The interface should encourage learning through conversation rather than overwhe
 
 ---
 
-# AI Development Rules
+## AI Development Rules
 
 While generating frontend code:
 
@@ -222,7 +229,7 @@ While generating frontend code:
 
 ---
 
-# Project Philosophy
+## Project Philosophy
 
 Sakhi AI is not just an application.
 
@@ -231,3 +238,15 @@ It is a trusted digital companion that empowers girls and women with knowledge, 
 Every design decision should reinforce empathy, inclusivity, and accessibility.
 
 The frontend should reflect these values in every interaction.
+
+---
+
+## Status
+
+- Completed: Planning
+- Completed: Frontend foundation scaffold
+- In progress: UI design system
+- Pending: Core frontend features
+- Pending: Backend integration
+- Pending: Testing
+- Pending: Deployment
