@@ -2,7 +2,7 @@
 
 ## Current Task
 
-Frontend foundation scaffold for Sakhi AI using Next.js, TypeScript, and Tailwind CSS.
+Add navigation structure and page sections for the broader product flow.
 
 ## Completed Work
 
@@ -14,6 +14,7 @@ Frontend foundation scaffold for Sakhi AI using Next.js, TypeScript, and Tailwin
 - Added and verified the frontend README alignment with the Next.js stack.
 - Narrowed linting and typecheck commands so they target only the application code.
 - Verified the production build, lint, and typecheck passes.
+- Extracted the homepage's repeated visual patterns into reusable UI components.
 
 ## Files Created or Modified
 
@@ -23,6 +24,10 @@ Frontend foundation scaffold for Sakhi AI using Next.js, TypeScript, and Tailwin
 - `app/globals.css`
 - `app/layout.tsx`
 - `app/page.tsx`
+- `components/home/Badge.tsx`
+- `components/home/InfoCard.tsx`
+- `components/home/SectionHeading.tsx`
+- `components/home/StatCard.tsx`
 - `eslint.config.mjs`
 - `next-env.d.ts`
 - `next.config.mjs`
@@ -36,17 +41,17 @@ Frontend foundation scaffold for Sakhi AI using Next.js, TypeScript, and Tailwin
 
 - App Router-based frontend entry point.
 - Responsive home page with intentional visual design and a clear content hierarchy.
+- Reusable home page UI components for badges, section headings, stats, and info cards.
 - Metadata setup and reusable font configuration.
 - Tailwind theme tokens for the project palette and shadows.
 - TypeScript build settings and linting configuration.
 
 ## Current Progress
 
-- Frontend project is now in its initial scaffold stage with a branded landing page shell and aligned documentation.
+- Frontend project now has a branded landing page shell with a reusable component layer and aligned documentation.
 
 ## Remaining Work
 
-- Create the remaining UI system and reusable components.
 - Add navigation structure and page sections for the broader product flow.
 - Implement AI chat and education-focused user journeys.
 - Add forms, validation, and state management where needed.

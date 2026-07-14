@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+import { Badge } from "@/components/home/Badge";
+import { InfoCard } from "@/components/home/InfoCard";
+import { SectionHeading } from "@/components/home/SectionHeading";
+import { StatCard } from "@/components/home/StatCard";
+
 const languageHighlights = ["English", "Hindi", "Bengali", "Marathi", "Tamil", "Telugu"];
 
 const supportCards = [
@@ -24,6 +29,12 @@ const pillars = [
   "Accessible, low-stress interfaces",
 ];
 
+const stats = [
+  { value: "11", label: "planned languages" },
+  { value: "24/7", label: "guided learning" },
+  { value: "100%", label: "education first" },
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-hero-radial">
@@ -43,9 +54,7 @@ export default function Home() {
 
         <div className="grid flex-1 items-center gap-14 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div className="max-w-3xl">
-            <span className="inline-flex rounded-full border border-rose/20 bg-white px-4 py-2 text-sm font-medium text-rose shadow-sm">
-              Multilingual women&apos;s health education
-            </span>
+            <Badge tone="rose">Multilingual women&apos;s health education</Badge>
             <h1 className="mt-6 font-[family-name:var(--font-display)] text-5xl leading-[1.02] tracking-[-0.04em] text-ink sm:text-6xl lg:text-7xl">
               Support that feels warm, clear, and quietly confident.
             </h1>
@@ -70,15 +79,8 @@ export default function Home() {
             </div>
 
             <div className="mt-12 grid gap-4 sm:grid-cols-3">
-              {[
-                ["11", "planned languages"],
-                ["24/7", "guided learning"],
-                ["100%", "education first"],
-              ].map(([value, label]) => (
-                <div key={label} className="rounded-3xl border border-white/60 bg-white/80 p-5 shadow-soft">
-                  <p className="text-3xl font-semibold text-berry">{value}</p>
-                  <p className="mt-2 text-sm uppercase tracking-[0.2em] text-ink/55">{label}</p>
-                </div>
+              {stats.map((stat) => (
+                <StatCard key={stat.label} value={stat.value} label={stat.label} />
               ))}
             </div>
           </div>
@@ -95,26 +97,23 @@ export default function Home() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {languageHighlights.map((language) => (
-                    <span key={language} className="rounded-full bg-white/10 px-3 py-1 text-sm text-cream/90">
+                    <Badge key={language} tone="dark">
                       {language}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </div>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <div className="rounded-3xl bg-cream p-5">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-moss">Designed for trust</p>
-                  <p className="mt-3 text-sm leading-7 text-ink/70">
-                    Clear explanations, privacy-aware UX, and a tone that never feels rushed or dismissive.
-                  </p>
-                </div>
-                <div className="rounded-3xl bg-blush/60 p-5">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-berry">Accessible by default</p>
-                  <p className="mt-3 text-sm leading-7 text-ink/70">
-                    Large type, gentle contrast, and layout choices that work smoothly across screen sizes.
-                  </p>
-                </div>
+                <InfoCard
+                  title="Designed for trust"
+                  body="Clear explanations, privacy-aware UX, and a tone that never feels rushed or dismissive."
+                />
+                <InfoCard
+                  title="Accessible by default"
+                  body="Large type, gentle contrast, and layout choices that work smoothly across screen sizes."
+                  tone="blush"
+                />
               </div>
             </div>
           </div>
@@ -123,19 +122,15 @@ export default function Home() {
 
       <section id="support" className="border-t border-berry/10 bg-white/60">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-moss">What Sakhi AI supports</p>
-            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl tracking-[-0.03em] text-ink sm:text-5xl">
-              A gentle foundation for the first version.
-            </h2>
-          </div>
+          <SectionHeading
+            eyebrow="What Sakhi AI supports"
+            title="A gentle foundation for the first version."
+            description="The first frontend experience should make the platform feel calm, trustworthy, and ready for future learning flows."
+          />
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {supportCards.map((card) => (
-              <article key={card.title} className="rounded-[1.75rem] border border-berry/10 bg-cream p-7 shadow-sm">
-                <h3 className="text-xl font-semibold text-ink">{card.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-ink/70">{card.body}</p>
-              </article>
+              <InfoCard key={card.title} title={card.title} body={card.body} />
             ))}
           </div>
 
@@ -143,7 +138,10 @@ export default function Home() {
             <p className="text-sm uppercase tracking-[0.35em] text-blush/80">Core principles</p>
             <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {pillars.map((pillar) => (
-                <div key={pillar} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-6 text-cream/88">
+                <div
+                  key={pillar}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-6 text-cream/88"
+                >
                   {pillar}
                 </div>
               ))}
