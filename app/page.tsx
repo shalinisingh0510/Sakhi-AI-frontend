@@ -38,6 +38,7 @@ const stats = [
 ];
 
 const navItems = [
+  { href: "#chat", label: "Chat" },
   { href: "#support", label: "Support" },
   { href: "#journey", label: "Journey" },
   { href: "#languages", label: "Languages" },
@@ -62,11 +63,49 @@ const journeySteps = [
   },
 ];
 
+const chatMessages = [
+  {
+    role: "User",
+    text: "I am nervous about my first period. What should I know?",
+  },
+  {
+    role: "Sakhi",
+    text: "That is completely okay. I can explain the signs, what to keep ready, and how to stay comfortable without overwhelming you.",
+    highlight: true,
+  },
+  {
+    role: "Sakhi",
+    text: "If you want, I can also show a simple checklist or help you talk to a trusted adult.",
+  },
+];
+
+const quickPrompts = [
+  "What is a period?",
+  "How do I stay clean safely?",
+  "How do I talk to my mother?",
+  "What changes happen during puberty?",
+];
+
+const journeyAudiences = [
+  {
+    title: "First-time learner",
+    body: "Start with simple explanations, age-appropriate terms, and a calm tone that reduces anxiety.",
+  },
+  {
+    title: "Caregiver support",
+    body: "Get practical guidance for answering questions clearly and compassionately at home.",
+  },
+  {
+    title: "Returning learner",
+    body: "Revisit topics, track what you have learned, and continue from the last lesson or chat.",
+  },
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-hero-radial">
       <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 lg:px-10">
-        <SiteNav items={navItems} ctaLabel="Explore support" ctaHref="#support" />
+        <SiteNav items={navItems} ctaLabel="Explore chat" ctaHref="#chat" />
 
         <div className="grid flex-1 items-center gap-14 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div className="max-w-3xl">
@@ -81,10 +120,10 @@ export default function Home() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="#journey"
+                href="#chat"
                 className="inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-base font-semibold text-cream transition hover:bg-ink/90"
               >
-                See the journey
+                Try the chat flow
               </Link>
               <a
                 href="mailto:hello@sakhi.ai"
@@ -136,6 +175,58 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="chat" className="border-t border-berry/10 bg-white/60">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[0.95fr_1.05fr] lg:px-10">
+          <div>
+            <SectionHeading
+              eyebrow="AI chat"
+              title="A calm conversation that teaches without overwhelming."
+              description="The first interaction should feel reassuring, especially for users who are shy, anxious, or asking for the first time."
+            />
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {quickPrompts.map((prompt) => (
+                <Badge key={prompt}>{prompt}</Badge>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-berry/10 bg-cream p-5 shadow-soft">
+            <div className="rounded-[1.5rem] bg-white p-5">
+              <div className="flex items-center justify-between border-b border-berry/10 pb-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-moss">Sakhi</p>
+                  <p className="mt-1 text-sm text-ink/60">Gentle education for women and girls</p>
+                </div>
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                  Safe mode on
+                </span>
+              </div>
+
+              <div className="mt-5 space-y-4">
+                {chatMessages.map((message) => (
+                  <div
+                    key={`${message.role}-${message.text}`}
+                    className={`max-w-[85%] rounded-[1.5rem] px-4 py-3 text-sm leading-7 ${
+                      message.role === "User"
+                        ? "ml-auto rounded-br-md bg-ink text-cream"
+                        : message.highlight
+                          ? "rounded-bl-md bg-blush/60 text-ink"
+                          : "rounded-bl-md bg-cream text-ink"
+                    }`}
+                  >
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] opacity-70">
+                      {message.role}
+                    </p>
+                    <p className="mt-2">{message.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="support" className="border-t border-berry/10 bg-white/60">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
           <SectionHeading
@@ -169,6 +260,12 @@ export default function Home() {
                 body={step.body}
                 accent={<span className="text-xs font-medium text-berry/70">0{index + 1}</span>}
               />
+            ))}
+          </div>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {journeyAudiences.map((audience) => (
+              <InfoCard key={audience.title} title={audience.title} body={audience.body} />
             ))}
           </div>
         </div>
