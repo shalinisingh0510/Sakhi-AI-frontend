@@ -1,8 +1,10 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/home/Badge";
+import { FlowCard } from "@/components/home/FlowCard";
 import { InfoCard } from "@/components/home/InfoCard";
 import { SectionHeading } from "@/components/home/SectionHeading";
+import { SiteNav } from "@/components/home/SiteNav";
 import { StatCard } from "@/components/home/StatCard";
 
 const languageHighlights = ["English", "Hindi", "Bengali", "Marathi", "Tamil", "Telugu"];
@@ -35,22 +37,36 @@ const stats = [
   { value: "100%", label: "education first" },
 ];
 
+const navItems = [
+  { href: "#support", label: "Support" },
+  { href: "#journey", label: "Journey" },
+  { href: "#languages", label: "Languages" },
+  { href: "#safety", label: "Safety" },
+];
+
+const journeySteps = [
+  {
+    step: "Step 01",
+    title: "Choose the right language",
+    body: "Users start with the language they understand best, so the experience feels familiar from the first screen.",
+  },
+  {
+    step: "Step 02",
+    title: "Ask a question or open a lesson",
+    body: "The interface supports casual conversation as well as structured education modules for deeper learning.",
+  },
+  {
+    step: "Step 03",
+    title: "Save progress and continue later",
+    body: "The product flow is designed to support repeat visits, progress tracking, and future personalization.",
+  },
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-hero-radial">
       <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 lg:px-10">
-        <header className="flex items-center justify-between rounded-full border border-berry/10 bg-white/75 px-5 py-3 shadow-sm backdrop-blur">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-moss">Sakhi AI</p>
-            <p className="mt-1 text-sm text-berry/80">Trusted health education, made calmer.</p>
-          </div>
-          <Link
-            href="#support"
-            className="rounded-full bg-berry px-4 py-2 text-sm font-semibold text-white transition hover:bg-berry/90"
-          >
-            Explore support
-          </Link>
-        </header>
+        <SiteNav items={navItems} ctaLabel="Explore support" ctaHref="#support" />
 
         <div className="grid flex-1 items-center gap-14 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div className="max-w-3xl">
@@ -65,10 +81,10 @@ export default function Home() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="#support"
+                href="#journey"
                 className="inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-base font-semibold text-cream transition hover:bg-ink/90"
               >
-                See the experience
+                See the journey
               </Link>
               <a
                 href="mailto:hello@sakhi.ai"
@@ -133,10 +149,78 @@ export default function Home() {
               <InfoCard key={card.title} title={card.title} body={card.body} />
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="journey" className="border-t border-berry/10 bg-cream/90">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+          <SectionHeading
+            eyebrow="User journey"
+            title="A simple path from curiosity to confidence."
+            description="The navigation should help users understand where to start, how to learn, and how to return later without friction."
+          />
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {journeySteps.map((step, index) => (
+              <FlowCard
+                key={step.step}
+                step={step.step}
+                title={step.title}
+                body={step.body}
+                accent={<span className="text-xs font-medium text-berry/70">0{index + 1}</span>}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="languages" className="border-t border-berry/10 bg-white/70">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[1fr_0.9fr] lg:px-10">
+          <div>
+            <SectionHeading
+              eyebrow="Language support"
+              title="Multilingual by design, not as an afterthought."
+              description="The app should make users feel at home in the language they choose first, while keeping content consistent and easy to extend later."
+            />
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {languageHighlights.map((language) => (
+                <Badge key={language}>{language}</Badge>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] bg-ink p-8 text-cream shadow-soft">
+            <p className="text-sm uppercase tracking-[0.35em] text-blush/80">Why it matters</p>
+            <p className="mt-4 text-xl leading-8 text-cream/90">
+              Language is part of safety. When users can understand the UI immediately, they can focus on learning instead of translating.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <InfoCard
+                title="Readable on mobile"
+                body="Responsive sections keep text comfortable to scan even on smaller screens."
+                tone="ink"
+              />
+              <InfoCard
+                title="Extendable later"
+                body="The structure is ready for localized content and additional regional languages."
+                tone="ink"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="safety" className="border-t border-berry/10 bg-white/60">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+          <SectionHeading
+            eyebrow="Safety boundaries"
+            title="Helpful guidance without crossing into medical advice."
+            description="The interface should make the platform feel supportive while preserving clear boundaries around education and professional care."
+          />
 
           <div className="mt-10 rounded-[2rem] bg-ink px-8 py-7 text-cream shadow-soft">
-            <p className="text-sm uppercase tracking-[0.35em] text-blush/80">Core principles</p>
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {pillars.map((pillar) => (
                 <div
                   key={pillar}
