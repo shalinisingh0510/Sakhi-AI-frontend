@@ -15,6 +15,7 @@ Add navigation structure and page sections for the broader product flow.
 - Narrowed linting and typecheck commands so they target only the application code.
 - Verified the production build, lint, and typecheck passes.
 - Extracted the homepage's repeated visual patterns into reusable UI components.
+- Added a structured top navigation and broader page sections for support, journey, languages, and safety.
 
 ## Files Created or Modified
 
@@ -25,8 +26,10 @@ Add navigation structure and page sections for the broader product flow.
 - `app/layout.tsx`
 - `app/page.tsx`
 - `components/home/Badge.tsx`
+- `components/home/FlowCard.tsx`
 - `components/home/InfoCard.tsx`
 - `components/home/SectionHeading.tsx`
+- `components/home/SiteNav.tsx`
 - `components/home/StatCard.tsx`
 - `eslint.config.mjs`
 - `next-env.d.ts`
@@ -41,18 +44,18 @@ Add navigation structure and page sections for the broader product flow.
 
 - App Router-based frontend entry point.
 - Responsive home page with intentional visual design and a clear content hierarchy.
-- Reusable home page UI components for badges, section headings, stats, and info cards.
+- Reusable home page UI components for badges, section headings, stats, info cards, navigation, and flow steps.
+- Navigation links that anchor users to the main support, journey, language, and safety sections.
 - Metadata setup and reusable font configuration.
 - Tailwind theme tokens for the project palette and shadows.
 - TypeScript build settings and linting configuration.
 
 ## Current Progress
 
-- Frontend project now has a branded landing page shell with a reusable component layer and aligned documentation.
+- Frontend project now has a branded landing page shell with a reusable component layer, page navigation, and aligned documentation.
 
 ## Remaining Work
 
-- Add navigation structure and page sections for the broader product flow.
 - Implement AI chat and education-focused user journeys.
 - Add forms, validation, and state management where needed.
 - Connect the frontend to backend APIs.
