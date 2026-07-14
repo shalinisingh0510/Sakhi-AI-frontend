@@ -2,7 +2,7 @@
 
 ## Current Task
 
-Add navigation structure and page sections for the broader product flow.
+Add forms, validation, and state management where needed.
 
 ## Completed Work
 
@@ -16,6 +16,7 @@ Add navigation structure and page sections for the broader product flow.
 - Verified the production build, lint, and typecheck passes.
 - Extracted the homepage's repeated visual patterns into reusable UI components.
 - Added a structured top navigation and broader page sections for support, journey, languages, and safety.
+- Added an AI chat preview with quick prompts and education-focused audience journeys.
 
 ## Files Created or Modified
 
@@ -44,19 +45,20 @@ Add navigation structure and page sections for the broader product flow.
 
 - App Router-based frontend entry point.
 - Responsive home page with intentional visual design and a clear content hierarchy.
-- Reusable home page UI components for badges, section headings, stats, info cards, navigation, and flow steps.
+- Reusable home page UI components for badges, section headings, stats, info cards, navigation, flow steps, and chat mockups.
 - Navigation links that anchor users to the main support, journey, language, and safety sections.
+- AI chat preview with calm, supportive sample responses and quick topic prompts.
+- Education-focused user journey cards for first-time learners, caregivers, and returning learners.
 - Metadata setup and reusable font configuration.
 - Tailwind theme tokens for the project palette and shadows.
 - TypeScript build settings and linting configuration.
 
 ## Current Progress
 
-- Frontend project now has a branded landing page shell with a reusable component layer, page navigation, and aligned documentation.
+- Frontend project now has a branded landing page shell with AI chat and user journey previews.
 
 ## Remaining Work
 
-- Implement AI chat and education-focused user journeys.
 - Add forms, validation, and state management where needed.
 - Connect the frontend to backend APIs.
 - Expand accessibility, testing, and deployment readiness.
