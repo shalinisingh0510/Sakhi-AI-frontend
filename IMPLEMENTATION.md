@@ -1,145 +1,216 @@
-# Sakhi AI Frontend Implementation Log
+# Sakhi AI Frontend — Implementation Log
 
 ## Stack
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State**: Zustand (with `persist` middleware)
-- **Fonts**: Fraunces (display) + Manrope (body) — Google Fonts
+| | |
+|---|---|
+| **Framework** | Next.js 15 (App Router) |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS |
+| **State Management** | Zustand (with `persist` middleware) |
+| **Fonts** | Fraunces (display) + Manrope (body) via Google Fonts |
+| **Package Manager** | npm |
 
 ---
 
-## Completed Work
+## ✅ COMPLETED WORK
 
-### Phase 0 — Foundation (Previously Done)
-- Created the initial Next.js App Router project structure.
-- Added TypeScript, Tailwind CSS, and core build configuration.
-- Added a polished branded landing page shell for the Sakhi AI homepage.
-- Added global theme styling and typography using Google fonts.
-- Narrowed linting and typecheck commands so they target only the application code.
-- Verified the production build, lint, and typecheck passes.
-- Extracted the homepage's repeated visual patterns into reusable UI components.
-- Added a structured top navigation and broader page sections for support, journey, languages, and safety.
-- Added an AI chat preview with quick prompts and education-focused audience journeys.
-- Refreshed the frontend color palette with warmer pink, plum, mint, lavender, and peach tones.
-- Added a client-side guided question form with validation and submission preview.
-
-### Phase 1 — Auth, State, Core Pages (Current Session)
-- Installed Zustand for lightweight state management.
-- Created `lib/auth-store.ts` — Zustand auth store with user, token, language, onboarding state; persisted to localStorage.
-- Created `lib/chat-store.ts` — Zustand chat store for messages and typing indicator.
-- Created `lib/api.ts` — typed fetch-based API service module for auth, chat, learn, progress, and profile endpoints.
-- Created `middleware.ts` — Next.js route middleware for protected routes and auth redirects.
-- Created shared UI primitives: `components/ui/Button.tsx`, `components/ui/Input.tsx`, `components/ui/Card.tsx`.
-- Created `components/layout/AppNav.tsx` — sticky desktop navigation header with profile dropdown and logout.
-- Created `components/layout/MobileNav.tsx` — fixed mobile bottom navigation bar with 5 tabs.
-- Created `app/(auth)/login/page.tsx` — Login page with email/password form and validation.
-- Created `app/(auth)/register/page.tsx` — Register page with 4-field form and password confirmation.
-- Created `app/(auth)/onboarding/page.tsx` — 3-step onboarding flow (name → age group → language).
-- Created `app/(dashboard)/layout.tsx` — Dashboard route group layout with AppNav + MobileNav.
-- Created `app/(dashboard)/dashboard/page.tsx` — Home dashboard with greeting, stats, quick tiles, and topic chips.
-- Created `app/(dashboard)/chat/page.tsx` — Full AI chat page with message bubbles, typing indicator, quick prompts.
-- Created `app/(dashboard)/learn/page.tsx` — Module listing with progress bars and completion badges.
-- Created `app/(dashboard)/learn/[slug]/page.tsx` — Individual lesson page with lesson list and continue CTA.
-- Created `app/(dashboard)/progress/page.tsx` — Progress page with streak, points, module bars, and badges.
-- Created `app/(dashboard)/profile/page.tsx` — Profile page with avatar, editable name, and info tiles.
-- Created `app/(dashboard)/settings/page.tsx` — Settings with language selector, notification toggle, sign out.
+### Phase 0 — Foundation & Landing Page
+| File | What it does |
+|------|-------------|
+| `next.config.mjs` | Next.js config |
+| `tailwind.config.ts` | Design tokens: cream, blush, peach, lavender, mint, rose, berry, moss, ink |
+| `tsconfig.json` | TypeScript strict config with path alias `@/` |
+| `eslint.config.mjs` | ESLint for app code only |
+| `postcss.config.mjs` | PostCSS + autoprefixer |
+| `app/globals.css` | Global styles, radial gradient background, Google font variables |
+| `app/layout.tsx` | Root layout with Fraunces + Manrope fonts and SEO metadata |
+| `app/page.tsx` | Public landing page with hero, features, journey, language support, safety sections |
+| `components/home/Badge.tsx` | Pill badge component |
+| `components/home/FlowCard.tsx` | Numbered step card |
+| `components/home/GuidedQuestionForm.tsx` | Client-side guided question form with validation |
+| `components/home/InfoCard.tsx` | Feature info card |
+| `components/home/SectionHeading.tsx` | Reusable section heading |
+| `components/home/SiteNav.tsx` | Public landing page navigation |
+| `components/home/StatCard.tsx` | Statistic display card |
 
 ---
 
-## Files Created or Modified
-
-### Config & Root
-- `.gitignore`
-- `IMPLEMENTATION.md`
-- `README.md`
-- `middleware.ts`
-- `package.json`
-- `package-lock.json`
-- `tailwind.config.ts`
-- `tsconfig.json`
-- `next.config.mjs`
-- `next-env.d.ts`
-- `postcss.config.mjs`
-- `eslint.config.mjs`
-
-### App (Routes)
-- `app/globals.css`
-- `app/layout.tsx`
-- `app/page.tsx`
-- `app/(auth)/login/page.tsx`
-- `app/(auth)/register/page.tsx`
-- `app/(auth)/onboarding/page.tsx`
-- `app/(dashboard)/layout.tsx`
-- `app/(dashboard)/dashboard/page.tsx`
-- `app/(dashboard)/chat/page.tsx`
-- `app/(dashboard)/learn/page.tsx`
-- `app/(dashboard)/learn/[slug]/page.tsx`
-- `app/(dashboard)/progress/page.tsx`
-- `app/(dashboard)/profile/page.tsx`
-- `app/(dashboard)/settings/page.tsx`
-
-### Components
-- `components/home/Badge.tsx`
-- `components/home/FlowCard.tsx`
-- `components/home/GuidedQuestionForm.tsx`
-- `components/home/InfoCard.tsx`
-- `components/home/SectionHeading.tsx`
-- `components/home/SiteNav.tsx`
-- `components/home/StatCard.tsx`
-- `components/ui/Button.tsx`
-- `components/ui/Input.tsx`
-- `components/ui/Card.tsx`
-- `components/layout/AppNav.tsx`
-- `components/layout/MobileNav.tsx`
-
-### Lib
-- `lib/auth-store.ts`
-- `lib/chat-store.ts`
-- `lib/api.ts`
+### Phase 1 — State, Auth & Routing
+| File | What it does |
+|------|-------------|
+| `lib/auth-store.ts` | Zustand auth store — user, token, language, ageGroup, onboardingComplete; persisted to localStorage |
+| `lib/chat-store.ts` | Zustand chat store — messages array, typing indicator, sessionId |
+| `lib/api.ts` | Typed `fetch`-based API service module — auth, chat, learn, progress, profile endpoints |
+| `middleware.ts` | Next.js middleware — protects `/dashboard`, `/chat`, `/learn`, `/profile`, `/settings`, `/progress`; redirects unauthenticated users to `/login` |
 
 ---
 
-## Current Progress
-
-Frontend now has:
-- Full authentication flow (login → register → onboarding → dashboard)
-- Protected routing via Next.js middleware
-- Post-login dashboard with all major sections
-- Functional AI chat UI (ready for backend hookup)
-- Complete learning modules page and individual lesson pages
-- Progress tracking page with streaks and badges
-- Profile editing page
-- Settings page with language switcher and notification toggle
-- Reusable UI component library (Button, Input, Card)
-- Desktop + mobile navigation
+### Phase 1 — Shared UI Component Library
+| File | What it does |
+|------|-------------|
+| `components/ui/Button.tsx` | Reusable button — `primary`, `secondary`, `ghost`, `danger` variants; `sm/md/lg` sizes; `isLoading` state |
+| `components/ui/Input.tsx` | Reusable input — label, error message, hint text, left icon slot; accessible ARIA attributes |
+| `components/ui/Card.tsx` | Reusable card — padding options, optional glassmorphism (`glass` prop) |
 
 ---
 
-## Remaining Work
+### Phase 1 — Layout Components
+| File | What it does |
+|------|-------------|
+| `components/layout/AppNav.tsx` | Sticky desktop top navigation — brand logo, nav links, notification bell, profile dropdown with logout |
+| `components/layout/MobileNav.tsx` | Fixed mobile bottom navigation bar — 5 tabs (Home, Chat, Learn, Progress, Profile) with active state |
 
-### Phase 2 — Voice & i18n
-- Web Speech API integration for voice input in chat
-- Text-to-speech for Sakhi responses
-- `next-intl` setup + translation JSON files for all 10 languages
-- Replace hardcoded strings with i18n keys
+---
 
-### Phase 3 — More Pages
-- `app/(dashboard)/notifications/page.tsx`
-- `app/(dashboard)/search/page.tsx`
-- `app/faq/page.tsx`
-- `app/help/page.tsx`
+### Phase 1 — Authentication Pages (`app/(auth)/`)
+| Route | File | What it does |
+|-------|------|-------------|
+| `/login` | `app/(auth)/login/page.tsx` | Login form — email + password, field validation, loading state, link to register |
+| `/register` | `app/(auth)/register/page.tsx` | Register form — name, email, password, confirm password, validation |
+| `/onboarding` | `app/(auth)/onboarding/page.tsx` | 3-step onboarding — (1) name, (2) age group, (3) language; progress bar |
 
-### Phase 4 — Quality
-- ARIA labels and keyboard navigation audit
-- Screen reader testing
-- Responsive polish review
-- Unit tests (Jest + React Testing Library)
-- E2E tests (Playwright)
+---
+
+### Phase 1 & 2 — Dashboard Pages (`app/(dashboard)/`)
+| Route | File | What it does |
+|-------|------|-------------|
+| `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Home dashboard — personalised greeting, stats (streak, lessons, points), quick tiles, Sakhi chat prompt, topic chips |
+| `/chat` | `app/(dashboard)/chat/page.tsx` | Full AI chat — user + Sakhi message bubbles, typing indicator (animated), quick prompt chips, send button; demo responses built-in |
+| `/learn` | `app/(dashboard)/learn/page.tsx` | Module listing — 6 health modules with progress bars, completion badges, lesson count, duration |
+| `/learn/[slug]` | `app/(dashboard)/learn/[slug]/page.tsx` | Individual module page — lesson list, progress bar, continue CTA, completion states |
+| `/progress` | `app/(dashboard)/progress/page.tsx` | Progress page — streak, points, modules bars, earned badges |
+| `/profile` | `app/(dashboard)/profile/page.tsx` | Profile page — avatar, editable name form, read-only email, age group and language tiles |
+| `/settings` | `app/(dashboard)/settings/page.tsx` | Settings — language switcher (10 languages), notification toggle, sign out |
+| *(layout)* | `app/(dashboard)/layout.tsx` | Dashboard group layout — wraps all app pages with AppNav + MobileNav |
+
+---
+
+## 🔴 REMAINING WORK
+
+### Phase 3 — Remaining Pages
+| Route | Status | What to build |
+|-------|--------|---------------|
+| `/notifications` | ❌ Pending | Notification centre — list of alerts, mark as read, empty state |
+| `/search` | ❌ Pending | Global search — input, results filtered by module/topic |
+| `/faq` | ❌ Pending | FAQ page — accordion Q&A about Sakhi AI and women's health |
+| `/help` | ❌ Pending | Help & support page — contact options, community links |
+
+---
+
+### Phase 3 — Voice Interaction
+| Feature | Status | What to build |
+|---------|--------|---------------|
+| Speech-to-text | ❌ Pending | Web Speech API integration — voice input in chat |
+| Text-to-speech | ❌ Pending | Sakhi reads responses aloud via SpeechSynthesis API |
+| Language-aware voice | ❌ Pending | Voice language follows user language preference |
+
+---
+
+### Phase 3 — Internationalisation (i18n)
+| Feature | Status | What to build |
+|---------|--------|---------------|
+| `next-intl` setup | ❌ Pending | Install and configure next-intl |
+| Translation files | ❌ Pending | JSON files for EN, HI, BN, MR, TA, TE, KN, GU, PA, OR |
+| Replace hardcoded strings | ❌ Pending | Swap all user-facing text with `t()` keys |
+| Language switcher hook | ❌ Pending | Persist language in Zustand + i18n runtime |
+
+---
+
+### Phase 4 — Quality & Accessibility
+| Feature | Status |
+|---------|--------|
+| ARIA labels on all interactive elements | ❌ Pending |
+| Keyboard navigation audit (Tab, Enter, Esc) | ❌ Pending |
+| High-contrast mode support | ❌ Pending |
+| Screen reader testing | ❌ Pending |
+| Focus management in modals and drawers | ❌ Pending |
+| Mobile responsive review (all pages) | ❌ Pending |
+| Unit tests — Jest + React Testing Library | ❌ Pending |
+| E2E tests — Playwright | ❌ Pending |
+| Accessibility audit — axe-core | ❌ Pending |
+
+---
 
 ### Phase 5 — Backend Integration & Launch
-- Connect all API calls in `lib/api.ts` to real backend
-- Environment variable configuration (`.env.local`, `.env.production`)
-- Vercel deployment setup
-- GitHub Actions CI/CD pipeline
-- Lighthouse performance audit
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Connect `authApi.login()` | ❌ Pending | Replace demo login in `/login` |
+| Connect `authApi.register()` | ❌ Pending | Replace demo register |
+| Connect `chatApi.sendMessage()` | ❌ Pending | Replace simulated Sakhi replies in `/chat` |
+| Connect `learnApi.getModules()` | ❌ Pending | Dynamic module data in `/learn` |
+| Connect `progressApi.getProgress()` | ❌ Pending | Real streak/points in `/progress` |
+| Connect `profileApi.updateProfile()` | ❌ Pending | Real save in `/profile` |
+| `.env.local` configuration | ❌ Pending | `NEXT_PUBLIC_API_URL` and secrets |
+| Vercel deployment | ❌ Pending | Connect GitHub repo to Vercel |
+| GitHub Actions CI/CD | ❌ Pending | Lint + typecheck + build on PR |
+| Lighthouse audit | ❌ Pending | Performance, SEO, accessibility scores |
+
+---
+
+## 📊 Overall Progress
+
+```
+Phase 0 — Foundation          ████████████████████  100% ✅
+Phase 1 — Auth & State        ████████████████████  100% ✅
+Phase 2 — Core Feature Pages  ████████████████████  100% ✅
+Phase 3 — Remaining Pages     ████░░░░░░░░░░░░░░░░   38% 🔄
+Phase 4 — Quality & Tests     ░░░░░░░░░░░░░░░░░░░░    0% ❌
+Phase 5 — Backend & Launch    ░░░░░░░░░░░░░░░░░░░░    0% ❌
+```
+
+---
+
+## 🗂️ Full File Tree (Current State)
+
+```
+sakhi-ai-frontend/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx          ✅ Login page
+│   │   ├── register/page.tsx       ✅ Register page
+│   │   └── onboarding/page.tsx     ✅ 3-step onboarding
+│   ├── (dashboard)/
+│   │   ├── layout.tsx              ✅ Dashboard shell layout
+│   │   ├── dashboard/page.tsx      ✅ Home dashboard
+│   │   ├── chat/page.tsx           ✅ AI Chat page
+│   │   ├── learn/
+│   │   │   ├── page.tsx            ✅ Module listing
+│   │   │   └── [slug]/page.tsx     ✅ Individual lesson
+│   │   ├── progress/page.tsx       ✅ Progress & badges
+│   │   ├── profile/page.tsx        ✅ User profile
+│   │   ├── settings/page.tsx       ✅ Settings page
+│   │   ├── notifications/page.tsx  ❌ Pending
+│   │   └── search/page.tsx         ❌ Pending
+│   ├── faq/page.tsx                ❌ Pending
+│   ├── help/page.tsx               ❌ Pending
+│   ├── globals.css                 ✅ Global styles
+│   ├── layout.tsx                  ✅ Root layout
+│   └── page.tsx                    ✅ Landing page
+├── components/
+│   ├── home/
+│   │   ├── Badge.tsx               ✅
+│   │   ├── FlowCard.tsx            ✅
+│   │   ├── GuidedQuestionForm.tsx  ✅
+│   │   ├── InfoCard.tsx            ✅
+│   │   ├── SectionHeading.tsx      ✅
+│   │   ├── SiteNav.tsx             ✅
+│   │   └── StatCard.tsx            ✅
+│   ├── layout/
+│   │   ├── AppNav.tsx              ✅ Desktop nav
+│   │   └── MobileNav.tsx           ✅ Mobile bottom nav
+│   └── ui/
+│       ├── Button.tsx              ✅ Reusable button
+│       ├── Input.tsx               ✅ Reusable input
+│       └── Card.tsx                ✅ Reusable card
+├── lib/
+│   ├── auth-store.ts               ✅ Zustand auth store
+│   ├── chat-store.ts               ✅ Zustand chat store
+│   └── api.ts                      ✅ API service module
+├── middleware.ts                   ✅ Protected routes
+├── tailwind.config.ts              ✅ Design tokens
+├── next.config.mjs                 ✅
+├── tsconfig.json                   ✅
+├── package.json                    ✅
+├── IMPLEMENTATION.md               ✅ This file
+└── README.md                       ✅ Project overview
+```
