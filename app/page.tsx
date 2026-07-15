@@ -106,7 +106,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-hero-radial">
       <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 lg:px-10">
-        <SiteNav items={navItems} ctaLabel="Explore chat" ctaHref="#chat" />
+        <SiteNav items={navItems} />
 
         <div className="grid flex-1 items-center gap-14 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div className="max-w-3xl">
