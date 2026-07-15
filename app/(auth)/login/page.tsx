@@ -1,7 +1,8 @@
 ﻿"use client";
 
-import { type FormEvent, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
@@ -97,7 +98,21 @@ export default function LoginPage() {
               </div>
 
               <div className="flex w-full justify-center lg:w-auto lg:flex-shrink-0">
-                <CuteGirlIllustration />
+                <div className="relative aspect-square w-full max-w-[330px] rounded-[2.25rem] border border-white/90 bg-white/75 p-4 shadow-[0_24px_60px_rgba(123,62,115,0.16)] backdrop-blur-sm">
+                  <div className="absolute inset-3 rounded-[2rem] bg-gradient-to-br from-blush/40 via-white to-lavender/30" />
+                  <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[1.75rem] bg-white/55">
+                    <div className="absolute inset-x-8 top-8 h-16 rounded-full bg-rose/15 blur-2xl" />
+                    <div className="absolute inset-x-10 bottom-8 h-12 rounded-full bg-mint/20 blur-2xl" />
+                    <Image
+                      src="/login-girl-illustration.png"
+                      alt="Cute girl illustration"
+                      width={820}
+                      height={820}
+                      priority
+                      className="relative z-10 h-auto w-full scale-[1.03] object-contain"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -171,62 +186,6 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
-  );
-}
-
-function CuteGirlIllustration() {
-  return (
-    <svg
-      viewBox="0 0 360 360"
-      className="h-auto w-full max-w-[320px] drop-shadow-[0_20px_40px_rgba(123,62,115,0.18)]"
-      role="img"
-      aria-label="Cute girl illustration"
-    >
-      <defs>
-        <linearGradient id="skin" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#ffe6d8" />
-          <stop offset="100%" stopColor="#f7c9bf" />
-        </linearGradient>
-        <linearGradient id="hair" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#6d395f" />
-          <stop offset="100%" stopColor="#3f233a" />
-        </linearGradient>
-        <linearGradient id="dress" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#e87f9f" />
-          <stop offset="100%" stopColor="#8f4d90" />
-        </linearGradient>
-        <linearGradient id="halo" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#fff6fb" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#f8e6ff" stopOpacity="0.6" />
-        </linearGradient>
-      </defs>
-
-      <circle cx="180" cy="180" r="154" fill="url(#halo)" />
-      <circle cx="180" cy="180" r="128" fill="#fff" opacity="0.8" />
-      <path d="M92 256c12-33 32-53 58-62 14-5 34-8 30-26-5-21-9-42 4-54 15-14 43-14 58 0 13 12 9 33 4 54-4 18 16 21 30 26 26 9 46 29 58 62" fill="url(#dress)" opacity="0.98" />
-      <path d="M129 145c1-34 23-61 51-61h0c28 0 50 27 51 61l2 50c0 16-15 30-33 30h-40c-18 0-33-14-33-30l2-50z" fill="url(#skin)" />
-      <path d="M128 136c4-37 28-63 53-63 26 0 46 16 54 43 6 18 6 39 3 57-2 11-12 17-23 17H150c-14 0-25-10-25-24l3-30z" fill="url(#hair)" />
-      <path d="M125 142c8-18 19-31 33-39 7-4 14-6 23-6 18 0 34 7 48 22 5 5 9 12 12 20" fill="none" stroke="#3f233a" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="154" cy="170" r="5" fill="#3f233a" />
-      <circle cx="206" cy="170" r="5" fill="#3f233a" />
-      <path d="M161 190c6 7 28 7 34 0" fill="none" stroke="#cf6a86" strokeWidth="5" strokeLinecap="round" />
-      <path d="M153 198c10 10 44 10 54 0" fill="none" stroke="#7b3e73" strokeWidth="4" strokeLinecap="round" opacity="0.35" />
-      <path d="M114 120c10-18 27-31 47-36" fill="none" stroke="#8d5478" strokeWidth="16" strokeLinecap="round" />
-      <path d="M244 121c-11-19-29-32-48-37" fill="none" stroke="#8d5478" strokeWidth="16" strokeLinecap="round" />
-      <path d="M170 220h20" stroke="#f7b6c5" strokeWidth="8" strokeLinecap="round" />
-      <path d="M180 220v63" stroke="#f1a9ba" strokeWidth="14" strokeLinecap="round" />
-      <path d="M132 244c15-10 31-15 48-15s33 5 48 15" fill="none" stroke="#fff" strokeWidth="18" strokeLinecap="round" opacity="0.8" />
-      <path d="M140 233l-22 58" stroke="#f2a2b8" strokeWidth="16" strokeLinecap="round" />
-      <path d="M220 233l22 58" stroke="#f2a2b8" strokeWidth="16" strokeLinecap="round" />
-      <path d="M103 258c15 15 32 22 51 22" fill="none" stroke="#e87f9f" strokeWidth="18" strokeLinecap="round" />
-      <path d="M257 258c-15 15-32 22-51 22" fill="none" stroke="#8f4d90" strokeWidth="18" strokeLinecap="round" />
-      <circle cx="93" cy="112" r="14" fill="#fff6fb" opacity="0.8" />
-      <circle cx="281" cy="113" r="10" fill="#fff6fb" opacity="0.8" />
-      <circle cx="273" cy="252" r="8" fill="#ffd6e2" />
-      <circle cx="93" cy="252" r="8" fill="#ffd6e2" />
-      <path d="M269 78l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10z" fill="#f8a5c2" />
-      <path d="M76 196l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z" fill="#f8a5c2" />
-    </svg>
   );
 }
 
