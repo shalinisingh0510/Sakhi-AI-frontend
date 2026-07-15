@@ -63,8 +63,8 @@ export function SiteNav({ items }: SiteNavProps) {
         </div>
       </header>
 
-      {/* Icon outside navbar on right side */}
-      <div className="absolute -right-4 top-0 hidden lg:flex items-center gap-3">
+      {/* Icon outside navbar on left side */}
+      <div className="absolute -left-4 top-0 hidden lg:flex items-center gap-3">
         <img
           src="/sakhi-girl-icon.png"
           alt="Sakhi AI"
