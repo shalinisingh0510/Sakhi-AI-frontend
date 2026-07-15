@@ -65,7 +65,7 @@
 ### Phase 1 and 2 - Authentication and Dashboard Pages (`app/(auth)/` and `app/(dashboard)/`)
 | Route | File | What it does |
 |-------|------|-------------|
-| `/login` | `app/(auth)/login/page.tsx` | Login form - email + password, field validation, loading state, link to register |
+| `/login` | `app/(auth)/login/page.tsx` | Login page - bold "Welcome to Sakhi AI" hero with cute illustrated girl artwork, email and password form, validation, loading state, link to register |
 | `/register` | `app/(auth)/register/page.tsx` | Register form - name, email, password, confirm password, validation |
 | `/onboarding` | `app/(auth)/onboarding/page.tsx` | 3-step onboarding - name, age group, language; progress bar |
 | `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Home dashboard - personalised greeting, stats, quick tiles, Sakhi chat prompt, topic chips |
@@ -145,6 +145,7 @@
 
 - Phase 0, Phase 1, and Phase 2 are complete.
 - Notifications center is complete.
+- The login page now has a refreshed welcome hero with stylish typography and illustration.
 - The frontend is now ready for the search page next.
 
 ---
@@ -215,3 +216,4 @@ sakhi-ai-frontend/
 ├── IMPLEMENTATION.md               This file
 └── README.md                       Project overview
 ```
+
