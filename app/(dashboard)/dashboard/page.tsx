@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 const QUICK_TILES = [
   {
     href: "/chat",
-    emoji: "💬",
+    emoji: "ðŸ’¬",
     title: "Chat with Sakhi",
     desc: "Ask anything about health, anytime.",
     bg: "from-rose/10 to-blush",
@@ -15,7 +15,7 @@ const QUICK_TILES = [
   },
   {
     href: "/learn",
-    emoji: "📖",
+    emoji: "ðŸ“–",
     title: "Start a Lesson",
     desc: "Explore health modules at your pace.",
     bg: "from-lavender to-lavender/40",
@@ -23,7 +23,7 @@ const QUICK_TILES = [
   },
   {
     href: "/progress",
-    emoji: "📊",
+    emoji: "ðŸ“Š",
     title: "My Progress",
     desc: "See your streaks and completed topics.",
     bg: "from-mint to-mint/40",
@@ -31,7 +31,7 @@ const QUICK_TILES = [
   },
   {
     href: "/profile",
-    emoji: "👤",
+    emoji: "ðŸ‘¤",
     title: "My Profile",
     desc: "Update your name, language, and more.",
     bg: "from-peach to-peach/40",
@@ -40,16 +40,16 @@ const QUICK_TILES = [
 ];
 
 const RECENT_TOPICS = [
-  { emoji: "🩸", label: "Menstrual Health" },
-  { emoji: "🧘", label: "Mental Wellbeing" },
-  { emoji: "🌿", label: "Hygiene Basics" },
-  { emoji: "💊", label: "Nutrition & Iron" },
-  { emoji: "🤰", label: "Reproductive Health" },
-  { emoji: "🛡️", label: "Safety & Consent" },
+  { emoji: "ðŸ©¸", label: "Menstrual Health" },
+  { emoji: "ðŸ§˜", label: "Mental Wellbeing" },
+  { emoji: "ðŸŒ¿", label: "Hygiene Basics" },
+  { emoji: "ðŸ’Š", label: "Nutrition & Iron" },
+  { emoji: "ðŸ¤°", label: "Reproductive Health" },
+  { emoji: "ðŸ›¡ï¸", label: "Safety & Consent" },
 ];
 
 const STATS = [
-  { value: "3", label: "Day streak 🔥" },
+  { value: "3", label: "Day streak ðŸ”¥" },
   { value: "2", label: "Lessons done" },
   { value: "120", label: "Points earned" },
 ];
@@ -66,16 +66,16 @@ export default function DashboardPage() {
       <section className="mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-moss">{greeting} 👋</p>
+            <p className="text-sm font-medium text-moss">{greeting} ðŸ‘‹</p>
             <h1 className="mt-1 font-display text-3xl font-bold text-ink">
               {user?.name ? `Hi, ${user.name}!` : "Welcome to Sakhi AI"}
             </h1>
             <p className="mt-1 text-sm text-ink/60">
-              Your trusted guide for women's health education.
+              Your trusted guide for women&apos;s health education.
             </p>
           </div>
           <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-soft">
-            <span className="text-2xl">🌸</span>
+            <span className="text-2xl">ðŸŒ¸</span>
           </div>
         </div>
 
@@ -120,21 +120,21 @@ export default function DashboardPage() {
       <section className="mb-8">
         <Card className="bg-gradient-to-br from-blush/60 to-lavender/40 border-berry/20">
           <div className="flex items-center gap-3 mb-4">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-lg shadow-sm">🌸</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-lg shadow-sm">ðŸŒ¸</span>
             <div>
               <p className="font-semibold text-ink">Sakhi</p>
               <p className="text-xs text-ink/50">Your health guide</p>
             </div>
           </div>
           <p className="text-sm text-ink/80 leading-relaxed">
-            "Hello {user?.name ?? "there"}! I'm here whenever you have a question — about your body, health, or anything you're curious about. There's no judgment here. 💛"
+            Hello {user?.name ?? "there"}! I&apos;m here whenever you have a question - about your body, health, or anything you&apos;re curious about. There&apos;s no judgment here. 💛
           </p>
           <Link
             href="/chat"
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose to-berry px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-berry hover:to-rose transition-all"
           >
             <span>Ask Sakhi</span>
-            <span>→</span>
+            <span>â†’</span>
           </Link>
         </Card>
       </section>

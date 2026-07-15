@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useAuthStore } from "@/lib/auth-store";
@@ -17,13 +17,13 @@ const QUICK_PROMPTS = [
 // Simulated Sakhi responses (replace with actual API)
 const DEMO_REPLIES: Record<string, string> = {
   default:
-    "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions — you're doing great by asking. 💛",
+    "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions â€” you're doing great by asking. ðŸ’›",
   cramp:
-    "Menstrual cramps happen because the uterus contracts to shed its lining. This is completely normal! You can try a warm compress, gentle stretching, or staying hydrated. If the pain is very severe, it's always a good idea to speak with a doctor. 🌸",
+    "Menstrual cramps happen because the uterus contracts to shed its lining. This is completely normal! You can try a warm compress, gentle stretching, or staying hydrated. If the pain is very severe, it's always a good idea to speak with a doctor. ðŸŒ¸",
   cycle:
-    "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21–35 days. Each phase — menstrual, follicular, ovulation, and luteal — plays an important role. It's your body's natural rhythm! 💪",
+    "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21â€“35 days. Each phase â€” menstrual, follicular, ovulation, and luteal â€” plays an important role. It's your body's natural rhythm! ðŸ’ª",
   hygiene:
-    "Good hygiene during your period is simple: change your pad or tampon every 4–6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself — your body is working hard! 🌿",
+    "Good hygiene during your period is simple: change your pad or tampon every 4â€“6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself â€” your body is working hard! ðŸŒ¿",
 };
 
 function getSakhiReply(userMsg: string): string {
@@ -68,7 +68,7 @@ export default function ChatPage() {
       {/* Chat header */}
       <div className="flex items-center gap-3 border-b border-peach/60 bg-white/80 px-4 py-3 backdrop-blur-sm">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-sm">
-          <span className="text-lg">🌸</span>
+          <span className="text-lg">ðŸŒ¸</span>
         </div>
         <div>
           <p className="font-semibold text-ink">Sakhi</p>
@@ -84,13 +84,13 @@ export default function ChatPage() {
         {/* Welcome message if no messages */}
         {messages.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <span className="text-5xl">🌸</span>
+            <span className="text-5xl">ðŸŒ¸</span>
             <div>
               <p className="font-display text-xl font-bold text-ink">
                 Hi {user?.name ?? "there"}! I&apos;m Sakhi.
               </p>
               <p className="mt-1 text-sm text-ink/60 max-w-sm mx-auto">
-                Your safe space to learn about women's health. Ask me anything — no question is too small or embarrassing.
+                Your safe space to learn about women&apos;s health. Ask me anything - no question is too small or embarrassing.
               </p>
             </div>
             {/* Quick prompts */}
@@ -116,7 +116,7 @@ export default function ChatPage() {
           >
             {msg.role === "sakhi" && (
               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-sm self-end">
-                <span className="text-sm">🌸</span>
+                <span className="text-sm">ðŸŒ¸</span>
               </div>
             )}
             <div
@@ -127,7 +127,7 @@ export default function ChatPage() {
                   : "rounded-bl-sm bg-white border border-peach/60 text-ink shadow-sm",
               ].join(" ")}
             >
-              {msg.content}
+            Hello {user?.name ?? "there"}! I&apos;m here whenever you have a question - about your body, health, or anything you&apos;re curious about. There&apos;s no judgment here. 💛
             </div>
             {msg.role === "user" && (
               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blush text-sm font-bold text-berry self-end">
@@ -141,7 +141,7 @@ export default function ChatPage() {
         {isTyping && (
           <div className="flex gap-2 justify-start">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-sm self-end">
-              <span className="text-sm">🌸</span>
+              <span className="text-sm">ðŸŒ¸</span>
             </div>
             <div className="rounded-3xl rounded-bl-sm bg-white border border-peach/60 px-4 py-3 shadow-sm">
               <div className="flex gap-1 items-center h-4">
@@ -181,7 +181,7 @@ export default function ChatPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Sakhi anything…"
+            placeholder="Ask Sakhi anythingâ€¦"
             className="flex-1 rounded-full border border-peach/70 bg-white px-5 py-3 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 focus:border-berry/40"
           />
           <Button
