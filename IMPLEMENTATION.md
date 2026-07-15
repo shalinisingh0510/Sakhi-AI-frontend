@@ -30,7 +30,7 @@
 | `components/home/GuidedQuestionForm.tsx` | Client-side guided question form with validation |
 | `components/home/InfoCard.tsx` | Feature info card |
 | `components/home/SectionHeading.tsx` | Reusable section heading |
-| `components/home/SiteNav.tsx` | Public landing page navigation |
+| `components/home/SiteNav.tsx` | Public landing page navigation with separate Login and Sign up buttons in navbar |
 | `components/home/StatCard.tsx` | Statistic display card |
 
 ---
@@ -157,7 +157,7 @@
 - The login page has a refreshed welcome hero with stylish typography.
 - The search page is complete with filters, curated results, and quick actions.
 - The chat page renders stored message content from Zustand chat-store instead of hardcoded placeholders.
-- The landing page navbar includes explicit Login and Sign up actions.
+- The landing page navbar now has separate Login and Sign up buttons for better UX.
 - FAQ page is complete with accordion Q&A and category filters.
 - Help page is complete with contact options, help topics, and emergency information.
 - Middleware protects all dashboard routes including /search, /faq, and /help.
