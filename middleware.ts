@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/chat", "/learn", "/profile", "/settings", "/progress", "/notifications", "/search"];
+const PROTECTED_PATHS = ["/dashboard", "/chat", "/learn", "/profile", "/settings", "/progress", "/notifications", "/search", "/faq", "/help"];
 // Routes only for unauthenticated users
 const AUTH_PATHS = ["/login", "/register", "/onboarding"];
 

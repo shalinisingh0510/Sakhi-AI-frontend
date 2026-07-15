@@ -76,7 +76,16 @@
 | `/profile` | `app/(dashboard)/profile/page.tsx` | Profile page - avatar, editable name form, read-only email, age group and language tiles |
 | `/settings` | `app/(dashboard)/settings/page.tsx` | Settings - language switcher, notification toggle, sign out |
 | `/notifications` | `app/(dashboard)/notifications/page.tsx` | Notifications center - unread cards, filters, read actions, quick shortcuts |
+| `/search` | `app/(dashboard)/search/page.tsx` | Global search - query input, category filters, curated results, quick actions |
 | `(layout)` | `app/(dashboard)/layout.tsx` | Dashboard group layout - wraps all app pages with AppNav and MobileNav |
+
+---
+
+### Phase 3 - FAQ and Help Pages
+| Route | File | What it does |
+|-------|------|-------------|
+| `/faq` | `app/faq/page.tsx` | FAQ page - accordion Q&A about Sakhi AI and women's health with category filters |
+| `/help` | `app/help/page.tsx` | Help and support page - contact options, help topics, resources, emergency information |
 
 ---
 
@@ -86,8 +95,8 @@
 | Route | Status | What to build |
 |-------|--------|---------------|
 | `/search` | Complete | Global search - query input, category filters, curated results, quick actions |
-| `/faq` | Pending | FAQ page - accordion Q&A about Sakhi AI and women's health |
-| `/help` | Pending | Help and support page - contact options, community links |
+| `/faq` | Complete | FAQ page - accordion Q&A about Sakhi AI and women's health |
+| `/help` | Complete | Help and support page - contact options, community links |
 
 ---
 
@@ -149,8 +158,10 @@
 - The search page is complete with filters, curated results, and quick actions.
 - The chat page renders stored message content from Zustand chat-store instead of hardcoded placeholders.
 - The landing page navbar includes explicit Login and Sign up actions.
-- Middleware protects all dashboard routes including /search.
-- The next frontend pages to build are FAQ and Help.
+- FAQ page is complete with accordion Q&A and category filters.
+- Help page is complete with contact options, help topics, and emergency information.
+- Middleware protects all dashboard routes including /search, /faq, and /help.
+- Phase 3 remaining pages are now 100% complete.
 
 ---
 
@@ -160,7 +171,7 @@
 Phase 0 - Foundation          100% complete
 Phase 1 - Auth and State      100% complete
 Phase 2 - Core Pages          100% complete
-Phase 3 - Remaining Pages     60% in progress
+Phase 3 - Remaining Pages     100% complete
 Phase 4 - Quality and Tests   0% pending
 Phase 5 - Backend and Launch  0% pending
 ```
@@ -188,8 +199,8 @@ sakhi-ai-frontend/
 │   │   ├── profile/page.tsx        User profile
 │   │   ├── settings/page.tsx       Settings page
 │   │   └── notifications/page.tsx  Notifications center
-│   ├── faq/page.tsx                Pending
-│   ├── help/page.tsx               Pending
+│   ├── faq/page.tsx                FAQ page
+│   ├── help/page.tsx               Help and support page
 │   ├── globals.css                 Global styles
 │   ├── layout.tsx                  Root layout
 │   └── page.tsx                    Landing page
