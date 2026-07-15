@@ -17,13 +17,13 @@ const QUICK_PROMPTS = [
 // Simulated Sakhi responses (replace with actual API)
 const DEMO_REPLIES: Record<string, string> = {
   default:
-    "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions â€” you're doing great by asking. ðŸ’›",
+    "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions - you're doing great by asking. ðŸ’›",
   cramp:
     "Menstrual cramps happen because the uterus contracts to shed its lining. This is completely normal! You can try a warm compress, gentle stretching, or staying hydrated. If the pain is very severe, it's always a good idea to speak with a doctor. ðŸŒ¸",
   cycle:
-    "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21â€“35 days. Each phase â€” menstrual, follicular, ovulation, and luteal â€” plays an important role. It's your body's natural rhythm! ðŸ’ª",
+    "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21-35 days. Each phase - menstrual, follicular, ovulation, and luteal - plays an important role. It's your body's natural rhythm! ðŸ’ª",
   hygiene:
-    "Good hygiene during your period is simple: change your pad or tampon every 4â€“6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself â€” your body is working hard! ðŸŒ¿",
+    "Good hygiene during your period is simple: change your pad or tampon every 4-6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself - your body is working hard! ðŸŒ¿",
 };
 
 function getSakhiReply(userMsg: string): string {
@@ -127,7 +127,7 @@ export default function ChatPage() {
                   : "rounded-bl-sm bg-white border border-peach/60 text-ink shadow-sm",
               ].join(" ")}
             >
-            Hello {user?.name ?? "there"}! I&apos;m here whenever you have a question - about your body, health, or anything you&apos;re curious about. There&apos;s no judgment here. 💛
+              <p className="whitespace-pre-wrap">{msg.content}</p>
             </div>
             {msg.role === "user" && (
               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blush text-sm font-bold text-berry self-end">
@@ -181,7 +181,7 @@ export default function ChatPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Sakhi anythingâ€¦"
+            placeholder="Ask Sakhi anything..."
             className="flex-1 rounded-full border border-peach/70 bg-white px-5 py-3 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 focus:border-berry/40"
           />
           <Button

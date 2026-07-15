@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -6,6 +6,7 @@ import { useAuthStore } from "@/lib/auth-store";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Home", icon: HomeIcon },
+  { href: "/search", label: "Search", icon: SearchIcon },
   { href: "/chat",      label: "Chat",  icon: ChatIcon },
   { href: "/learn",     label: "Learn", icon: BookIcon },
   { href: "/progress",  label: "Progress", icon: ChartIcon },
@@ -26,7 +27,7 @@ export function AppNav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
         {/* Brand */}
         <Link href="/dashboard" className="flex items-center gap-2">
-          <span className="text-xl">🌸</span>
+          <span className="text-xl">ðŸŒ¸</span>
           <span className="font-display text-lg font-bold text-berry">Sakhi AI</span>
         </Link>
 
@@ -55,6 +56,13 @@ export function AppNav() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          <Link
+            href="/search"
+            className="rounded-full p-2 text-ink/60 transition-all hover:bg-peach/40"
+            aria-label="Search Sakhi AI"
+          >
+            <SearchIcon className="h-5 w-5" />
+          </Link>
           <Link href="/notifications" className="relative rounded-full p-2 text-ink/60 hover:bg-peach/40 transition-all" aria-label="Notifications">
             <BellIcon className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose" />
@@ -91,9 +99,12 @@ export function AppNav() {
   );
 }
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function HomeIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+}
+function SearchIcon({ className }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>;
 }
 function ChatIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>;
