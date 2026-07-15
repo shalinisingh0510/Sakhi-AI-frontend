@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Badge } from "@/components/home/Badge";
 import { FlowCard } from "@/components/home/FlowCard";
+import { GuidedQuestionForm } from "@/components/home/GuidedQuestionForm";
 import { InfoCard } from "@/components/home/InfoCard";
 import { SectionHeading } from "@/components/home/SectionHeading";
 import { SiteNav } from "@/components/home/SiteNav";
@@ -192,25 +193,14 @@ export default function Home() {
                 </Badge>
               ))}
             </div>
-          </div>
 
-          <div className="rounded-[2rem] border border-peach/60 bg-gradient-to-br from-peach/50 via-white to-lavender/45 p-5 shadow-soft">
-            <div className="rounded-[1.5rem] bg-white/92 p-5 backdrop-blur">
-              <div className="flex items-center justify-between border-b border-berry/10 pb-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-moss">Sakhi</p>
-                  <p className="mt-1 text-sm text-ink/60">Gentle education for women and girls</p>
-                </div>
-                <span className="rounded-full bg-mint/70 px-3 py-1 text-xs font-semibold text-moss">
-                  Safe mode on
-                </span>
-              </div>
-
-              <div className="mt-5 space-y-4">
+            <div className="mt-8 rounded-[1.75rem] border border-peach/70 bg-white/85 p-5 shadow-soft">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-moss">Conversation preview</p>
+              <div className="mt-4 space-y-4">
                 {chatMessages.map((message) => (
                   <div
                     key={`${message.role}-${message.text}`}
-                    className={`max-w-[85%] rounded-[1.5rem] px-4 py-3 text-sm leading-7 ${
+                    className={`max-w-[92%] rounded-[1.35rem] px-4 py-3 text-sm leading-7 ${
                       message.role === "User"
                         ? "ml-auto rounded-br-md bg-gradient-to-r from-rose to-berry text-cream"
                         : message.highlight
@@ -218,7 +208,7 @@ export default function Home() {
                           : "rounded-bl-md bg-cream text-ink"
                     }`}
                   >
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] opacity-70">
+                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] opacity-70">
                       {message.role}
                     </p>
                     <p className="mt-2">{message.text}</p>
@@ -227,6 +217,8 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <GuidedQuestionForm languages={languageHighlights} />
         </div>
       </section>
 
@@ -343,3 +335,4 @@ export default function Home() {
     </main>
   );
 }
+
