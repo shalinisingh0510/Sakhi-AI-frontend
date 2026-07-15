@@ -144,11 +144,13 @@
 ## Current Progress
 
 - Phase 0, Phase 1, and Phase 2 are complete.
-- Notifications center is complete.
-- The login page now has a refreshed welcome hero with stylish typography and the generated girl illustration.
-- The search page is now complete with filters, curated results, and quick links.
-- The chat page now renders the stored message content instead of a hardcoded placeholder.
-- The next frontend pages are FAQ and Help.
+- Notifications center is complete with filters, unread/read states, and quick shortcuts.
+- The login page has a refreshed welcome hero with stylish typography.
+- The search page is complete with filters, curated results, and quick actions.
+- The chat page renders stored message content from Zustand chat-store instead of hardcoded placeholders.
+- The landing page navbar includes explicit Login and Sign up actions.
+- Middleware protects all dashboard routes including /search.
+- The next frontend pages to build are FAQ and Help.
 
 ---
 
@@ -219,6 +221,7 @@ sakhi-ai-frontend/
 ├── IMPLEMENTATION.md               This file
 └── README.md                       Project overview
 ```
+
 
 
 
