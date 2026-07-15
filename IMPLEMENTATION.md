@@ -158,6 +158,7 @@
 - The search page is complete with filters, curated results, and quick actions.
 - The chat page renders stored message content from Zustand chat-store instead of hardcoded placeholders.
 - The landing page navbar now has separate Login and Sign up buttons for better UX.
+- Sakhi AI branding in navbar updated with girl icon, bold and bigger text using stylish display font.
 - FAQ page is complete with accordion Q&A and category filters.
 - Help page is complete with contact options, help topics, and emergency information.
 - Middleware protects all dashboard routes including /search, /faq, and /help.

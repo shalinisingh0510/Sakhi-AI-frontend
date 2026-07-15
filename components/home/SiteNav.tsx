@@ -14,7 +14,10 @@ export function SiteNav({ items }: SiteNavProps) {
     <header className="flex flex-col gap-4 rounded-[1.5rem] border border-peach/60 bg-white/80 px-5 py-4 shadow-sm backdrop-blur lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-moss">Sakhi AI</p>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">👧</span>
+            <p className="font-display text-2xl font-bold text-berry">Sakhi AI</p>
+          </div>
           <p className="mt-1 text-sm text-berry/80">Trusted health education, made calmer.</p>
         </div>
 
