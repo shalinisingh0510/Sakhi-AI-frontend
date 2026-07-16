@@ -4,8 +4,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
-interface Props {
-  params: { slug: string };
+ interface Props {
+  params: Promise<{
+    slug: string;
+  }>;
 }
 
 const MODULE_DATA: Record<
@@ -55,8 +57,9 @@ const DEFAULT_MODULE = {
   ],
 };
 
-export default function ModulePage({ params }: Props) {
-  const mod = MODULE_DATA[params.slug] ?? DEFAULT_MODULE;
+export default async function ModulePage({ params }: Props) {
+  const { slug } = await params;
+  const mod = MODULE_DATA[slug] ?? DEFAULT_MODULE;
   const completed = mod.lessons.filter((l) => l.done).length;
   const pct = Math.round((completed / mod.lessons.length) * 100);
   const nextLesson = mod.lessons.find((l) => !l.done);

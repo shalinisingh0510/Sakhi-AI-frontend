@@ -147,7 +147,7 @@ export default function HelpPage() {
                 How can we help you?
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink/65 sm:text-base">
-                Find answers, get support, and connect with our team. We're here to make your experience with Sakhi AI as smooth as possible.
+               Find answers, get support, and connect with our team. We&apos;re here to make your experience with Sakhi AI as smooth as possible.
               </p>
             </div>
           </Card>
@@ -245,7 +245,7 @@ export default function HelpPage() {
               Emergency help
             </p>
             <p className="mt-3 text-sm leading-relaxed text-ink/65">
-              If you're in immediate danger or having a medical emergency, please contact emergency services right away.
+             If you&apos;re in immediate danger or having a medical emergency, please contact emergency services right away.
             </p>
             <div className="mt-4 rounded-2xl bg-rose/10 border border-rose/20 p-4">
               <p className="text-sm font-semibold text-berry">Emergency: 112 / 911</p>

@@ -11,7 +11,9 @@ export default getRequestConfig(async () => {
   const localeCookie = cookieStore.get('NEXT_LOCALE')?.value;
   
   // Use cookie value if valid, otherwise fallback to default
-  const locale = locales.includes(localeCookie as Locale) ? localeCookie : defaultLocale;
+ const locale: Locale = locales.includes(localeCookie as Locale)
+  ? (localeCookie as Locale)
+  : defaultLocale;
 
   return {
     locale,
