@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useChatStore } from "@/lib/chat-store";
+import { useVoice } from "@/lib/use-voice";
 import { Button } from "@/components/ui/Button";
 
 const QUICK_PROMPTS = [
@@ -41,10 +42,27 @@ export default function ChatPage() {
   const { messages, isTyping, addMessage, setTyping } = useChatStore();
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const {
+    isListening,
+    isSpeaking,
+    transcript,
+    isSupported,
+    startListening,
+    stopListening,
+    speak,
+    stopSpeaking,
+  } = useVoice(user?.language || "en");
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  // Update input when speech recognition provides transcript
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+    }
+  }, [transcript]);
 
   async function sendMessage(content: string) {
     if (!content.trim()) return;
@@ -55,7 +73,11 @@ export default function ChatPage() {
     // Simulate API delay
     await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
     setTyping(false);
-    addMessage({ role: "sakhi", content: getSakhiReply(content) });
+    const reply = getSakhiReply(content);
+    addMessage({ role: "sakhi", content: reply });
+    
+    // Auto-speak Sakhi's response
+    speak(reply);
   }
 
   function handleSubmit(e: FormEvent) {
@@ -128,6 +150,21 @@ export default function ChatPage() {
               ].join(" ")}
             >
               <p className="whitespace-pre-wrap">{msg.content}</p>
+              {msg.role === "sakhi" && (
+                <button
+                  onClick={() => speak(msg.content)}
+                  disabled={isSpeaking}
+                  className="mt-2 flex items-center gap-1 text-xs text-berry/60 hover:text-berry transition-colors disabled:opacity-50"
+                  title="Read aloud"
+                >
+                  {isSpeaking ? (
+                    <SpeakerOffIcon className="h-3 w-3" />
+                  ) : (
+                    <SpeakerIcon className="h-3 w-3" />
+                  )}
+                  <span>{isSpeaking ? "Speaking..." : "Read aloud"}</span>
+                </button>
+              )}
             </div>
             {msg.role === "user" && (
               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blush text-sm font-bold text-berry self-end">
@@ -184,6 +221,26 @@ export default function ChatPage() {
             placeholder="Ask Sakhi anything..."
             className="flex-1 rounded-full border border-peach/70 bg-white px-5 py-3 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 focus:border-berry/40"
           />
+          {/* Voice input button */}
+          {isSupported && (
+            <button
+              type="button"
+              onClick={isListening ? stopListening : startListening}
+              disabled={isTyping}
+              className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${
+                isListening
+                  ? "border-berry bg-berry/10 text-berry"
+                  : "border-peach/70 bg-white text-ink/60 hover:border-berry/40 hover:text-berry"
+              }`}
+              title={isListening ? "Stop listening" : "Start voice input"}
+            >
+              {isListening ? (
+                <MicOffIcon className="h-5 w-5" />
+              ) : (
+                <MicIcon className="h-5 w-5" />
+              )}
+            </button>
+          )}
           <Button
             type="submit"
             disabled={!input.trim() || isTyping}
@@ -193,6 +250,13 @@ export default function ChatPage() {
             <SendIcon className="h-4 w-4" />
           </Button>
         </form>
+        {/* Voice status indicator */}
+        {isListening && (
+          <div className="flex items-center justify-center gap-2 text-xs text-berry">
+            <span className="h-2 w-2 rounded-full bg-berry animate-pulse" />
+            Listening...
+          </div>
+        )}
         <p className="mt-2 text-center text-xs text-ink/30">
           Sakhi AI is for education only. Always consult a doctor for medical advice.
         </p>
@@ -206,6 +270,48 @@ function SendIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="22" y1="2" x2="11" y2="13" />
       <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  );
+}
+
+function MicIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
+    </svg>
+  );
+}
+
+function MicOffIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="1" y1="1" x2="23" y2="23" />
+      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
+    </svg>
+  );
+}
+
+function SpeakerIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+  );
+}
+
+function SpeakerOffIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="1" y1="1" x2="23" y2="23" />
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
     </svg>
   );
 }

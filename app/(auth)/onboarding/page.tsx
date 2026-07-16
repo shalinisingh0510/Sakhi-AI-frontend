@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useAuthStore, type AgeGroup, type SupportedLanguage } from "@/lib/auth-store";
 
-const AGE_GROUPS: { value: AgeGroup; label: string; emoji: string; desc: string }[] = [
-  { value: "10-13", label: "10–13 years", emoji: "🌱", desc: "Just starting to learn" },
-  { value: "14-18", label: "14–18 years", emoji: "🌸", desc: "Growing and curious" },
-  { value: "18+",   label: "18+ years",   emoji: "🌺", desc: "Adult learner" },
-  { value: "caregiver", label: "Caregiver / Mother", emoji: "💛", desc: "Learning for someone I care for" },
+const AGE_GROUPS_KEYS: { value: AgeGroup; emoji: string }[] = [
+  { value: "10-13", emoji: "🌱" },
+  { value: "14-18", emoji: "🌸" },
+  { value: "18+",   emoji: "🌺" },
+  { value: "caregiver", emoji: "💛" },
 ];
 
 const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] = [
@@ -31,6 +32,7 @@ const STEPS = 3;
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, completeOnboarding } = useAuthStore();
+  const t = useTranslations("Auth.onboarding");
 
   const [step, setStep] = useState(1);
   const [selectedAge, setSelectedAge] = useState<AgeGroup | "">("");
@@ -57,8 +59,8 @@ export default function OnboardingPage() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-ink/50 mb-2">
-            <span>Step {step} of {STEPS}</span>
-            <span>{Math.round((step / STEPS) * 100)}% done</span>
+            <span>{t("progress.stepOf", { step, total: STEPS })}</span>
+            <span>{t("progress.percentDone", { percent: Math.round((step / STEPS) * 100) })}</span>
           </div>
           <div className="h-2 w-full rounded-full bg-peach/60">
             <div
@@ -73,12 +75,12 @@ export default function OnboardingPage() {
           <Card>
             <div className="text-center mb-6">
               <span className="text-5xl">👋</span>
-              <h2 className="mt-3 font-display text-2xl font-bold text-ink">What should we call you?</h2>
-              <p className="mt-1 text-sm text-ink/60">Sakhi wants to greet you by name.</p>
+              <h2 className="mt-3 font-display text-2xl font-bold text-ink">{t("step1.title")}</h2>
+              <p className="mt-1 text-sm text-ink/60">{t("step1.subtitle")}</p>
             </div>
             <input
               type="text"
-              placeholder="Enter your name"
+              placeholder={t("step1.placeholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-2xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 focus:border-berry/40"
@@ -91,7 +93,7 @@ export default function OnboardingPage() {
               disabled={!name.trim()}
               onClick={() => setStep(2)}
             >
-              Continue →
+              {t("step1.continueBtn")}
             </Button>
           </Card>
         )}
@@ -101,11 +103,11 @@ export default function OnboardingPage() {
           <Card>
             <div className="text-center mb-6">
               <span className="text-5xl">🌸</span>
-              <h2 className="mt-3 font-display text-2xl font-bold text-ink">Which age group are you in?</h2>
-              <p className="mt-1 text-sm text-ink/60">This helps Sakhi personalise your experience.</p>
+              <h2 className="mt-3 font-display text-2xl font-bold text-ink">{t("step2.title")}</h2>
+              <p className="mt-1 text-sm text-ink/60">{t("step2.subtitle")}</p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {AGE_GROUPS.map((g) => (
+              {AGE_GROUPS_KEYS.map((g) => (
                 <button
                   key={g.value}
                   onClick={() => setSelectedAge(g.value)}
@@ -118,20 +120,20 @@ export default function OnboardingPage() {
                 >
                   <span className="text-2xl">{g.emoji}</span>
                   <div>
-                    <p className="text-sm font-semibold text-ink">{g.label}</p>
-                    <p className="text-xs text-ink/50">{g.desc}</p>
+                    <p className="text-sm font-semibold text-ink">{t(`step2.ageGroups.${g.value}.label`)}</p>
+                    <p className="text-xs text-ink/50">{t(`step2.ageGroups.${g.value}.desc`)}</p>
                   </div>
                 </button>
               ))}
             </div>
             <div className="mt-6 flex gap-3">
-              <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">← Back</Button>
+              <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">{t("step2.backBtn")}</Button>
               <Button
                 className="flex-1"
                 disabled={!selectedAge}
                 onClick={() => setStep(3)}
               >
-                Continue →
+                {t("step2.continueBtn")}
               </Button>
             </div>
           </Card>
@@ -142,8 +144,8 @@ export default function OnboardingPage() {
           <Card>
             <div className="text-center mb-6">
               <span className="text-5xl">🌍</span>
-              <h2 className="mt-3 font-display text-2xl font-bold text-ink">Choose your language</h2>
-              <p className="mt-1 text-sm text-ink/60">Sakhi speaks your language, literally.</p>
+              <h2 className="mt-3 font-display text-2xl font-bold text-ink">{t("step3.title")}</h2>
+              <p className="mt-1 text-sm text-ink/60">{t("step3.subtitle")}</p>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {LANGUAGES.map((l) => (
@@ -163,13 +165,13 @@ export default function OnboardingPage() {
               ))}
             </div>
             <div className="mt-6 flex gap-3">
-              <Button variant="ghost" onClick={() => setStep(2)} className="flex-1">← Back</Button>
+              <Button variant="ghost" onClick={() => setStep(2)} className="flex-1">{t("step3.backBtn")}</Button>
               <Button
                 className="flex-1"
                 isLoading={isLoading}
                 onClick={handleFinish}
               >
-                Get started 🌸
+                {t("step3.getStartedBtn")}
               </Button>
             </div>
           </Card>

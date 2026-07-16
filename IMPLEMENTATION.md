@@ -1,4 +1,4 @@
-﻿# Sakhi AI Frontend Implementation Log
+# Sakhi AI Frontend Implementation Log
 
 ## Stack
 | | |
@@ -89,6 +89,14 @@
 
 ---
 
+### Phase 3 - Voice Interaction
+| File | What it does |
+|------|-------------|
+| `lib/use-voice.ts` | Custom React hook - Web Speech API integration for speech-to-text and text-to-speech with language support for 10 Indian languages |
+| `app/(dashboard)/chat/page.tsx` | Updated chat page - voice input button with mic icon, auto-speak Sakhi responses, read-aloud button on each Sakhi message, listening status indicator |
+
+---
+
 ## Remaining Work
 
 ### Phase 3 - Remaining Pages
@@ -103,19 +111,19 @@
 ### Phase 3 - Voice Interaction
 | Feature | Status | What to build |
 |---------|--------|---------------|
-| Speech-to-text | Pending | Web Speech API integration - voice input in chat |
-| Text-to-speech | Pending | Sakhi reads responses aloud via SpeechSynthesis API |
-| Language-aware voice | Pending | Voice language follows user language preference |
+| Speech-to-text | Complete | Web Speech API integration - voice input in chat |
+| Text-to-speech | Complete | Sakhi reads responses aloud via SpeechSynthesis API |
+| Language-aware voice | Complete | Voice language follows user language preference |
 
 ---
 
 ### Phase 3 - Internationalisation (i18n)
 | Feature | Status | What to build |
 |---------|--------|---------------|
-| `next-intl` setup | Pending | Install and configure next-intl |
-| Translation files | Pending | JSON files for EN, HI, BN, MR, TA, TE, KN, GU, PA, OR |
-| Replace hardcoded strings | Pending | Swap all user-facing text with `t()` keys |
-| Language switcher hook | Pending | Persist language in Zustand plus i18n runtime |
+| `next-intl` setup | Complete | Installed and configured next-intl |
+| Translation files | Complete | Created JSON files for EN, HI, BN, MR, TA, TE, KN, GU, PA, OR |
+| Replace hardcoded strings | In Progress (Landing, Nav, Auth) | Swap all user-facing text with `t()` keys |
+| Language switcher hook | Complete | Persist language in Zustand plus NEXT_LOCALE cookie |
 
 ---
 
@@ -159,11 +167,11 @@
 - The chat page renders stored message content from Zustand chat-store instead of hardcoded placeholders.
 - The landing page navbar now has separate Login and Sign up buttons for better UX.
 - Navbar branding changed from "Sakhi AI" to "WELCOME TO SAKHI AI" in capital letters with display font.
-- Added cartoon girl icon outside navbar on left side with "SAKHI AI" text in stylish display font.
 - FAQ page is complete with accordion Q&A and category filters.
 - Help page is complete with contact options, help topics, and emergency information.
 - Middleware protects all dashboard routes including /search, /faq, and /help.
 - Phase 3 remaining pages are now 100% complete.
+- Phase 3 Voice Interaction is complete with speech-to-text, text-to-speech, and language-aware voice support for 10 Indian languages.
 
 ---
 
@@ -174,6 +182,8 @@ Phase 0 - Foundation          100% complete
 Phase 1 - Auth and State      100% complete
 Phase 2 - Core Pages          100% complete
 Phase 3 - Remaining Pages     100% complete
+Phase 3 - Voice Interaction   100% complete
+Phase 3 - Internationalisation 75% complete
 Phase 4 - Quality and Tests   0% pending
 Phase 5 - Backend and Launch  0% pending
 ```
@@ -225,6 +235,7 @@ sakhi-ai-frontend/
 ├── lib/
 │   ├── auth-store.ts               Zustand auth store
 │   ├── chat-store.ts               Zustand chat store
+│   ├── use-voice.ts                Web Speech API hook for voice interaction
 │   └── api.ts                      API service module
 ├── middleware.ts                   Protected routes
 ├── tailwind.config.ts              Design tokens

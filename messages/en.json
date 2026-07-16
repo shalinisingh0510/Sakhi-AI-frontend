@@ -1,0 +1,237 @@
+{
+  "Landing": {
+    "languageHighlights": ["English", "Hindi", "Bengali", "Marathi", "Tamil", "Telugu"],
+    "supportCards": [
+      {
+        "title": "First periods, explained gently",
+        "body": "Simple answers for young users and caregivers, with age-appropriate language and no shame."
+      },
+      {
+        "title": "Care routines that feel practical",
+        "body": "Menstrual hygiene, personal hygiene, and intimate care guidance that is easy to act on."
+      },
+      {
+        "title": "Health education with empathy",
+        "body": "Trusted information that makes room for questions, curiosity, and privacy."
+      }
+    ],
+    "pillars": [
+      "Safety-first AI responses",
+      "Multilingual learning support",
+      "Education designed for rural and semi-urban communities",
+      "Accessible, low-stress interfaces"
+    ],
+    "stats": [
+      { "value": "11", "label": "planned languages" },
+      { "value": "24/7", "label": "guided learning" },
+      { "value": "100%", "label": "education first" }
+    ],
+    "navItems": [
+      { "href": "#chat", "label": "Chat" },
+      { "href": "#support", "label": "Support" },
+      { "href": "#journey", "label": "Journey" },
+      { "href": "#languages", "label": "Languages" },
+      { "href": "#safety", "label": "Safety" }
+    ],
+    "journeySteps": [
+      {
+        "step": "Step 01",
+        "title": "Choose the right language",
+        "body": "Users start with the language they understand best, so the experience feels familiar from the first screen."
+      },
+      {
+        "step": "Step 02",
+        "title": "Ask a question or open a lesson",
+        "body": "The interface supports casual conversation as well as structured education modules for deeper learning."
+      },
+      {
+        "step": "Step 03",
+        "title": "Save progress and continue later",
+        "body": "The product flow is designed to support repeat visits, progress tracking, and future personalization."
+      }
+    ],
+    "chatMessages": [
+      {
+        "role": "User",
+        "text": "I am nervous about my first period. What should I know?"
+      },
+      {
+        "role": "Sakhi",
+        "text": "That is completely okay. I can explain the signs, what to keep ready, and how to stay comfortable without overwhelming you.",
+        "highlight": true
+      },
+      {
+        "role": "Sakhi",
+        "text": "If you want, I can also show a simple checklist or help you talk to a trusted adult."
+      }
+    ],
+    "quickPrompts": [
+      "What is a period?",
+      "How do I stay clean safely?",
+      "How do I talk to my mother?",
+      "What changes happen during puberty?"
+    ],
+    "journeyAudiences": [
+      {
+        "title": "First-time learner",
+        "body": "Start with simple explanations, age-appropriate terms, and a calm tone that reduces anxiety."
+      },
+      {
+        "title": "Caregiver support",
+        "body": "Get practical guidance for answering questions clearly and compassionately at home."
+      },
+      {
+        "title": "Returning learner",
+        "body": "Revisit topics, track what you have learned, and continue from the last lesson or chat."
+      }
+    ],
+    "hero": {
+      "badge": "Multilingual women's health education",
+      "title": "Support that feels warm, clear, and quietly confident.",
+      "description": "Sakhi AI helps girls and women learn about periods, hygiene, puberty, nutrition, mental wellbeing, and emergency awareness in language that feels safe and easy to trust.",
+      "ctaPrimary": "Try the chat flow",
+      "ctaSecondary": "Talk to the team"
+    },
+    "liveGuidance": {
+      "eyebrow": "Live guidance",
+      "title": "Ask softly. Learn clearly.",
+      "description": "The interface is designed to feel calm, respectful, and safe for first-time users, caregivers, and younger learners alike.",
+      "card1": {
+        "title": "Designed for trust",
+        "body": "Clear explanations, privacy-aware UX, and a tone that never feels rushed or dismissive."
+      },
+      "card2": {
+        "title": "Accessible by default",
+        "body": "Large type, gentle contrast, and layout choices that work smoothly across screen sizes."
+      }
+    },
+    "chatSection": {
+      "eyebrow": "AI chat",
+      "title": "A calm conversation that teaches without overwhelming.",
+      "description": "The first interaction should feel reassuring, especially for users who are shy, anxious, or asking for the first time.",
+      "preview": "Conversation preview"
+    },
+    "supportSection": {
+      "eyebrow": "What Sakhi AI supports",
+      "title": "A gentle foundation for the first version.",
+      "description": "The first frontend experience should make the platform feel calm, trustworthy, and ready for future learning flows."
+    },
+    "journeySection": {
+      "eyebrow": "User journey",
+      "title": "A simple path from curiosity to confidence.",
+      "description": "The navigation should help users understand where to start, how to learn, and how to return later without friction."
+    },
+    "languagesSection": {
+      "eyebrow": "Language support",
+      "title": "Multilingual by design, not as an afterthought.",
+      "description": "The app should make users feel at home in the language they choose first, while keeping content consistent and easy to extend later.",
+      "whyItMatters": "Why it matters",
+      "whyItMattersText": "Language is part of safety. When users can understand the UI immediately, they can focus on learning instead of translating.",
+      "card1": {
+        "title": "Readable on mobile",
+        "body": "Responsive sections keep text comfortable to scan even on smaller screens."
+      },
+      "card2": {
+        "title": "Extendable later",
+        "body": "The structure is ready for localized content and additional regional languages."
+      }
+    },
+    "safetySection": {
+      "eyebrow": "Safety boundaries",
+      "title": "Helpful guidance without crossing into medical advice.",
+      "description": "The interface should make the platform feel supportive while preserving clear boundaries around education and professional care."
+    }
+  },
+  "Navigation": {
+    "home": "Home",
+    "search": "Search",
+    "chat": "Chat",
+    "learn": "Learn",
+    "progress": "Progress",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "Auth": {
+    "login": {
+      "safeSpace": "Safe learning space",
+      "gentleGuidance": "Gentle guidance for girls and women",
+      "welcome": "Welcome to",
+      "sakhiAi": "Sakhi AI",
+      "description": "Sign in to continue your learning journey with Sakhi and get calm, trusted support whenever you need it.",
+      "benefits": ["Kind, private support", "Easy learning access", "Designed for girls"],
+      "emailLabel": "Email address",
+      "emailPlaceholder": "priya@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign in",
+      "newToSakhi": "New to Sakhi AI?",
+      "createAccount": "Create an account",
+      "privacyNotice": "🔒 Your data is private and never shared.",
+      "errors": {
+        "emailRequired": "Email is required.",
+        "emailInvalid": "Enter a valid email.",
+        "passwordRequired": "Password is required.",
+        "passwordShort": "Password must be at least 6 characters.",
+        "general": "Invalid email or password. Please try again."
+      }
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "Join thousands of women learning with Sakhi AI.",
+      "nameLabel": "Your name",
+      "namePlaceholder": "Priya Sharma",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "priya@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "passwordHint": "Use a mix of letters and numbers.",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "createAccount": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "privacyNotice": "🔒 Your privacy is our priority. We never share your data.",
+      "errors": {
+        "nameRequired": "Name is required.",
+        "emailRequired": "Email is required.",
+        "emailInvalid": "Enter a valid email.",
+        "passwordRequired": "Password is required.",
+        "passwordShort": "Password must be at least 8 characters.",
+        "passwordsDontMatch": "Passwords do not match.",
+        "general": "Something went wrong. Please try again."
+      }
+    },
+    "onboarding": {
+      "progress": {
+        "stepOf": "Step {step} of {total}",
+        "percentDone": "{percent}% done"
+      },
+      "step1": {
+        "title": "What should we call you?",
+        "subtitle": "Sakhi wants to greet you by name.",
+        "placeholder": "Enter your name",
+        "continueBtn": "Continue →"
+      },
+      "step2": {
+        "title": "Which age group are you in?",
+        "subtitle": "This helps Sakhi personalise your experience.",
+        "backBtn": "← Back",
+        "continueBtn": "Continue →",
+        "ageGroups": {
+          "10-13": { "label": "10–13 years", "desc": "Just starting to learn" },
+          "14-18": { "label": "14–18 years", "desc": "Growing and curious" },
+          "18+": { "label": "18+ years", "desc": "Adult learner" },
+          "caregiver": { "label": "Caregiver / Mother", "desc": "Learning for someone I care for" }
+        }
+      },
+      "step3": {
+        "title": "Choose your language",
+        "subtitle": "Sakhi speaks your language, literally.",
+        "backBtn": "← Back",
+        "getStartedBtn": "Get started 🌸"
+      }
+    }
+  }
+}

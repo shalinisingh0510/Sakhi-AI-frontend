@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -13,6 +14,7 @@ import { useAuthStore } from "@/lib/auth-store";
 export default function LoginPage() {
   const router = useRouter();
   const { login, setLoading, isLoading } = useAuthStore();
+  const t = useTranslations("Auth.login");
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
@@ -21,15 +23,15 @@ export default function LoginPage() {
     const newErrors: typeof errors = {};
 
     if (!form.email) {
-      newErrors.email = "Email is required.";
+      newErrors.email = t("errors.emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "Enter a valid email.";
+      newErrors.email = t("errors.emailInvalid");
     }
 
     if (!form.password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = t("errors.passwordRequired");
     } else if (form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
+      newErrors.password = t("errors.passwordShort");
     }
 
     return newErrors;
@@ -63,10 +65,12 @@ export default function LoginPage() {
       );
       router.push("/onboarding");
     } catch {
-      setErrors({ general: "Invalid email or password. Please try again." });
+      setErrors({ general: t("errors.general") });
       setLoading(false);
     }
   }
+
+  const benefits = t.raw("benefits");
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
@@ -80,20 +84,20 @@ export default function LoginPage() {
         <section className="space-y-6 text-center lg:text-left">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-berry shadow-soft lg:mx-0">
             <span className="h-2 w-2 rounded-full bg-rose" />
-            Safe learning space
+            {t("safeSpace")}
           </div>
 
           <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 p-6 shadow-soft backdrop-blur-sm sm:p-8 lg:p-10">
             <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex-1">
                 <p className="font-display text-sm font-bold uppercase tracking-[0.28em] text-berry/80 sm:text-base">
-                  Gentle guidance for girls and women
+                  {t("gentleGuidance")}
                 </p>
                 <h1 className="mt-3 font-display text-5xl font-black leading-[0.95] tracking-tight text-ink sm:text-6xl lg:text-7xl">
-                  Welcome to <span className="bg-gradient-to-r from-rose via-berry to-moss bg-clip-text text-transparent">Sakhi AI</span>
+                  {t("welcome")} <span className="bg-gradient-to-r from-rose via-berry to-moss bg-clip-text text-transparent">{t("sakhiAi")}</span>
                 </h1>
                 <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/65 sm:text-base lg:mx-0 lg:text-lg">
-                  Sign in to continue your learning journey with Sakhi and get calm, trusted support whenever you need it.
+                  {t("description")}
                 </p>
               </div>
 
@@ -118,11 +122,7 @@ export default function LoginPage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            {[
-              "Kind, private support",
-              "Easy learning access",
-              "Designed for girls",
-            ].map((item) => (
+            {benefits.map((item: string) => (
               <div key={item} className="rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-sm font-medium text-ink/65 shadow-soft backdrop-blur-sm">
                 {item}
               </div>
@@ -140,9 +140,9 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               <Input
-                label="Email address"
+                label={t("emailLabel")}
                 type="email"
-                placeholder="priya@example.com"
+                placeholder={t("emailPlaceholder")}
                 value={form.email}
                 onChange={(e) => setForm((current) => ({ ...current, email: e.target.value }))}
                 error={errors.email}
@@ -151,9 +151,9 @@ export default function LoginPage() {
               />
 
               <Input
-                label="Password"
+                label={t("passwordLabel")}
                 type="password"
-                placeholder="••••••••"
+                placeholder={t("passwordPlaceholder")}
                 value={form.password}
                 onChange={(e) => setForm((current) => ({ ...current, password: e.target.value }))}
                 error={errors.password}
@@ -163,25 +163,25 @@ export default function LoginPage() {
 
               <div className="flex justify-end">
                 <Link href="/forgot-password" className="text-xs text-berry hover:underline">
-                  Forgot password?
+                  {t("forgotPassword")}
                 </Link>
               </div>
 
               <Button type="submit" isLoading={isLoading} fullWidth size="lg" className="mt-2">
-                Sign in
+                {t("signIn")}
               </Button>
             </form>
 
             <p className="mt-6 text-center text-sm text-ink/60">
-              New to Sakhi AI?{" "}
+              {t("newToSakhi")}{" "}
               <Link href="/register" className="font-semibold text-berry hover:underline">
-                Create an account
+                {t("createAccount")}
               </Link>
             </p>
           </Card>
 
           <p className="mt-6 text-center text-xs text-ink/40">
-            {"🔒"} Your data is private and never shared.
+            {t("privacyNotice")}
           </p>
         </div>
       </div>
