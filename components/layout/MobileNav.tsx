@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const TABS = [
-  { href: "/dashboard", label: "Home",     icon: HomeIcon },
-  { href: "/chat",      label: "Chat",     icon: ChatIcon },
-  { href: "/learn",     label: "Learn",    icon: BookIcon },
-  { href: "/progress",  label: "Progress", icon: ChartIcon },
-  { href: "/profile",   label: "Profile",  icon: PersonIcon },
-];
+import { useTranslations } from "next-intl";
 
 export function MobileNav() {
   const pathname = usePathname();
+  const t = useTranslations("Navigation");
+
+  const TABS = [
+    { href: "/dashboard", label: t("home"),     icon: HomeIcon },
+    { href: "/chat",      label: t("chat"),     icon: ChatIcon },
+    { href: "/learn",     label: t("learn"),    icon: BookIcon },
+    { href: "/progress",  label: t("progress"), icon: ChartIcon },
+    { href: "/profile",   label: t("profile"),  icon: PersonIcon },
+  ];
 
   return (
     <nav

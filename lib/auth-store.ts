@@ -3,6 +3,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const setLocaleCookie = (locale: string) => {
+  if (typeof document !== "undefined") {
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+  }
+};
+
 export type AgeGroup = "10-13" | "14-18" | "18+" | "caregiver";
 export type SupportedLanguage =
   | "en"
@@ -54,18 +60,26 @@ export const useAuthStore = create<AuthState>()(
         set({ user: null, token: null, isAuthenticated: false }),
 
       updateUser: (updates) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...updates } : null,
-        })),
+        set((state) => {
+          if (updates.language) {
+            setLocaleCookie(updates.language);
+          }
+          return {
+            user: state.user ? { ...state.user, ...updates } : null,
+          };
+        }),
 
       setLoading: (loading) => set({ isLoading: loading }),
 
       completeOnboarding: (ageGroup, language, name) =>
-        set((state) => ({
-          user: state.user
-            ? { ...state.user, ageGroup, language, name, onboardingComplete: true }
-            : null,
-        })),
+        set((state) => {
+          setLocaleCookie(language);
+          return {
+            user: state.user
+              ? { ...state.user, ageGroup, language, name, onboardingComplete: true }
+              : null,
+          };
+        }),
     }),
     {
       name: "sakhi-auth",

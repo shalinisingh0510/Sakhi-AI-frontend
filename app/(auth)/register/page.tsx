@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
@@ -11,6 +12,7 @@ import { useAuthStore } from "@/lib/auth-store";
 export default function RegisterPage() {
   const router = useRouter();
   const { login, setLoading, isLoading } = useAuthStore();
+  const t = useTranslations("Auth.register");
 
   const [form, setForm] = useState({
     name: "",
@@ -29,13 +31,13 @@ export default function RegisterPage() {
 
   function validate() {
     const e: typeof errors = {};
-    if (!form.name.trim()) e.name = "Name is required.";
-    if (!form.email) e.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Enter a valid email.";
-    if (!form.password) e.password = "Password is required.";
-    else if (form.password.length < 8) e.password = "Password must be at least 8 characters.";
+    if (!form.name.trim()) e.name = t("errors.nameRequired");
+    if (!form.email) e.email = t("errors.emailRequired");
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = t("errors.emailInvalid");
+    if (!form.password) e.password = t("errors.passwordRequired");
+    else if (form.password.length < 8) e.password = t("errors.passwordShort");
     if (form.confirmPassword !== form.password)
-      e.confirmPassword = "Passwords do not match.";
+      e.confirmPassword = t("errors.passwordsDontMatch");
     return e;
   }
 
@@ -62,7 +64,7 @@ export default function RegisterPage() {
       );
       router.push("/onboarding");
     } catch {
-      setErrors({ general: "Something went wrong. Please try again." });
+      setErrors({ general: t("errors.general") });
       setLoading(false);
     }
   }
@@ -86,9 +88,9 @@ export default function RegisterPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-soft">
             <span className="text-2xl">🌸</span>
           </div>
-          <h1 className="font-display text-3xl font-bold text-ink">Create your account</h1>
+          <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
           <p className="mt-2 text-sm text-ink/60">
-            Join thousands of women learning with Sakhi AI.
+            {t("description")}
           </p>
         </div>
 
@@ -101,9 +103,9 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
             <Input
-              label="Your name"
+              label={t("nameLabel")}
               type="text"
-              placeholder="Priya Sharma"
+              placeholder={t("namePlaceholder")}
               error={errors.name}
               autoComplete="name"
               leftIcon={<PersonIcon />}
@@ -111,9 +113,9 @@ export default function RegisterPage() {
             />
 
             <Input
-              label="Email address"
+              label={t("emailLabel")}
               type="email"
-              placeholder="priya@example.com"
+              placeholder={t("emailPlaceholder")}
               error={errors.email}
               autoComplete="email"
               leftIcon={<EmailIcon />}
@@ -121,20 +123,20 @@ export default function RegisterPage() {
             />
 
             <Input
-              label="Password"
+              label={t("passwordLabel")}
               type="password"
-              placeholder="At least 8 characters"
+              placeholder={t("passwordPlaceholder")}
               error={errors.password}
               autoComplete="new-password"
-              hint="Use a mix of letters and numbers."
+              hint={t("passwordHint")}
               leftIcon={<LockIcon />}
               {...field("password")}
             />
 
             <Input
-              label="Confirm password"
+              label={t("confirmPasswordLabel")}
               type="password"
-              placeholder="••••••••"
+              placeholder={t("confirmPasswordPlaceholder")}
               error={errors.confirmPassword}
               autoComplete="new-password"
               leftIcon={<LockIcon />}
@@ -142,20 +144,20 @@ export default function RegisterPage() {
             />
 
             <Button type="submit" isLoading={isLoading} fullWidth size="lg" className="mt-2">
-              Create account
+              {t("createAccount")}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-ink/60">
-            Already have an account?{" "}
+            {t("alreadyHaveAccount")}{" "}
             <Link href="/login" className="font-semibold text-berry hover:underline">
-              Sign in
+              {t("signIn")}
             </Link>
           </p>
         </Card>
 
         <p className="mt-6 text-center text-xs text-ink/40">
-          🔒 Your privacy is our priority. We never share your data.
+          {t("privacyNotice")}
         </p>
       </div>
     </main>

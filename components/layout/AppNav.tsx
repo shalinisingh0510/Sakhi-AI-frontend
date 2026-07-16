@@ -1,21 +1,23 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-
-const NAV_LINKS = [
-  { href: "/dashboard", label: "Home", icon: HomeIcon },
-  { href: "/search", label: "Search", icon: SearchIcon },
-  { href: "/chat",      label: "Chat",  icon: ChatIcon },
-  { href: "/learn",     label: "Learn", icon: BookIcon },
-  { href: "/progress",  label: "Progress", icon: ChartIcon },
-];
+import { useTranslations } from "next-intl";
 
 export function AppNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const t = useTranslations("Navigation");
+
+  const NAV_LINKS = [
+    { href: "/dashboard", label: t("home"), icon: HomeIcon },
+    { href: "/search", label: t("search"), icon: SearchIcon },
+    { href: "/chat",      label: t("chat"),  icon: ChatIcon },
+    { href: "/learn",     label: t("learn"), icon: BookIcon },
+    { href: "/progress",  label: t("progress"), icon: ChartIcon },
+  ];
 
   function handleLogout() {
     logout();
@@ -27,7 +29,7 @@ export function AppNav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
         {/* Brand */}
         <Link href="/dashboard" className="flex items-center gap-2">
-          <span className="text-xl">ðŸŒ¸</span>
+          <span className="text-xl">🌸</span>
           <span className="font-display text-lg font-bold text-berry">Sakhi AI</span>
         </Link>
 
@@ -59,7 +61,7 @@ export function AppNav() {
           <Link
             href="/search"
             className="rounded-full p-2 text-ink/60 transition-all hover:bg-peach/40"
-            aria-label="Search Sakhi AI"
+            aria-label={t("search")}
           >
             <SearchIcon className="h-5 w-5" />
           </Link>
@@ -73,23 +75,23 @@ export function AppNav() {
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-xs text-white font-bold">
                 {user?.name?.[0]?.toUpperCase() ?? "S"}
               </span>
-              <span className="hidden sm:block">{user?.name ?? "Profile"}</span>
+              <span className="hidden sm:block">{user?.name ?? t("profile")}</span>
             </button>
 
             {/* Dropdown */}
             <div className="invisible absolute right-0 top-full mt-1 w-44 rounded-2xl border border-peach/60 bg-white p-1.5 shadow-soft opacity-0 transition-all group-hover:visible group-hover:opacity-100">
               <Link href="/profile" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40">
-                <PersonIcon className="h-4 w-4" /> Profile
+                <PersonIcon className="h-4 w-4" /> {t("profile")}
               </Link>
               <Link href="/settings" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40">
-                <SettingsIcon className="h-4 w-4" /> Settings
+                <SettingsIcon className="h-4 w-4" /> {t("settings")}
               </Link>
               <hr className="my-1 border-peach/50" />
               <button
                 onClick={handleLogout}
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
               >
-                <LogoutIcon className="h-4 w-4" /> Sign out
+                <LogoutIcon className="h-4 w-4" /> {t("signOut")}
               </button>
             </div>
           </div>
@@ -99,7 +101,7 @@ export function AppNav() {
   );
 }
 
-// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Icons ──────────────────────────────────────────────────────────────────
 function HomeIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
 }
