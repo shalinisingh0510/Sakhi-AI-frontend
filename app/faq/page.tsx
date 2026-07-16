@@ -226,7 +226,7 @@ export default function FAQPage() {
               Still have questions?
             </p>
             <p className="mt-3 text-sm leading-relaxed text-ink/65">
-              Can't find what you're looking for? Our support team is here to help.
+             Can&apos;t find what you&apos;re looking for? Our support team is here to help.
             </p>
             <Link
               href="/help"

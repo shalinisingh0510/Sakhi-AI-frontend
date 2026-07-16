@@ -64,15 +64,15 @@ export function useVoice(language: SupportedLanguage = "en") {
   useEffect(() => {
     // Check browser support
     if (typeof window !== "undefined") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const speechSynthesis = window.speechSynthesis;
-      
-      if (!SpeechRecognition || !speechSynthesis) {
-        setIsSupported(false);
-        return;
-      }
-
-      // Initialize speech recognition
+     const SpeechRecognition =
+  (window as Window & {
+    SpeechRecognition?: typeof window.SpeechRecognition;
+    webkitSpeechRecognition?: typeof window.SpeechRecognition;
+  }).SpeechRecognition ||
+  (window as Window & {
+    SpeechRecognition?: typeof window.SpeechRecognition;
+    webkitSpeechRecognition?: typeof window.SpeechRecognition;
+  }).webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
