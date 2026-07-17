@@ -150,7 +150,122 @@
     "progress": "Progress",
     "profile": "Profile",
     "settings": "Settings",
+    "notifications": "Notifications",
     "signOut": "Sign out"
+  },
+  "SiteNav": {
+    "brand": "WELCOME TO SAKHI AI",
+    "tagline": "Trusted health education, made calmer.",
+    "login": "Login",
+    "signUp": "Sign up"
+  },
+  "GuidedForm": {
+    "eyebrow": "Guided form",
+    "title": "Start with a gentle question.",
+    "badge": "Private preview",
+    "helperDefault": "Tell us what you want to learn so the experience can guide you with care.",
+    "helperSubmitted": "Thanks. We will use this information to prepare a gentle, relevant response flow.",
+    "nameLabel": "Your name",
+    "namePlaceholder": "Optional",
+    "languageLabel": "Preferred language",
+    "topicLabel": "Topic",
+    "topicPlaceholder": "Choose a topic",
+    "questionLabel": "Your question",
+    "questionPlaceholder": "For example: I want to understand the first signs of my period and what to keep ready.",
+    "submitBtn": "Save question preview",
+    "savedPreview": "Saved preview",
+    "savedLanguage": "Language:",
+    "savedTopic": "Topic:",
+    "savedQuestion": "Question:",
+    "topicOptions": [
+      "First period",
+      "Menstrual hygiene",
+      "Puberty changes",
+      "Nutrition",
+      "Mental wellbeing",
+      "Emergency awareness"
+    ],
+    "errors": {
+      "topicRequired": "Please choose a topic.",
+      "questionRequired": "Please write at least one question.",
+      "questionTooShort": "Please add a little more detail so we can help better."
+    }
+  },
+  "Dashboard": {
+    "greetings": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "welcomeFallback": "Welcome to Sakhi AI",
+    "hiName": "Hi, {name}!",
+    "subtitle": "Your trusted guide for women's health education.",
+    "stats": [
+      { "value": "3", "label": "Day streak 🔥" },
+      { "value": "2", "label": "Lessons done" },
+      { "value": "120", "label": "Points earned" }
+    ],
+    "quickTilesTitle": "What would you like to do?",
+    "quickTiles": [
+      {
+        "title": "Chat with Sakhi",
+        "desc": "Ask anything about health, anytime."
+      },
+      {
+        "title": "Start a Lesson",
+        "desc": "Explore health modules at your pace."
+      },
+      {
+        "title": "My Progress",
+        "desc": "See your streaks and completed topics."
+      },
+      {
+        "title": "My Profile",
+        "desc": "Update your name, language, and more."
+      }
+    ],
+    "sakhiName": "Sakhi",
+    "sakhiRole": "Your health guide",
+    "sakhiMessage": "Hello {name}! I'm here whenever you have a question - about your body, health, or anything you're curious about. There's no judgment here. 💛",
+    "sakhiMessageFallback": "there",
+    "askSakhi": "Ask Sakhi",
+    "exploreTopics": "Explore topics",
+    "topics": [
+      "Menstrual Health",
+      "Mental Wellbeing",
+      "Hygiene Basics",
+      "Nutrition & Iron",
+      "Reproductive Health",
+      "Safety & Consent"
+    ]
+  },
+  "Chat": {
+    "sakhiName": "Sakhi",
+    "status": "Always here for you",
+    "welcomeHi": "Hi {name}! I'm Sakhi.",
+    "welcomeFallback": "there",
+    "welcomeSubtitle": "Your safe space to learn about women's health. Ask me anything - no question is too small or embarrassing.",
+    "inputPlaceholder": "Ask Sakhi anything...",
+    "readAloud": "Read aloud",
+    "speaking": "Speaking...",
+    "stopListening": "Stop listening",
+    "startVoiceInput": "Start voice input",
+    "listening": "Listening...",
+    "disclaimer": "Sakhi AI is for education only. Always consult a doctor for medical advice.",
+    "quickPrompts": [
+      "What is the menstrual cycle?",
+      "Why do I get cramps?",
+      "How to practice good hygiene?",
+      "What is puberty?",
+      "Tips for mental wellbeing",
+      "What are iron-rich foods?"
+    ],
+    "demoReplies": {
+      "default": "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions - you're doing great by asking. 💛",
+      "cramp": "Menstrual cramps happen because the uterus contracts to shed its lining. This is completely normal! You can try a warm compress, gentle stretching, or staying hydrated. If the pain is very severe, it's always a good idea to speak with a doctor. 🌸",
+      "cycle": "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21-35 days. Each phase - menstrual, follicular, ovulation, and luteal - plays an important role. It's your body's natural rhythm! 💪",
+      "hygiene": "Good hygiene during your period is simple: change your pad or tampon every 4-6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself - your body is working hard! 🌿"
+    }
   },
   "Auth": {
     "login": {

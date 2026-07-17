@@ -89,11 +89,25 @@
 
 ---
 
-### Phase 3 - Voice Interaction
+### Phase 3 - Internationalisation (i18n)
 | File | What it does |
 |------|-------------|
-| `lib/use-voice.ts` | Custom React hook - Web Speech API integration for speech-to-text and text-to-speech with language support for 10 Indian languages |
-| `app/(dashboard)/chat/page.tsx` | Updated chat page - voice input button with mic icon, auto-speak Sakhi responses, read-aloud button on each Sakhi message, listening status indicator |
+| `i18n.ts` | next-intl config — reads `NEXT_LOCALE` cookie, loads locale messages |
+| `next.config.mjs` | Wrapped with `createNextIntlPlugin` |
+| `app/layout.tsx` | `NextIntlClientProvider` with locale and messages |
+| `messages/en.json` | English translation keys (source of truth) |
+| `messages/hi.json` | Hindi translations (Navigation, SiteNav, GuidedForm, Dashboard + partial) |
+| `messages/{bn,mr,ta,te,kn,gu,pa,or}.json` | Placeholder locale files (English copy until translated) |
+| `lib/auth-store.ts` | Sets `NEXT_LOCALE` cookie on language change and onboarding |
+| `app/page.tsx` | Landing page — all strings via `t()` |
+| `components/home/SiteNav.tsx` | Public nav brand, tagline, login/sign-up via `t()` |
+| `components/home/GuidedQuestionForm.tsx` | Guided form labels, errors, topics via `t()` |
+| `components/layout/AppNav.tsx` | Desktop nav links via `t()` |
+| `components/layout/MobileNav.tsx` | Mobile bottom nav via `t()` |
+| `app/(auth)/login/page.tsx` | Login page via `t()` |
+| `app/(auth)/register/page.tsx` | Register page via `t()` |
+| `app/(auth)/onboarding/page.tsx` | Onboarding steps via `t()` |
+| `app/(dashboard)/dashboard/page.tsx` | Dashboard greetings, tiles, topics via `t()` |
 
 ---
 
@@ -121,8 +135,10 @@
 | Feature | Status | What to build |
 |---------|--------|---------------|
 | `next-intl` setup | Complete | Installed and configured next-intl |
-| Translation files | Complete | Created JSON files for EN, HI, BN, MR, TA, TE, KN, GU, PA, OR |
-| Replace hardcoded strings | In Progress (Landing, Nav, Auth) | Swap all user-facing text with `t()` keys |
+| Translation files | In Progress | `en.json` complete; `hi.json` partially translated; 8 locales use English placeholders |
+| Replace hardcoded strings — Landing, Nav, Auth | Complete | Landing, SiteNav, GuidedForm, AppNav, MobileNav, login, register, onboarding |
+| Replace hardcoded strings — Dashboard | Complete | Dashboard home page internationalised |
+| Replace hardcoded strings — remaining pages | Pending | Chat, Learn, Progress, Profile, Settings, Notifications, Search, FAQ, Help |
 | Language switcher hook | Complete | Persist language in Zustand plus NEXT_LOCALE cookie |
 
 ---
@@ -172,6 +188,9 @@
 - Middleware protects all dashboard routes including /search, /faq, and /help.
 - Phase 3 remaining pages are now 100% complete.
 - Phase 3 Voice Interaction is complete with speech-to-text, text-to-speech, and language-aware voice support for 10 Indian languages.
+- Phase 3 Internationalisation is in progress: Landing, SiteNav, GuidedForm, Auth pages, AppNav, MobileNav, and Dashboard are internationalised.
+- Translation files exist for all 10 locales; Hindi has partial translations, other locales use English placeholders until translated.
+- Next i18n step: internationalise Chat, Learn, Progress, Profile, Settings, Notifications, Search, FAQ, and Help pages.
 
 ---
 
@@ -183,7 +202,7 @@ Phase 1 - Auth and State      100% complete
 Phase 2 - Core Pages          100% complete
 Phase 3 - Remaining Pages     100% complete
 Phase 3 - Voice Interaction   100% complete
-Phase 3 - Internationalisation 75% complete
+Phase 3 - Internationalisation  55% in progress
 Phase 4 - Quality and Tests   0% pending
 Phase 5 - Backend and Launch  0% pending
 ```
@@ -237,6 +256,11 @@ sakhi-ai-frontend/
 │   ├── chat-store.ts               Zustand chat store
 │   ├── use-voice.ts                Web Speech API hook for voice interaction
 │   └── api.ts                      API service module
+├── messages/
+│   ├── en.json                     English translations (source)
+│   ├── hi.json                     Hindi translations (partial)
+│   └── {bn,mr,ta,te,kn,gu,pa,or}.json  Placeholder locale files
+├── i18n.ts                         next-intl locale config
 ├── middleware.ts                   Protected routes
 ├── tailwind.config.ts              Design tokens
 ├── next.config.mjs                 Next.js config
