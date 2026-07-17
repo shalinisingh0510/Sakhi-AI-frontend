@@ -1,12 +1,37 @@
-// Base API service module for Sakhi AI
-// All backend calls go through here
+import type { User } from "./auth-store";
+import { ApiError } from "./api-config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.sakhi-ai.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.sakhi.ai";
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   token?: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  sessionId: string;
+}
+
+export interface ProgressResponse {
+  completedModules: string[];
+  streakDays: number;
+  totalPoints: number;
+}
+
+export interface LearnModule {
+  slug: string;
+  title: string;
+  desc: string;
+  lessons: number;
+  duration: string;
+  progress: number;
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
@@ -17,33 +42,37 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   };
 
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${endpoint}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new ApiError("Unable to reach the server. Check your connection.");
+  }
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: "Unknown error" }));
-    throw new Error(error.message ?? `HTTP ${res.status}`);
+    const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
+    throw new ApiError(error.message ?? `Request failed (${res.status})`, res.status);
   }
 
   return res.json() as Promise<T>;
 }
 
-// ─── Auth ────────────────────────────────────────────────────────────────────
 export const authApi = {
   login: (email: string, password: string) =>
-    request<{ user: unknown; token: string }>("/auth/login", {
+    request<AuthResponse>("/auth/login", {
       method: "POST",
       body: { email, password },
     }),
 
   register: (name: string, email: string, password: string) =>
-    request<{ user: unknown; token: string }>("/auth/register", {
+    request<AuthResponse>("/auth/register", {
       method: "POST",
       body: { name, email, password },
     }),
@@ -55,23 +84,21 @@ export const authApi = {
     }),
 };
 
-// ─── Chat ────────────────────────────────────────────────────────────────────
 export const chatApi = {
   sendMessage: (content: string, sessionId: string | null, token: string) =>
-    request<{ reply: string; sessionId: string }>("/chat/message", {
+    request<ChatResponse>("/chat/message", {
       method: "POST",
       body: { content, sessionId },
       token,
     }),
 };
 
-// ─── Learn ───────────────────────────────────────────────────────────────────
 export const learnApi = {
   getModules: (token: string) =>
-    request<{ modules: unknown[] }>("/learn/modules", { token }),
+    request<{ modules: LearnModule[] }>("/learn/modules", { token }),
 
   getModule: (slug: string, token: string) =>
-    request<{ module: unknown }>(`/learn/modules/${slug}`, { token }),
+    request<{ module: LearnModule }>(`/learn/modules/${slug}`, { token }),
 
   completeLesson: (moduleId: string, lessonId: string, token: string) =>
     request<{ progress: number }>(`/learn/modules/${moduleId}/lessons/${lessonId}/complete`, {
@@ -80,22 +107,22 @@ export const learnApi = {
     }),
 };
 
-// ─── Progress ────────────────────────────────────────────────────────────────
 export const progressApi = {
-  getProgress: (token: string) =>
-    request<{ completedModules: string[]; streakDays: number; totalPoints: number }>(
-      "/progress",
-      { token }
-    ),
+  getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
 };
 
-// ─── Profile ─────────────────────────────────────────────────────────────────
-export const profileApi = {
-  getProfile: (token: string) =>
-    request<{ user: unknown }>("/profile", { token }),
+export interface ProfileUpdates {
+  name?: string;
+  ageGroup?: User["ageGroup"];
+  language?: User["language"];
+  onboardingComplete?: boolean;
+}
 
-  updateProfile: (updates: unknown, token: string) =>
-    request<{ user: unknown }>("/profile", {
+export const profileApi = {
+  getProfile: (token: string) => request<{ user: User }>("/profile", { token }),
+
+  updateProfile: (updates: ProfileUpdates, token: string) =>
+    request<{ user: User }>("/profile", {
       method: "PATCH",
       body: updates,
       token,

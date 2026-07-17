@@ -21,6 +21,8 @@ export const metadata: Metadata = {
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
+import { SkipToMain } from '@/components/accessibility/SkipToMain';
+import { AccessibilityInit } from '@/components/accessibility/AccessibilityInit';
 
 export default async function RootLayout({
   children,
@@ -34,6 +36,8 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${display.variable} ${body.variable} bg-cream text-ink antialiased`}>
         <NextIntlClientProvider messages={messages}>
+          <AccessibilityInit />
+          <SkipToMain />
           {children}
         </NextIntlClientProvider>
       </body>

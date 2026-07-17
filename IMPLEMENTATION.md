@@ -108,6 +108,16 @@
 | `app/(auth)/register/page.tsx` | Register page via `t()` |
 | `app/(auth)/onboarding/page.tsx` | Onboarding steps via `t()` |
 | `app/(dashboard)/dashboard/page.tsx` | Dashboard greetings, tiles, topics via `t()` |
+| `app/(dashboard)/chat/page.tsx` | Chat UI, prompts, demo replies via `t()` |
+| `app/(dashboard)/learn/page.tsx` | Learn module listing via `t()` |
+| `app/(dashboard)/progress/page.tsx` | Progress stats, badges via `t()` |
+| `app/(dashboard)/profile/page.tsx` | Profile form and labels via `t()` |
+| `app/(dashboard)/settings/page.tsx` | Settings page via `t()` |
+| `app/(dashboard)/notifications/page.tsx` | Notifications center via `t()` |
+| `app/(dashboard)/search/page.tsx` | Global search via `t()` |
+| `app/faq/page.tsx` | FAQ page via `t()` |
+| `app/help/page.tsx` | Help and support via `t()` |
+| `app/(dashboard)/learn/[slug]/page.tsx` | Learn module detail via `t()` |
 
 ---
 
@@ -137,8 +147,10 @@
 | `next-intl` setup | Complete | Installed and configured next-intl |
 | Translation files | In Progress | `en.json` complete; `hi.json` partially translated; 8 locales use English placeholders |
 | Replace hardcoded strings — Landing, Nav, Auth | Complete | Landing, SiteNav, GuidedForm, AppNav, MobileNav, login, register, onboarding |
-| Replace hardcoded strings — Dashboard | Complete | Dashboard home page internationalised |
-| Replace hardcoded strings — remaining pages | Pending | Chat, Learn, Progress, Profile, Settings, Notifications, Search, FAQ, Help |
+| Replace hardcoded strings — Dashboard, Chat | Complete | Dashboard and Chat pages internationalised |
+| Replace hardcoded strings — Learn, Progress, Profile, Settings | Complete | Core dashboard pages internationalised |
+| Replace hardcoded strings — Notifications, Search, FAQ, Help, Learn detail | Complete | All remaining user-facing pages internationalised |
+| Full Hindi translation of all keys | In Progress | UI sections translated; long FAQ/help content still English in hi.json |
 | Language switcher hook | Complete | Persist language in Zustand plus NEXT_LOCALE cookie |
 
 ---
@@ -146,11 +158,17 @@
 ### Phase 4 - Quality and Accessibility
 | Feature | Status |
 |---------|--------|
-| ARIA labels on all interactive elements | Pending |
-| Keyboard navigation audit (Tab, Enter, Esc) | Pending |
-| High-contrast mode support | Pending |
+| Skip-to-main link | Complete |
+| Global focus-visible styles | Complete |
+| Reduced motion support (`prefers-reduced-motion`) | Complete |
+| High-contrast mode toggle (Settings) | Complete |
+| `prefers-contrast: more` CSS support | Complete |
+| ARIA labels on icon-only buttons (chat, nav) | Complete |
+| Keyboard-accessible profile menu (Enter, Escape) | Complete |
+| Main landmark (`#main-content`) on all page groups | Complete |
+| Button `aria-busy` during loading | Complete |
+| GitHub Actions CI (lint, typecheck, build) | Complete |
 | Screen reader testing | Pending |
-| Focus management in modals and drawers | Pending |
 | Mobile responsive review (all pages) | Pending |
 | Unit tests - Jest + React Testing Library | Pending |
 | E2E tests - Playwright | Pending |
@@ -169,7 +187,7 @@
 | Connect `profileApi.updateProfile()` | Pending | Real save in `/profile` |
 | `.env.local` configuration | Pending | `NEXT_PUBLIC_API_URL` and secrets |
 | Vercel deployment | Pending | Connect GitHub repo to Vercel |
-| GitHub Actions CI/CD | Pending | Lint, typecheck, build on pull requests |
+| GitHub Actions CI/CD | Complete | Lint, typecheck, build on push and PR |
 | Lighthouse audit | Pending | Performance, SEO, accessibility scores |
 
 ---
@@ -188,9 +206,10 @@
 - Middleware protects all dashboard routes including /search, /faq, and /help.
 - Phase 3 remaining pages are now 100% complete.
 - Phase 3 Voice Interaction is complete with speech-to-text, text-to-speech, and language-aware voice support for 10 Indian languages.
-- Phase 3 Internationalisation is in progress: Landing, SiteNav, GuidedForm, Auth pages, AppNav, MobileNav, and Dashboard are internationalised.
-- Translation files exist for all 10 locales; Hindi has partial translations, other locales use English placeholders until translated.
-- Next i18n step: internationalise Chat, Learn, Progress, Profile, Settings, Notifications, Search, FAQ, and Help pages.
+- Phase 3 Internationalisation is complete for all pages: every user-facing screen now uses `t()` keys.
+- Translation files exist for all 10 locales; Hindi has partial translations for dashboard UI, other locales use English placeholders until translated.
+- Next step: Phase 4 remaining — screen reader testing, responsive review, and automated test setup.
+- Phase 4 accessibility foundations are complete: skip link, focus styles, high contrast, keyboard nav, ARIA labels, and CI pipeline.
 
 ---
 
@@ -202,8 +221,8 @@ Phase 1 - Auth and State      100% complete
 Phase 2 - Core Pages          100% complete
 Phase 3 - Remaining Pages     100% complete
 Phase 3 - Voice Interaction   100% complete
-Phase 3 - Internationalisation  55% in progress
-Phase 4 - Quality and Tests   0% pending
+Phase 3 - Internationalisation  100% complete (keys); Hindi translation ~40%
+Phase 4 - Quality and Tests   50% in progress
 Phase 5 - Backend and Launch  0% pending
 ```
 
@@ -236,6 +255,9 @@ sakhi-ai-frontend/
 │   ├── layout.tsx                  Root layout
 │   └── page.tsx                    Landing page
 ├── components/
+│   ├── accessibility/
+│   │   ├── AccessibilityInit.tsx High contrast and reduced motion init
+│   │   └── SkipToMain.tsx          Skip-to-main link
 │   ├── home/
 │   │   ├── Badge.tsx               Complete
 │   │   ├── FlowCard.tsx            Complete

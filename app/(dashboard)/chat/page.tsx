@@ -5,12 +5,15 @@ import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { useChatStore } from "@/lib/chat-store";
 import { useVoice } from "@/lib/use-voice";
+import { chatApi } from "@/lib/api";
+import { demoDelay, isDemoMode } from "@/lib/api-config";
 import { Button } from "@/components/ui/Button";
 
 export default function ChatPage() {
-  const { user } = useAuthStore();
-  const { messages, isTyping, addMessage, setTyping } = useChatStore();
+  const { user, token } = useAuthStore();
+  const { messages, isTyping, addMessage, setTyping, sessionId, setSessionId } = useChatStore();
   const t = useTranslations("Chat");
+  const tA11y = useTranslations("Accessibility");
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -51,9 +54,23 @@ export default function ChatPage() {
     addMessage({ role: "user", content });
     setTyping(true);
 
-    await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
+    let reply: string;
+
+    try {
+      if (!isDemoMode() && token) {
+        const response = await chatApi.sendMessage(content, sessionId, token);
+        reply = response.reply;
+        setSessionId(response.sessionId);
+      } else {
+        await demoDelay(1200 + Math.random() * 800);
+        reply = getSakhiReply(content);
+      }
+    } catch {
+      await demoDelay(600);
+      reply = getSakhiReply(content);
+    }
+
     setTyping(false);
-    const reply = getSakhiReply(content);
     addMessage({ role: "sakhi", content: reply });
     speak(reply);
   }
@@ -200,6 +217,7 @@ export default function ChatPage() {
                   : "border-peach/70 bg-white text-ink/60 hover:border-berry/40 hover:text-berry"
               }`}
               title={isListening ? t("stopListening") : t("startVoiceInput")}
+              aria-label={isListening ? t("stopListening") : t("startVoiceInput")}
             >
               {isListening ? (
                 <MicOffIcon className="h-5 w-5" />
@@ -213,8 +231,9 @@ export default function ChatPage() {
             disabled={!input.trim() || isTyping}
             size="md"
             className="rounded-full px-5"
+            aria-label={tA11y("sendMessage")}
           >
-            <SendIcon className="h-4 w-4" />
+            <SendIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
         </form>
         {isListening && (

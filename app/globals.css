@@ -10,6 +10,20 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+html[data-reduced-motion] *,
+html[data-reduced-motion] *::before,
+html[data-reduced-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -28,4 +42,80 @@ body {
 ::selection {
   background: rgba(123, 62, 115, 0.16);
   color: #1f2433;
+}
+
+/* Skip link — visible on keyboard focus */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  border-radius: 9999px;
+  background: #7b3e73;
+  color: #fff9f5;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(31, 36, 51, 0.15);
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid #1f2433;
+  outline-offset: 2px;
+}
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Global focus ring for interactive elements */
+:focus-visible {
+  outline: 2px solid #7b3e73;
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+html[data-high-contrast] body {
+  background: #ffffff;
+}
+
+html[data-high-contrast] {
+  --hc-border: #1f2433;
+}
+
+html[data-high-contrast] .border-peach\/60,
+html[data-high-contrast] .border-peach\/70,
+html[data-high-contrast] .border-berry\/10,
+html[data-high-contrast] .border-berry\/20 {
+  border-color: var(--hc-border) !important;
+}
+
+html[data-high-contrast] .text-ink\/60,
+html[data-high-contrast] .text-ink\/65,
+html[data-high-contrast] .text-ink\/70 {
+  color: #1f2433 !important;
+}
+
+html[data-high-contrast] .text-ink\/50,
+html[data-high-contrast] .text-ink\/55,
+html[data-high-contrast] .text-ink\/40,
+html[data-high-contrast] .text-ink\/30 {
+  color: #333333 !important;
+}
+
+@media (prefers-contrast: more) {
+  body {
+    background: #ffffff;
+  }
 }
