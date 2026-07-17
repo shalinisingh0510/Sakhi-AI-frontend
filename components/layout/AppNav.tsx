@@ -65,7 +65,7 @@ export function AppNav() {
           >
             <SearchIcon className="h-5 w-5" />
           </Link>
-          <Link href="/notifications" className="relative rounded-full p-2 text-ink/60 hover:bg-peach/40 transition-all" aria-label="Notifications">
+          <Link href="/notifications" className="relative rounded-full p-2 text-ink/60 hover:bg-peach/40 transition-all" aria-label={t("notifications")}>
             <BellIcon className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose" />
           </Link>
