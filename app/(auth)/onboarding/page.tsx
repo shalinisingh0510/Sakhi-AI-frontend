@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { profileApi } from "@/lib/api";
+import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore, type AgeGroup, type SupportedLanguage } from "@/lib/auth-store";
 
 const AGE_GROUPS_KEYS: { value: AgeGroup; emoji: string }[] = [
@@ -31,7 +33,7 @@ const STEPS = 3;
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { user, completeOnboarding } = useAuthStore();
+  const { user, token, completeOnboarding } = useAuthStore();
   const t = useTranslations("Auth.onboarding");
 
   const [step, setStep] = useState(1);
@@ -43,9 +45,32 @@ export default function OnboardingPage() {
   async function handleFinish() {
     if (!selectedAge) return;
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    completeOnboarding(selectedAge as AgeGroup, selectedLang, name);
-    router.push("/dashboard");
+
+    try {
+      if (!isDemoMode() && token) {
+        const { user: updated } = await profileApi.updateProfile(
+          {
+            name,
+            ageGroup: selectedAge as AgeGroup,
+            language: selectedLang,
+            onboardingComplete: true,
+          },
+          token
+        );
+        const normalized = normalizeUser(updated, user?.email);
+        completeOnboarding(normalized.ageGroup, normalized.language, normalized.name);
+      } else {
+        await demoDelay(800);
+        completeOnboarding(selectedAge as AgeGroup, selectedLang, name);
+      }
+      router.push("/dashboard");
+    } catch {
+      await demoDelay(400);
+      completeOnboarding(selectedAge as AgeGroup, selectedLang, name);
+      router.push("/dashboard");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

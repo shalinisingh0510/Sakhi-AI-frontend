@@ -9,6 +9,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { authApi } from "@/lib/api";
+import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
 
 export default function LoginPage() {
@@ -50,20 +52,27 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Demo login - replace with authApi.login() when backend is ready
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      login(
-        {
-          id: "demo-1",
-          name: "Priya",
-          email: form.email,
-          ageGroup: "18+",
-          language: "en",
-          onboardingComplete: false,
-        },
-        "demo-token-123"
-      );
-      router.push("/onboarding");
+      if (isDemoMode()) {
+        await demoDelay(1200);
+        login(
+          {
+            id: "demo-1",
+            name: "Priya",
+            email: form.email,
+            ageGroup: "18+",
+            language: "en",
+            onboardingComplete: false,
+          },
+          "demo-token-123"
+        );
+        router.push("/onboarding");
+        return;
+      }
+
+      const { user, token } = await authApi.login(form.email, form.password);
+      const normalized = normalizeUser(user, form.email);
+      login(normalized, token);
+      router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
     } catch {
       setErrors({ general: t("errors.general") });
       setLoading(false);

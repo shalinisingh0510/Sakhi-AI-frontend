@@ -153,6 +153,16 @@
     "notifications": "Notifications",
     "signOut": "Sign out"
   },
+  "Accessibility": {
+    "skipToMain": "Skip to main content",
+    "profileMenu": "Profile menu",
+    "closeMenu": "Close menu",
+    "sendMessage": "Send message",
+    "loading": "Loading",
+    "highContrast": "High contrast mode",
+    "highContrastDesc": "Increase text and border contrast for easier reading.",
+    "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
   "SiteNav": {
     "brand": "WELCOME TO SAKHI AI",
     "tagline": "Trusted health education, made calmer.",
@@ -266,6 +276,539 @@
       "cycle": "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21-35 days. Each phase - menstrual, follicular, ovulation, and luteal - plays an important role. It's your body's natural rhythm! 💪",
       "hygiene": "Good hygiene during your period is simple: change your pad or tampon every 4-6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself - your body is working hard! 🌿"
     }
+  },
+  "Learn": {
+    "title": "Learn with Sakhi 📖",
+    "progressSummary": "{completed} of {total} modules completed · At your own pace, always.",
+    "done": "✓ Done",
+    "inProgress": "In progress",
+    "lessonsDuration": "{lessons} lessons · {duration}",
+    "modules": [
+      {
+        "slug": "menstrual-health",
+        "title": "Menstrual Health",
+        "desc": "Understand your cycle, manage symptoms, and feel confident.",
+        "duration": "18 min",
+        "progress": 33
+      },
+      {
+        "slug": "puberty-basics",
+        "title": "Puberty Basics",
+        "desc": "Learn about the physical and emotional changes of puberty.",
+        "duration": "15 min",
+        "progress": 0
+      },
+      {
+        "slug": "personal-hygiene",
+        "title": "Personal Hygiene",
+        "desc": "Simple daily habits to stay clean, healthy, and confident.",
+        "duration": "12 min",
+        "progress": 100
+      },
+      {
+        "slug": "mental-wellbeing",
+        "title": "Mental Wellbeing",
+        "desc": "Manage emotions, stress, and build positive self-esteem.",
+        "duration": "22 min",
+        "progress": 0
+      },
+      {
+        "slug": "nutrition-health",
+        "title": "Nutrition & Health",
+        "desc": "Iron, calcium, and the nutrients your body needs to thrive.",
+        "duration": "16 min",
+        "progress": 0
+      },
+      {
+        "slug": "safety-consent",
+        "title": "Safety & Consent",
+        "desc": "Know your rights, understand consent, and stay safe.",
+        "duration": "20 min",
+        "progress": 0
+      }
+    ],
+    "lessonCounts": {
+      "menstrual-health": 6,
+      "puberty-basics": 5,
+      "personal-hygiene": 4,
+      "mental-wellbeing": 7,
+      "nutrition-health": 5,
+      "safety-consent": 6
+    }
+  },
+  "Progress": {
+    "title": "My Progress 📊",
+    "subtitle": "Keep going — every lesson counts!",
+    "stats": [
+      { "label": "Day streak", "emoji": "🔥" },
+      { "label": "Modules done", "emoji": "📖" },
+      { "label": "Points", "emoji": "⭐" }
+    ],
+    "moduleProgressTitle": "Module Progress",
+    "badgesTitle": "Badges Earned 🏅",
+    "modules": [
+      { "title": "Personal Hygiene", "pct": 100 },
+      { "title": "Menstrual Health", "pct": 33 }
+    ],
+    "badges": [
+      { "label": "First Step", "desc": "Completed your first lesson" },
+      { "label": "On Fire", "desc": "3-day learning streak" },
+      { "label": "Hygiene Hero", "desc": "Finished Hygiene module" }
+    ],
+    "demoValues": {
+      "streak": 3,
+      "modulesCompleted": 1,
+      "totalPoints": 120
+    }
+  },
+  "Settings": {
+    "title": "Settings ⚙️",
+    "subtitle": "Customise your Sakhi AI experience.",
+    "saved": "✓ Settings saved!",
+    "languageTitle": "Language",
+    "languageDesc": "Choose the language Sakhi talks to you in.",
+    "saveLanguage": "Save language",
+    "notificationsTitle": "Notifications",
+    "notificationsDesc": "Get gentle reminders to continue learning.",
+    "dailyReminder": "Daily learning reminder",
+    "dailyReminderDesc": "A soft nudge to keep your streak going.",
+    "accountTitle": "Account",
+    "accountEmail": "Account email",
+    "signOut": "Sign out",
+    "highContrastTitle": "Display",
+    "highContrastDesc": "Increase text and border contrast for easier reading.",
+    "highContrastLabel": "High contrast mode",
+    "notificationsSwitchLabel": "Toggle daily learning reminder"
+  },
+  "Profile": {
+    "title": "My Profile 👤",
+    "subtitle": "Manage your personal information and preferences.",
+    "editTitle": "Edit Profile",
+    "saved": "✓ Profile updated successfully!",
+    "displayName": "Display name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email address",
+    "emailHint": "Email cannot be changed.",
+    "saveChanges": "Save changes",
+    "ageGroup": "Age group",
+    "language": "Language",
+    "ageGroups": {
+      "10-13": "10–13 years",
+      "14-18": "14–18 years",
+      "18+": "18+ years",
+      "caregiver": "Caregiver / Mother"
+    }
+  },
+  "Notifications": {
+    "badge": "Notifications center",
+    "title": "Stay on top of lessons, reminders, and safety updates.",
+    "subtitle": "This is your single place for new lesson prompts, Sakhi replies, progress updates, and account messages.",
+    "unread": "Unread",
+    "lessonItems": "Lesson items",
+    "safetyAlerts": "Safety alerts",
+    "markAllRead": "Mark all as read",
+    "clearRead": "Clear read items",
+    "openChat": "Open Sakhi chat",
+    "emptyTitle": "You are all caught up.",
+    "emptyDesc": "There are no notifications in this filter right now. Check lessons, chat replies, or safety updates later.",
+    "exploreLessons": "Explore lessons",
+    "new": "New",
+    "markRead": "Mark read",
+    "overviewTitle": "Quick overview",
+    "overviewUnread": "Unread items",
+    "overviewFocus": "Current focus",
+    "overviewFocusDesc": "Lessons, chat replies, and safety reminders",
+    "shortcutsTitle": "Shortcuts",
+    "shortcutLearn": "Continue learning",
+    "shortcutProgress": "Review progress",
+    "shortcutHelp": "Get support",
+    "safetyTitle": "Safety note",
+    "safetyDesc": "Sensitive health information should stay private. If you are using a shared device, clear your browser history after reading.",
+    "filters": {
+      "all": "All",
+      "updates": "Updates",
+      "lessons": "Lessons",
+      "chat": "Chat",
+      "safety": "Safety",
+      "account": "Account"
+    },
+    "items": [
+      {
+        "id": "lesson-reminder",
+        "category": "lessons",
+        "title": "New lesson ready: Menstrual Health",
+        "message": "Continue where you left off and finish the next short lesson in under 5 minutes.",
+        "time": "2h ago",
+        "cta": "Continue learning",
+        "href": "/learn/menstrual-health"
+      },
+      {
+        "id": "chat-response",
+        "category": "chat",
+        "title": "Sakhi replied to your question",
+        "message": "A gentle follow-up answer is waiting in your chat history with a summary and next steps.",
+        "time": "5h ago",
+        "cta": "Open chat",
+        "href": "/chat"
+      },
+      {
+        "id": "streak-update",
+        "category": "updates",
+        "title": "Your 3 day streak is growing",
+        "message": "You earned 40 points for staying consistent with your learning journey this week.",
+        "time": "Yesterday",
+        "cta": "View progress",
+        "href": "/progress"
+      },
+      {
+        "id": "safety-tip",
+        "category": "safety",
+        "title": "Safety reminder for private browsing",
+        "message": "Use a personal device and clear history after reading sensitive topics when you need extra privacy.",
+        "time": "Yesterday",
+        "cta": "Read help tips",
+        "href": "/help"
+      },
+      {
+        "id": "account-update",
+        "category": "account",
+        "title": "Profile preferences saved",
+        "message": "Your language preference and profile settings are synced across your current session.",
+        "time": "2 days ago",
+        "cta": "Review profile",
+        "href": "/profile"
+      }
+    ]
+  },
+  "Search": {
+    "badge": "Search Sakhi AI",
+    "title": "Find the right support, lesson, or tip in seconds.",
+    "subtitle": "Search across lessons, follow-up guidance, wellbeing check-ins, and safety resources. We keep it calm, simple, and easy to revisit.",
+    "stats": [
+      { "value": "6", "label": "Topics" },
+      { "value": "3", "label": "Support routes" },
+      { "value": "1", "label": "Search box" }
+    ],
+    "inputLabel": "Search",
+    "inputPlaceholder": "Try menstrual cycle, cramps, hygiene, safety, or chat",
+    "inputHint": "Search works across learning topics and support actions.",
+    "results": "Results",
+    "matchesFor": "{count} matches for \"{query}\"",
+    "matchesBrowse": "{count} matches ready to browse",
+    "clearFilters": "Clear filters",
+    "noMatchesTitle": "No matches yet.",
+    "noMatchesDesc": "Try a different topic, or jump straight into chat, lessons, or progress.",
+    "openChat": "Open Sakhi chat",
+    "browseLessons": "Browse lessons",
+    "quickSearchesTitle": "Quick searches",
+    "quickActionsTitle": "Quick actions",
+    "searchTipTitle": "Search tip",
+    "searchTipDesc": "You can search for a health topic, a lesson title, or a support action like chat, progress, and safety.",
+    "quickSearches": ["Menstrual cycle", "Cramps", "Hygiene tips", "Puberty changes", "Consent", "Ask Sakhi"],
+    "quickActions": [
+      { "href": "/chat", "label": "Ask Sakhi a question" },
+      { "href": "/learn", "label": "Continue learning" },
+      { "href": "/progress", "label": "Review progress" },
+      { "href": "/learn/safety-consent", "label": "Safety resources" }
+    ],
+    "filters": {
+      "all": "All",
+      "modules": "Modules",
+      "lessons": "Lessons",
+      "support": "Support",
+      "safety": "Safety"
+    },
+    "categoryLabels": {
+      "modules": "Module",
+      "lessons": "Lesson",
+      "support": "Support",
+      "safety": "Safety"
+    },
+    "items": [
+      {
+        "id": "menstrual-health",
+        "title": "Menstrual Health",
+        "description": "Understand your cycle, track symptoms, and feel more confident each month.",
+        "href": "/learn/menstrual-health",
+        "category": "modules",
+        "tags": ["cycle", "period", "tracking"]
+      },
+      {
+        "id": "puberty-basics",
+        "title": "Puberty Basics",
+        "description": "Learn about the body and emotional changes that can happen during puberty.",
+        "href": "/learn/puberty-basics",
+        "category": "modules",
+        "tags": ["growth", "changes", "body"]
+      },
+      {
+        "id": "personal-hygiene",
+        "title": "Personal Hygiene",
+        "description": "Simple daily habits to stay clean, healthy, and comfortable at school or at home.",
+        "href": "/learn/personal-hygiene",
+        "category": "lessons",
+        "tags": ["hygiene", "routine", "care"]
+      },
+      {
+        "id": "cramps-help",
+        "title": "Why cramps happen",
+        "description": "A gentle explanation of period cramps and what can help you feel better.",
+        "href": "/chat",
+        "category": "support",
+        "tags": ["cramps", "pain", "chat"]
+      },
+      {
+        "id": "nutrition-health",
+        "title": "Nutrition & Health",
+        "description": "Find iron-rich foods, calcium tips, and balanced meal ideas to support your body.",
+        "href": "/learn/nutrition-health",
+        "category": "modules",
+        "tags": ["iron", "food", "calcium"]
+      },
+      {
+        "id": "safety-consent",
+        "title": "Safety & Consent",
+        "description": "Know your rights, understand consent, and find help when you need it.",
+        "href": "/learn/safety-consent",
+        "category": "safety",
+        "tags": ["safety", "boundaries", "consent"]
+      },
+      {
+        "id": "mental-wellbeing",
+        "title": "Mental wellbeing check-in",
+        "description": "Use Sakhi for a calm conversation when you feel stressed, worried, or overwhelmed.",
+        "href": "/chat",
+        "category": "support",
+        "tags": ["stress", "feelings", "chat"]
+      },
+      {
+        "id": "progress-review",
+        "title": "Your learning progress",
+        "description": "See streaks, points, and badges so you know what you have already completed.",
+        "href": "/progress",
+        "category": "lessons",
+        "tags": ["streak", "points", "badges"]
+      }
+    ]
+  },
+  "FAQ": {
+    "badge": "FAQ",
+    "title": "Frequently asked questions",
+    "subtitle": "Find answers about Sakhi AI, health topics, safety, account settings, and technical support.",
+    "emptyTitle": "No FAQs found.",
+    "emptyDesc": "Try selecting a different category or check back later.",
+    "quickLinksTitle": "Quick links",
+    "browseLessons": "Browse lessons",
+    "askSakhi": "Ask Sakhi",
+    "getHelp": "Get help",
+    "stillQuestionsTitle": "Still have questions?",
+    "stillQuestionsDesc": "Can't find what you're looking for? Our support team is here to help.",
+    "contactSupport": "Contact support",
+    "safetyTitle": "Safety reminder",
+    "safetyDesc": "For medical emergencies, always contact emergency services or visit a hospital immediately.",
+    "filters": {
+      "all": "All",
+      "general": "General",
+      "health": "Health",
+      "safety": "Safety",
+      "account": "Account",
+      "technical": "Technical"
+    },
+    "items": [
+      {
+        "id": "what-is-sakhi",
+        "category": "general",
+        "question": "What is Sakhi AI?",
+        "answer": "Sakhi AI is a multilingual women's health education platform designed to provide safe, accurate, and culturally sensitive information about periods, hygiene, puberty, nutrition, mental wellbeing, and more. It's like having a trusted elder sister who explains things without judgment."
+      },
+      {
+        "id": "is-medical-advice",
+        "category": "health",
+        "question": "Is Sakhi AI a substitute for medical advice?",
+        "answer": "No. Sakhi AI is for educational purposes only. While we provide accurate health information, we cannot replace professional medical advice. Always consult a doctor or healthcare provider for medical concerns, especially for persistent symptoms or emergencies."
+      },
+      {
+        "id": "age-appropriate",
+        "category": "general",
+        "question": "What age group is Sakhi AI for?",
+        "answer": "Sakhi AI is designed for girls (10-13 years), teenagers (14-18 years), women (18+), mothers, and caregivers. The content adapts to different age groups, using age-appropriate language and explanations."
+      },
+      {
+        "id": "languages-supported",
+        "category": "general",
+        "question": "What languages are supported?",
+        "answer": "Currently, Sakhi AI supports English, Hindi, Bengali, Marathi, Tamil, Telugu, Kannada, Gujarati, Punjabi, and Odia. We're continuously working to add more regional languages to make health education accessible to everyone."
+      },
+      {
+        "id": "privacy-data",
+        "category": "safety",
+        "question": "Is my health information private?",
+        "answer": "Yes, your privacy is very important to us. We do not share your personal health information with third parties. We recommend using a personal device and clearing browser history after reading sensitive topics, especially if you use a shared device."
+      },
+      {
+        "id": "first-period",
+        "category": "health",
+        "question": "What should I know about my first period?",
+        "answer": "Your first period is a normal part of growing up. It usually happens between ages 10-15, but everyone is different. Signs include breast development, vaginal discharge, and growth spurts. Keep a small kit with pads, clean underwear, and wipes. Talk to a trusted adult if you have questions."
+      },
+      {
+        "id": "account-delete",
+        "category": "account",
+        "question": "How do I delete my account?",
+        "answer": "To delete your account, go to Settings and look for the account management options. You can also contact our support team at hello@sakhi.ai for assistance. Note that deleting your account will remove your learning progress and chat history."
+      },
+      {
+        "id": "offline-access",
+        "category": "technical",
+        "question": "Can I use Sakhi AI offline?",
+        "answer": "Currently, Sakhi AI requires an internet connection to access lessons and chat features. We're working on offline capabilities for future updates so you can learn even without connectivity."
+      },
+      {
+        "id": "safety-emergency",
+        "category": "safety",
+        "question": "What if I have a medical emergency?",
+        "answer": "If you have a medical emergency, please contact emergency services immediately or go to the nearest hospital. Sakhi AI is not equipped to handle emergencies. For urgent health concerns, always seek professional medical help right away."
+      },
+      {
+        "id": "content-accuracy",
+        "category": "health",
+        "question": "How accurate is the health information?",
+        "answer": "Our content is reviewed by health educators and follows WHO guidelines for women's health education. We prioritize scientific accuracy while keeping explanations simple and easy to understand. We update our content regularly based on new health guidelines."
+      },
+      {
+        "id": "parental-guidance",
+        "category": "general",
+        "question": "Can parents use Sakhi AI?",
+        "answer": "Yes, parents and caregivers are welcome to use Sakhi AI to learn how to have conversations about health with their children. We provide guidance on answering questions clearly and compassionately, creating a supportive environment at home."
+      },
+      {
+        "id": "report-issue",
+        "category": "technical",
+        "question": "How do I report a technical issue?",
+        "answer": "If you encounter any technical problems, please contact our support team at hello@sakhi.ai with details about the issue, including what you were trying to do and any error messages you saw. We'll work to resolve it as quickly as possible."
+      }
+    ]
+  },
+  "Help": {
+    "badge": "Help & Support",
+    "title": "How can we help you?",
+    "subtitle": "Find answers, get support, and connect with our team. We're here to make your experience with Sakhi AI as smooth as possible.",
+    "contactTitle": "Contact Support",
+    "contactDesc": "Choose the best way to reach us based on your needs.",
+    "topicsTitle": "Help Topics",
+    "quickLinksTitle": "Quick links",
+    "faq": "FAQ",
+    "browseLessons": "Browse lessons",
+    "askSakhi": "Ask Sakhi",
+    "resourcesTitle": "Resources",
+    "emergencyTitle": "Emergency help",
+    "emergencyDesc": "If you're in immediate danger or having a medical emergency, please contact emergency services right away.",
+    "emergencyNumber": "Emergency: 112 / 911",
+    "emergencyCall": "Call emergency services immediately",
+    "feedbackTitle": "Feedback",
+    "feedbackDesc": "Help us improve Sakhi AI by sharing your feedback and suggestions.",
+    "sendFeedback": "Send feedback",
+    "channels": [
+      {
+        "id": "email",
+        "title": "Email Support",
+        "description": "Send us a detailed message and we'll respond within 24 hours.",
+        "contact": "hello@sakhi.ai"
+      },
+      {
+        "id": "chat",
+        "title": "In-App Chat",
+        "description": "Chat with Sakhi AI for quick questions about health topics.",
+        "contact": "Available 24/7"
+      },
+      {
+        "id": "community",
+        "title": "Community Forum",
+        "description": "Connect with other users, share experiences, and find support.",
+        "contact": "Coming soon"
+      }
+    ],
+    "topics": [
+      {
+        "id": "getting-started",
+        "title": "Getting Started",
+        "description": "Learn how to create an account, complete onboarding, and navigate the app.",
+        "items": ["How to create an account", "Completing your profile", "Choosing your language", "Understanding the dashboard"]
+      },
+      {
+        "id": "learning",
+        "title": "Learning & Lessons",
+        "description": "Find help with health modules, tracking progress, and accessing content.",
+        "items": ["Browsing health modules", "Starting a lesson", "Tracking your progress", "Resuming where you left off"]
+      },
+      {
+        "id": "chat",
+        "title": "Chat with Sakhi",
+        "description": "Get the most out of your conversations with Sakhi AI.",
+        "items": ["Asking effective questions", "Understanding Sakhi's responses", "Using quick prompts", "Chat history and privacy"]
+      },
+      {
+        "id": "account",
+        "title": "Account & Settings",
+        "description": "Manage your profile, preferences, and privacy settings.",
+        "items": ["Updating your profile", "Changing language preference", "Notification settings", "Deleting your account"]
+      },
+      {
+        "id": "safety",
+        "title": "Safety & Privacy",
+        "description": "Important information about keeping your information safe.",
+        "items": ["Privacy policy overview", "Data security measures", "Safe browsing tips", "Reporting concerns"]
+      },
+      {
+        "id": "technical",
+        "title": "Technical Support",
+        "description": "Troubleshoot common issues and find technical help.",
+        "items": ["App not loading properly", "Login problems", "Sync issues across devices", "Reporting bugs"]
+      }
+    ],
+    "resources": [
+      { "id": "user-guide", "title": "User Guide", "description": "Complete guide to using Sakhi AI effectively.", "href": "/learn" },
+      { "id": "health-resources", "title": "Health Resources", "description": "Curated list of trusted health information sources.", "href": "/learn" },
+      { "id": "for-parents", "title": "For Parents & Caregivers", "description": "Guidance for supporting young users.", "href": "/learn" }
+    ]
+  },
+  "LearnDetail": {
+    "backToModules": "← Back to modules",
+    "lessonsCompleted": "{completed} of {total} lessons completed",
+    "continueLearning": "Continue learning",
+    "startLesson": "Start lesson · {duration}",
+    "defaultTitle": "Health Module",
+    "defaultDesc": "Learn about this important health topic at your own pace.",
+    "modules": {
+      "menstrual-health": {
+        "title": "Menstrual Health",
+        "desc": "Understand your cycle, manage symptoms, and feel confident every month.",
+        "lessons": [
+          { "id": 1, "title": "What is the menstrual cycle?", "duration": "3 min", "done": true },
+          { "id": 2, "title": "The 4 phases of your cycle", "duration": "4 min", "done": true },
+          { "id": 3, "title": "Why do cramps happen?", "duration": "3 min", "done": false },
+          { "id": 4, "title": "Choosing the right period product", "duration": "4 min", "done": false },
+          { "id": 5, "title": "Tracking your period", "duration": "3 min", "done": false },
+          { "id": 6, "title": "When to see a doctor", "duration": "2 min", "done": false }
+        ]
+      },
+      "personal-hygiene": {
+        "title": "Personal Hygiene",
+        "desc": "Simple daily habits to stay clean, healthy, and confident.",
+        "lessons": [
+          { "id": 1, "title": "Daily hygiene basics", "duration": "3 min", "done": true },
+          { "id": 2, "title": "Period hygiene tips", "duration": "3 min", "done": true },
+          { "id": 3, "title": "Skin and hair care", "duration": "3 min", "done": true },
+          { "id": 4, "title": "Building a hygiene routine", "duration": "3 min", "done": true }
+        ]
+      }
+    },
+    "defaultLessons": [
+      { "id": 1, "title": "Introduction", "duration": "3 min", "done": false },
+      { "id": 2, "title": "Key concepts", "duration": "4 min", "done": false },
+      { "id": 3, "title": "Practical tips", "duration": "3 min", "done": false },
+      { "id": 4, "title": "Quiz", "duration": "2 min", "done": false }
+    ]
   },
   "Auth": {
     "login": {

@@ -7,6 +7,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import { authApi } from "@/lib/api";
+import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
 
 export default function RegisterPage() {
@@ -49,19 +51,26 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // Demo register — replace with authApi.register() when backend is ready
-      await new Promise((r) => setTimeout(r, 1200));
-      login(
-        {
-          id: "demo-1",
-          name: form.name,
-          email: form.email,
-          ageGroup: "18+",
-          language: "en",
-          onboardingComplete: false,
-        },
-        "demo-token-123"
-      );
+      if (isDemoMode()) {
+        await demoDelay(1200);
+        login(
+          {
+            id: "demo-1",
+            name: form.name,
+            email: form.email,
+            ageGroup: "18+",
+            language: "en",
+            onboardingComplete: false,
+          },
+          "demo-token-123"
+        );
+        router.push("/onboarding");
+        return;
+      }
+
+      const { user, token } = await authApi.register(form.name, form.email, form.password);
+      const normalized = normalizeUser(user, form.email);
+      login({ ...normalized, name: form.name }, token);
       router.push("/onboarding");
     } catch {
       setErrors({ general: t("errors.general") });

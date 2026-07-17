@@ -1,52 +1,44 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
 
-const COMPLETED_MODULES = [
-  { emoji: "🌿", title: "Personal Hygiene", pct: 100 },
-  { emoji: "🩸", title: "Menstrual Health", pct: 33 },
-];
+const MODULE_EMOJIS = ["🌿", "🩸"];
 
-const BADGES = [
-  { emoji: "🌸", label: "First Step", desc: "Completed your first lesson" },
-  { emoji: "🔥", label: "On Fire", desc: "3-day learning streak" },
-  { emoji: "💧", label: "Hygiene Hero", desc: "Finished Hygiene module" },
-];
+const BADGE_EMOJIS = ["🌸", "🔥", "💧"];
 
 export default function ProgressPage() {
-  const streak = 3;
-  const totalPoints = 120;
-  const modulesCompleted = 1;
+  const t = useTranslations("Progress");
+  const stats = t.raw("stats") as { label: string; emoji: string }[];
+  const modules = t.raw("modules") as { title: string; pct: number }[];
+  const badges = t.raw("badges") as { label: string; desc: string }[];
+  const demo = t.raw("demoValues") as { streak: number; modulesCompleted: number; totalPoints: number };
+
+  const statValues = [demo.streak, demo.modulesCompleted, demo.totalPoints];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-8">
-      <h1 className="font-display text-3xl font-bold text-ink mb-2">My Progress 📊</h1>
-      <p className="text-sm text-ink/60 mb-8">Keep going — every lesson counts!</p>
+      <h1 className="mb-2 font-display text-3xl font-bold text-ink">{t("title")}</h1>
+      <p className="mb-8 text-sm text-ink/60">{t("subtitle")}</p>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {[
-          { value: `${streak}`, label: "Day streak", emoji: "🔥" },
-          { value: `${modulesCompleted}`, label: "Modules done", emoji: "📖" },
-          { value: `${totalPoints}`, label: "Points", emoji: "⭐" },
-        ].map((s) => (
+      <div className="mb-8 grid grid-cols-3 gap-4">
+        {stats.map((s, i) => (
           <Card key={s.label} padding="sm" className="text-center">
             <p className="text-2xl">{s.emoji}</p>
-            <p className="font-display text-2xl font-bold text-berry mt-1">{s.value}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-berry">{statValues[i]}</p>
             <p className="text-xs text-ink/60">{s.label}</p>
           </Card>
         ))}
       </div>
 
-      {/* Modules progress */}
       <section className="mb-8">
-        <h2 className="text-base font-semibold text-ink mb-4">Module Progress</h2>
+        <h2 className="mb-4 text-base font-semibold text-ink">{t("moduleProgressTitle")}</h2>
         <div className="flex flex-col gap-3">
-          {COMPLETED_MODULES.map((m) => (
+          {modules.map((m, i) => (
             <Card key={m.title} padding="sm">
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{m.emoji}</span>
+                  <span className="text-xl">{MODULE_EMOJIS[i] ?? "📖"}</span>
                   <span className="text-sm font-medium text-ink">{m.title}</span>
                 </div>
                 <span className="text-xs font-semibold text-berry">{m.pct}%</span>
@@ -62,15 +54,14 @@ export default function ProgressPage() {
         </div>
       </section>
 
-      {/* Badges */}
       <section>
-        <h2 className="text-base font-semibold text-ink mb-4">Badges Earned 🏅</h2>
+        <h2 className="mb-4 text-base font-semibold text-ink">{t("badgesTitle")}</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {BADGES.map((b) => (
-            <Card key={b.label} padding="sm" className="flex items-center gap-3 sm:flex-col sm:text-center sm:items-center">
-              <span className="text-3xl">{b.emoji}</span>
+          {badges.map((b, i) => (
+            <Card key={b.label} padding="sm" className="flex items-center gap-3 sm:flex-col sm:items-center sm:text-center">
+              <span className="text-3xl">{BADGE_EMOJIS[i]}</span>
               <div>
-                <p className="font-semibold text-ink text-sm">{b.label}</p>
+                <p className="text-sm font-semibold text-ink">{b.label}</p>
                 <p className="text-xs text-ink/50">{b.desc}</p>
               </div>
             </Card>

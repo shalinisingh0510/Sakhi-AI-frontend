@@ -1,13 +1,31 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { profileApi } from "@/lib/api";
+import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
+
+const LANG_LABELS: Record<string, string> = {
+  en: "English",
+  hi: "हिन्दी",
+  bn: "বাংলা",
+  mr: "मराठी",
+  ta: "தமிழ்",
+  te: "తెలుగు",
+  kn: "ಕನ್ನಡ",
+  gu: "ગુજરાતી",
+  pa: "ਪੰਜਾਬੀ",
+  or: "ଓଡ଼ିଆ",
+};
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuthStore();
+  const { user, token, updateUser } = useAuthStore();
+  const t = useTranslations("Profile");
+
   const [form, setForm] = useState({ name: user?.name ?? "" });
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -22,73 +40,60 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 3000);
   }
 
-  const AGE_LABELS: Record<string, string> = {
-    "10-13": "10–13 years",
-    "14-18": "14–18 years",
-    "18+": "18+ years",
-    caregiver: "Caregiver / Mother",
-  };
-
-  const LANG_LABELS: Record<string, string> = {
-    en: "English", hi: "हिन्दी", bn: "বাংলা", mr: "मराठी",
-    ta: "தமிழ்", te: "తెలుగు", kn: "ಕನ್ನಡ", gu: "ગુજરાતી",
-    pa: "ਪੰਜਾਬੀ", or: "ଓଡ଼ିଆ",
-  };
+  const ageGroup = user?.ageGroup ?? "";
+  const ageLabel = ageGroup ? t(`ageGroups.${ageGroup}`) : "—";
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 md:px-8">
-      <h1 className="font-display text-3xl font-bold text-ink mb-2">My Profile 👤</h1>
-      <p className="text-sm text-ink/60 mb-8">Manage your personal information and preferences.</p>
+      <h1 className="mb-2 font-display text-3xl font-bold text-ink">{t("title")}</h1>
+      <p className="mb-8 text-sm text-ink/60">{t("subtitle")}</p>
 
-      {/* Avatar */}
       <div className="mb-8 flex items-center gap-5">
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-3xl font-bold text-white shadow-soft">
           {user?.name?.[0]?.toUpperCase() ?? "S"}
         </div>
         <div>
-          <p className="font-semibold text-ink text-lg">{user?.name ?? "—"}</p>
+          <p className="text-lg font-semibold text-ink">{user?.name ?? "—"}</p>
           <p className="text-sm text-ink/60">{user?.email ?? "—"}</p>
           <span className="mt-1 inline-block rounded-full bg-blush px-3 py-0.5 text-xs font-medium text-berry">
-            {AGE_LABELS[user?.ageGroup ?? ""] ?? user?.ageGroup ?? "—"}
+            {ageLabel}
           </span>
         </div>
       </div>
 
-      {/* Edit form */}
       <Card className="mb-6">
-        <h2 className="font-semibold text-ink mb-4">Edit Profile</h2>
+        <h2 className="mb-4 font-semibold text-ink">{t("editTitle")}</h2>
         {saved && (
-          <div className="mb-4 rounded-2xl bg-mint border border-moss/30 px-4 py-3 text-sm text-moss font-medium" role="status">
-            ✓ Profile updated successfully!
+          <div className="mb-4 rounded-2xl border border-moss/30 bg-mint px-4 py-3 text-sm font-medium text-moss" role="status">
+            {t("saved")}
           </div>
         )}
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           <Input
-            label="Display name"
+            label={t("displayName")}
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            placeholder="Your name"
+            placeholder={t("namePlaceholder")}
           />
           <Input
-            label="Email address"
+            label={t("emailLabel")}
             value={user?.email ?? ""}
             disabled
-            hint="Email cannot be changed."
+            hint={t("emailHint")}
           />
           <Button type="submit" isLoading={isSaving} size="md" className="self-start">
-            Save changes
+            {t("saveChanges")}
           </Button>
         </form>
       </Card>
 
-      {/* Info tiles */}
       <div className="grid grid-cols-2 gap-4">
         <Card padding="sm">
-          <p className="text-xs text-ink/50 mb-1">Age group</p>
-          <p className="font-semibold text-ink">{AGE_LABELS[user?.ageGroup ?? ""] ?? "—"}</p>
+          <p className="mb-1 text-xs text-ink/50">{t("ageGroup")}</p>
+          <p className="font-semibold text-ink">{ageLabel}</p>
         </Card>
         <Card padding="sm">
-          <p className="text-xs text-ink/50 mb-1">Language</p>
+          <p className="mb-1 text-xs text-ink/50">{t("language")}</p>
           <p className="font-semibold text-ink">{LANG_LABELS[user?.language ?? ""] ?? "—"}</p>
         </Card>
       </div>

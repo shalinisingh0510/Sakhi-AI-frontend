@@ -23,7 +23,7 @@ export default function Home() {
   const journeyAudiences = t.raw("journeyAudiences");
 
   return (
-    <main className="min-h-screen bg-hero-radial">
+    <main id="main-content" className="min-h-screen bg-hero-radial" tabIndex={-1}>
       <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 lg:px-10">
         <SiteNav items={navItems} />
 

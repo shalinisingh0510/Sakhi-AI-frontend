@@ -1,30 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAuthStore, type SupportedLanguage } from "@/lib/auth-store";
+import { getHighContrast, setHighContrast } from "@/components/accessibility/AccessibilityInit";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { profileApi } from "@/lib/api";
+import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 
 const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] = [
-  { value: "en", label: "English",  native: "English" },
-  { value: "hi", label: "Hindi",    native: "हिन्दी" },
-  { value: "bn", label: "Bengali",  native: "বাংলা" },
-  { value: "mr", label: "Marathi",  native: "मराठी" },
-  { value: "ta", label: "Tamil",    native: "தமிழ்" },
-  { value: "te", label: "Telugu",   native: "తెలుగు" },
-  { value: "kn", label: "Kannada",  native: "ಕನ್ನಡ" },
+  { value: "en", label: "English", native: "English" },
+  { value: "hi", label: "Hindi", native: "हिन्दी" },
+  { value: "bn", label: "Bengali", native: "বাংলা" },
+  { value: "mr", label: "Marathi", native: "मराठी" },
+  { value: "ta", label: "Tamil", native: "தமிழ்" },
+  { value: "te", label: "Telugu", native: "తెలుగు" },
+  { value: "kn", label: "Kannada", native: "ಕನ್ನಡ" },
   { value: "gu", label: "Gujarati", native: "ગુજરાતી" },
-  { value: "pa", label: "Punjabi",  native: "ਪੰਜਾਬੀ" },
-  { value: "or", label: "Odia",     native: "ଓଡ଼ିଆ" },
+  { value: "pa", label: "Punjabi", native: "ਪੰਜਾਬੀ" },
+  { value: "or", label: "Odia", native: "ଓଡ଼ିଆ" },
 ];
 
 export default function SettingsPage() {
   const router = useRouter();
   const { user, updateUser, logout } = useAuthStore();
+  const t = useTranslations("Settings");
+  const tNav = useTranslations("Navigation");
+
   const [notifications, setNotifications] = useState(true);
+  const [highContrast, setHighContrastState] = useState(false);
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(user?.language ?? "en");
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setHighContrastState(getHighContrast());
+  }, []);
 
   function handleSaveLang() {
     updateUser({ language: selectedLang });
@@ -39,19 +51,18 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 md:px-8">
-      <h1 className="font-display text-3xl font-bold text-ink mb-2">Settings ⚙️</h1>
-      <p className="text-sm text-ink/60 mb-8">Customise your Sakhi AI experience.</p>
+      <h1 className="mb-2 font-display text-3xl font-bold text-ink">{t("title")}</h1>
+      <p className="mb-8 text-sm text-ink/60">{t("subtitle")}</p>
 
       {saved && (
-        <div className="mb-6 rounded-2xl bg-mint border border-moss/30 px-4 py-3 text-sm text-moss font-medium" role="status">
-          ✓ Settings saved!
+        <div className="mb-6 rounded-2xl border border-moss/30 bg-mint px-4 py-3 text-sm font-medium text-moss" role="status">
+          {t("saved")}
         </div>
       )}
 
-      {/* Language */}
       <Card className="mb-6">
-        <h2 className="font-semibold text-ink mb-1">Language</h2>
-        <p className="text-xs text-ink/50 mb-4">Choose the language Sakhi talks to you in.</p>
+        <h2 className="mb-1 font-semibold text-ink">{t("languageTitle")}</h2>
+        <p className="mb-4 text-xs text-ink/50">{t("languageDesc")}</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {LANGUAGES.map((l) => (
             <button
@@ -70,22 +81,53 @@ export default function SettingsPage() {
           ))}
         </div>
         <Button size="sm" className="mt-4" onClick={handleSaveLang}>
-          Save language
+          {t("saveLanguage")}
         </Button>
       </Card>
 
-      {/* Notifications */}
       <Card className="mb-6">
-        <h2 className="font-semibold text-ink mb-1">Notifications</h2>
-        <p className="text-xs text-ink/50 mb-4">Get gentle reminders to continue learning.</p>
+        <h2 className="mb-1 font-semibold text-ink">{t("highContrastTitle")}</h2>
+        <p className="mb-4 text-xs text-ink/50">{t("highContrastDesc")}</p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-ink">{t("highContrastLabel")}</p>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={highContrast}
+            aria-label={t("highContrastLabel")}
+            onClick={() => {
+              const next = !highContrast;
+              setHighContrastState(next);
+              setHighContrast(next);
+            }}
+            className={[
+              "relative h-7 w-12 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-berry/40",
+              highContrast ? "bg-gradient-to-r from-rose to-berry" : "bg-peach/60",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-300",
+                highContrast ? "translate-x-5" : "translate-x-0",
+              ].join(" ")}
+            />
+          </button>
+        </div>
+      </Card>
+
+      <Card className="mb-6">
+        <h2 className="mb-1 font-semibold text-ink">{t("notificationsTitle")}</h2>
+        <p className="mb-4 text-xs text-ink/50">{t("notificationsDesc")}</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-ink">Daily learning reminder</p>
-            <p className="text-xs text-ink/50">A soft nudge to keep your streak going.</p>
+            <p className="text-sm font-medium text-ink">{t("dailyReminder")}</p>
+            <p className="text-xs text-ink/50">{t("dailyReminderDesc")}</p>
           </div>
           <button
+            type="button"
             role="switch"
             aria-checked={notifications}
+            aria-label={t("notificationsSwitchLabel")}
             onClick={() => setNotifications((n) => !n)}
             className={[
               "relative h-7 w-12 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-berry/40",
@@ -94,7 +136,7 @@ export default function SettingsPage() {
           >
             <span
               className={[
-                "absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-300",
+                "absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-300",
                 notifications ? "translate-x-5" : "translate-x-0",
               ].join(" ")}
             />
@@ -102,24 +144,18 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Account */}
       <Card>
-        <h2 className="font-semibold text-ink mb-4">Account</h2>
+        <h2 className="mb-4 font-semibold text-ink">{t("accountTitle")}</h2>
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-ink">{user?.email}</p>
-              <p className="text-xs text-ink/50">Account email</p>
+              <p className="text-xs text-ink/50">{t("accountEmail")}</p>
             </div>
           </div>
           <hr className="border-peach/50" />
-          <Button
-            variant="danger"
-            size="sm"
-            className="self-start"
-            onClick={handleLogout}
-          >
-            Sign out
+          <Button variant="danger" size="sm" className="self-start" onClick={handleLogout}>
+            {tNav("signOut")}
           </Button>
         </div>
       </Card>
