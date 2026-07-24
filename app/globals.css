@@ -4,6 +4,8 @@
 
 :root {
   color-scheme: light;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-body: "Aptos", "Segoe UI", system-ui, sans-serif;
 }
 
 html {
@@ -44,7 +46,7 @@ body {
   color: #1f2433;
 }
 
-/* Skip link â€” visible on keyboard focus */
+/* Skip link — visible on keyboard focus */
 .skip-link {
   position: absolute;
   left: 1rem;
