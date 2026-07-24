@@ -92,14 +92,14 @@
 ### Phase 3 - Internationalisation (i18n)
 | File | What it does |
 |------|-------------|
-| `i18n.ts` | next-intl config — reads `NEXT_LOCALE` cookie, loads locale messages |
+| `i18n.ts` | next-intl config â€” reads `NEXT_LOCALE` cookie, loads locale messages |
 | `next.config.mjs` | Wrapped with `createNextIntlPlugin` |
 | `app/layout.tsx` | `NextIntlClientProvider` with locale and messages |
 | `messages/en.json` | English translation keys (source of truth) |
 | `messages/hi.json` | Hindi translations (Navigation, SiteNav, GuidedForm, Dashboard + partial) |
 | `messages/{bn,mr,ta,te,kn,gu,pa,or}.json` | Placeholder locale files (English copy until translated) |
 | `lib/auth-store.ts` | Sets `NEXT_LOCALE` cookie on language change and onboarding |
-| `app/page.tsx` | Landing page — all strings via `t()` |
+| `app/page.tsx` | Landing page â€” all strings via `t()` |
 | `components/home/SiteNav.tsx` | Public nav brand, tagline, login/sign-up via `t()` |
 | `components/home/GuidedQuestionForm.tsx` | Guided form labels, errors, topics via `t()` |
 | `components/layout/AppNav.tsx` | Desktop nav links via `t()` |
@@ -146,10 +146,10 @@
 |---------|--------|---------------|
 | `next-intl` setup | Complete | Installed and configured next-intl |
 | Translation files | In Progress | `en.json` complete; `hi.json` partially translated; 8 locales use English placeholders |
-| Replace hardcoded strings — Landing, Nav, Auth | Complete | Landing, SiteNav, GuidedForm, AppNav, MobileNav, login, register, onboarding |
-| Replace hardcoded strings — Dashboard, Chat | Complete | Dashboard and Chat pages internationalised |
-| Replace hardcoded strings — Learn, Progress, Profile, Settings | Complete | Core dashboard pages internationalised |
-| Replace hardcoded strings — Notifications, Search, FAQ, Help, Learn detail | Complete | All remaining user-facing pages internationalised |
+| Replace hardcoded strings â€” Landing, Nav, Auth | Complete | Landing, SiteNav, GuidedForm, AppNav, MobileNav, login, register, onboarding |
+| Replace hardcoded strings â€” Dashboard, Chat | Complete | Dashboard and Chat pages internationalised |
+| Replace hardcoded strings â€” Learn, Progress, Profile, Settings | Complete | Core dashboard pages internationalised |
+| Replace hardcoded strings â€” Notifications, Search, FAQ, Help, Learn detail | Complete | All remaining user-facing pages internationalised |
 | Full Hindi translation of all keys | In Progress | UI sections translated; long FAQ/help content still English in hi.json |
 | Language switcher hook | Complete | Persist language in Zustand plus NEXT_LOCALE cookie |
 
@@ -170,7 +170,7 @@
 | GitHub Actions CI (lint, typecheck, build) | Complete |
 | Screen reader testing | Pending |
 | Mobile responsive review (core dashboard pages) | Complete | Dashboard, progress, profile, and settings pages tightened for mobile layouts |
-| Unit tests - Jest + React Testing Library | Pending |
+| Unit tests - Vitest + React Testing Library | Complete | Added a jsdom-based unit test foundation for shared UI components |
 | E2E tests - Playwright | Pending |
 | Accessibility audit - axe-core | Pending |
 
@@ -197,8 +197,8 @@
 - Migrated the app to a locale-scoped route tree under `app/[locale]/` and updated the locale layout to match the Next 15 route contract.
 - Kept i18n routing and auth redirects aligned through `i18n.ts`, `middleware.ts`, and `lib/i18n-config.ts`.
 - Removed the remote Google Fonts fetch from the root layout and switched the app to CSS-driven local/system font fallbacks.
-- Cleaned unused imports in the profile and settings pages.
-- Verified `npm run lint` and `npm run typecheck` both pass.
+- Cleaned unused imports in the profile and settings pages and added a Vitest + React Testing Library test foundation for shared UI components.
+- Verified `npm run lint`, `npm run typecheck`, and `npm run test` all pass.
 - `npm run build` still fails in this sandbox with `spawn EPERM`, so the production build issue appears environment-related rather than a source error.
 
 ### What remains next
@@ -224,7 +224,7 @@
 - Phase 3 Voice Interaction is complete with speech-to-text, text-to-speech, and language-aware voice support for 10 Indian languages.
 - Phase 3 Internationalisation is complete for all pages: every user-facing screen now uses `t()` keys.
 - Translation files exist for all 10 locales; Hindi has partial translations for dashboard UI, other locales use English placeholders until translated.
-- Next step: Phase 4 remaining — screen reader testing, unit tests, Playwright E2E, and axe-core audit.
+- Next step: Phase 4 remaining â€” screen reader testing, Playwright E2E, and axe-core audit.
 - Phase 4 accessibility foundations are complete: skip link, focus styles, high contrast, keyboard nav, ARIA labels, CI pipeline, and the core mobile responsive review.
 
 ---
@@ -238,7 +238,7 @@ Phase 2 - Core Pages          100% complete
 Phase 3 - Remaining Pages     100% complete
 Phase 3 - Voice Interaction   100% complete
 Phase 3 - Internationalisation  100% complete (keys); Hindi translation ~40%
-Phase 4 - Quality and Tests   50% in progress
+Phase 4 - Quality and Tests   80% in progress
 Phase 5 - Backend and Launch  0% pending
 ```
 
@@ -248,64 +248,64 @@ Phase 5 - Backend and Launch  0% pending
 
 ```
 sakhi-ai-frontend/
-├── app/
-│   ├── (auth)/
-│   │   ├── login/page.tsx          Login page
-│   │   ├── register/page.tsx       Register page
-│   │   └── onboarding/page.tsx     3-step onboarding
-│   ├── (dashboard)/
-│   │   ├── layout.tsx              Dashboard shell layout
-│   │   ├── dashboard/page.tsx      Home dashboard
-│   │   ├── search/page.tsx         Global search page
-│   │   ├── chat/page.tsx           AI chat page
-│   │   ├── learn/
-│   │   │   ├── page.tsx            Module listing
-│   │   │   └── [slug]/page.tsx     Individual lesson
-│   │   ├── progress/page.tsx       Progress and badges
-│   │   ├── profile/page.tsx        User profile
-│   │   ├── settings/page.tsx       Settings page
-│   │   └── notifications/page.tsx  Notifications center
-│   ├── faq/page.tsx                FAQ page
-│   ├── help/page.tsx               Help and support page
-│   ├── globals.css                 Global styles
-│   ├── layout.tsx                  Root layout
-│   └── page.tsx                    Landing page
-├── components/
-│   ├── accessibility/
-│   │   ├── AccessibilityInit.tsx High contrast and reduced motion init
-│   │   └── SkipToMain.tsx          Skip-to-main link
-│   ├── home/
-│   │   ├── Badge.tsx               Complete
-│   │   ├── FlowCard.tsx            Complete
-│   │   ├── GuidedQuestionForm.tsx  Complete
-│   │   ├── InfoCard.tsx            Complete
-│   │   ├── SectionHeading.tsx      Complete
-│   │   ├── SiteNav.tsx             Complete
-│   │   └── StatCard.tsx            Complete
-│   ├── layout/
-│   │   ├── AppNav.tsx              Desktop nav
-│   │   └── MobileNav.tsx           Mobile bottom nav
-│   └── ui/
-│       ├── Button.tsx              Reusable button
-│       ├── Input.tsx               Reusable input
-│       └── Card.tsx                Reusable card
-├── lib/
-│   ├── auth-store.ts               Zustand auth store
-│   ├── chat-store.ts               Zustand chat store
-│   ├── use-voice.ts                Web Speech API hook for voice interaction
-│   └── api.ts                      API service module
-├── messages/
-│   ├── en.json                     English translations (source)
-│   ├── hi.json                     Hindi translations (partial)
-│   └── {bn,mr,ta,te,kn,gu,pa,or}.json  Placeholder locale files
-├── i18n.ts                         next-intl locale config
-├── middleware.ts                   Protected routes
-├── tailwind.config.ts              Design tokens
-├── next.config.mjs                 Next.js config
-├── tsconfig.json                   TypeScript config
-├── package.json                    Package metadata
-├── IMPLEMENTATION.md               This file
-└── README.md                       Project overview
+â”œâ”€â”€ app/
+â”‚   â”œâ”€â”€ (auth)/
+â”‚   â”‚   â”œâ”€â”€ login/page.tsx          Login page
+â”‚   â”‚   â”œâ”€â”€ register/page.tsx       Register page
+â”‚   â”‚   â””â”€â”€ onboarding/page.tsx     3-step onboarding
+â”‚   â”œâ”€â”€ (dashboard)/
+â”‚   â”‚   â”œâ”€â”€ layout.tsx              Dashboard shell layout
+â”‚   â”‚   â”œâ”€â”€ dashboard/page.tsx      Home dashboard
+â”‚   â”‚   â”œâ”€â”€ search/page.tsx         Global search page
+â”‚   â”‚   â”œâ”€â”€ chat/page.tsx           AI chat page
+â”‚   â”‚   â”œâ”€â”€ learn/
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx            Module listing
+â”‚   â”‚   â”‚   â””â”€â”€ [slug]/page.tsx     Individual lesson
+â”‚   â”‚   â”œâ”€â”€ progress/page.tsx       Progress and badges
+â”‚   â”‚   â”œâ”€â”€ profile/page.tsx        User profile
+â”‚   â”‚   â”œâ”€â”€ settings/page.tsx       Settings page
+â”‚   â”‚   â””â”€â”€ notifications/page.tsx  Notifications center
+â”‚   â”œâ”€â”€ faq/page.tsx                FAQ page
+â”‚   â”œâ”€â”€ help/page.tsx               Help and support page
+â”‚   â”œâ”€â”€ globals.css                 Global styles
+â”‚   â”œâ”€â”€ layout.tsx                  Root layout
+â”‚   â””â”€â”€ page.tsx                    Landing page
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ accessibility/
+â”‚   â”‚   â”œâ”€â”€ AccessibilityInit.tsx High contrast and reduced motion init
+â”‚   â”‚   â””â”€â”€ SkipToMain.tsx          Skip-to-main link
+â”‚   â”œâ”€â”€ home/
+â”‚   â”‚   â”œâ”€â”€ Badge.tsx               Complete
+â”‚   â”‚   â”œâ”€â”€ FlowCard.tsx            Complete
+â”‚   â”‚   â”œâ”€â”€ GuidedQuestionForm.tsx  Complete
+â”‚   â”‚   â”œâ”€â”€ InfoCard.tsx            Complete
+â”‚   â”‚   â”œâ”€â”€ SectionHeading.tsx      Complete
+â”‚   â”‚   â”œâ”€â”€ SiteNav.tsx             Complete
+â”‚   â”‚   â””â”€â”€ StatCard.tsx            Complete
+â”‚   â”œâ”€â”€ layout/
+â”‚   â”‚   â”œâ”€â”€ AppNav.tsx              Desktop nav
+â”‚   â”‚   â””â”€â”€ MobileNav.tsx           Mobile bottom nav
+â”‚   â””â”€â”€ ui/
+â”‚       â”œâ”€â”€ Button.tsx              Reusable button
+â”‚       â”œâ”€â”€ Input.tsx               Reusable input
+â”‚       â””â”€â”€ Card.tsx                Reusable card
+â”œâ”€â”€ lib/
+â”‚   â”œâ”€â”€ auth-store.ts               Zustand auth store
+â”‚   â”œâ”€â”€ chat-store.ts               Zustand chat store
+â”‚   â”œâ”€â”€ use-voice.ts                Web Speech API hook for voice interaction
+â”‚   â””â”€â”€ api.ts                      API service module
+â”œâ”€â”€ messages/
+â”‚   â”œâ”€â”€ en.json                     English translations (source)
+â”‚   â”œâ”€â”€ hi.json                     Hindi translations (partial)
+â”‚   â””â”€â”€ {bn,mr,ta,te,kn,gu,pa,or}.json  Placeholder locale files
+â”œâ”€â”€ i18n.ts                         next-intl locale config
+â”œâ”€â”€ middleware.ts                   Protected routes
+â”œâ”€â”€ tailwind.config.ts              Design tokens
+â”œâ”€â”€ next.config.mjs                 Next.js config
+â”œâ”€â”€ tsconfig.json                   TypeScript config
+â”œâ”€â”€ package.json                    Package metadata
+â”œâ”€â”€ IMPLEMENTATION.md               This file
+â””â”€â”€ README.md                       Project overview
 ```
 
 
