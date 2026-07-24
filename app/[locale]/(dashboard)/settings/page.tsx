@@ -7,8 +7,6 @@ import { useAuthStore, type SupportedLanguage } from "@/lib/auth-store";
 import { getHighContrast, setHighContrast } from "@/components/accessibility/AccessibilityInit";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { profileApi } from "@/lib/api";
-import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 
 const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] = [
   { value: "en", label: "English", native: "English" },
@@ -63,7 +61,7 @@ export default function SettingsPage() {
       <Card className="mb-6">
         <h2 className="mb-1 font-semibold text-ink">{t("languageTitle")}</h2>
         <p className="mb-4 text-xs text-ink/50">{t("languageDesc")}</p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
           {LANGUAGES.map((l) => (
             <button
               key={l.value}
@@ -162,3 +160,6 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+
+

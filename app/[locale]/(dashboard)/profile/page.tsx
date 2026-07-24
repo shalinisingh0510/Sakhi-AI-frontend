@@ -6,8 +6,6 @@ import { useAuthStore } from "@/lib/auth-store";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { profileApi } from "@/lib/api";
-import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 
 const LANG_LABELS: Record<string, string> = {
   en: "English",
@@ -23,7 +21,7 @@ const LANG_LABELS: Record<string, string> = {
 };
 
 export default function ProfilePage() {
-  const { user, token, updateUser } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
   const t = useTranslations("Profile");
 
   const [form, setForm] = useState({ name: user?.name ?? "" });
@@ -48,7 +46,7 @@ export default function ProfilePage() {
       <h1 className="mb-2 font-display text-3xl font-bold text-ink">{t("title")}</h1>
       <p className="mb-8 text-sm text-ink/60">{t("subtitle")}</p>
 
-      <div className="mb-8 flex items-center gap-5">
+      <div className="mb-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-3xl font-bold text-white shadow-soft">
           {user?.name?.[0]?.toUpperCase() ?? "S"}
         </div>
@@ -87,7 +85,7 @@ export default function ProfilePage() {
         </form>
       </Card>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Card padding="sm">
           <p className="mb-1 text-xs text-ink/50">{t("ageGroup")}</p>
           <p className="font-semibold text-ink">{ageLabel}</p>
@@ -100,3 +98,6 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+
+

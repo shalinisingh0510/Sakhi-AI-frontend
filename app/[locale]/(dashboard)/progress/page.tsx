@@ -21,7 +21,7 @@ export default function ProgressPage() {
       <h1 className="mb-2 font-display text-3xl font-bold text-ink">{t("title")}</h1>
       <p className="mb-8 text-sm text-ink/60">{t("subtitle")}</p>
 
-      <div className="mb-8 grid grid-cols-3 gap-4">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {stats.map((s, i) => (
           <Card key={s.label} padding="sm" className="text-center">
             <p className="text-2xl">{s.emoji}</p>
@@ -71,3 +71,4 @@ export default function ProgressPage() {
     </div>
   );
 }
+

@@ -1,22 +1,14 @@
 import { getRequestConfig } from 'next-intl/server';
-import { cookies } from 'next/headers';
+import { locales, Locale, defaultLocale } from './lib/i18n-config';
 
-export const locales = ['en', 'hi', 'bn', 'mr', 'ta', 'te', 'kn', 'gu', 'pa', 'or'] as const;
-export type Locale = (typeof locales)[number];
-export const defaultLocale = 'en';
-
-export default getRequestConfig(async () => {
-  // Try to get locale from cookie
-  const cookieStore = await cookies();
-  const localeCookie = cookieStore.get('NEXT_LOCALE')?.value;
-  
-  // Use cookie value if valid, otherwise fallback to default
- const locale: Locale = locales.includes(localeCookie as Locale)
-  ? (localeCookie as Locale)
-  : defaultLocale;
+export default getRequestConfig(async ({ locale }) => {
+  // Validate that the incoming `locale` parameter is valid
+  const validLocale: Locale = locales.includes(locale as Locale) 
+    ? (locale as Locale) 
+    : defaultLocale;
 
   return {
-    locale,
-    messages: (await import(`./messages/${locale}.json`)).default
+    locale: validLocale,
+    messages: (await import(`./messages/${validLocale}.json`)).default,
   };
 });
