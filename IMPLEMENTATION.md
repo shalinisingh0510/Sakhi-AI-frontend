@@ -172,7 +172,7 @@
 | Mobile responsive review (core dashboard pages) | Complete | Dashboard, progress, profile, and settings pages tightened for mobile layouts |
 | Unit tests - Vitest + React Testing Library | Complete | Added a jsdom-based unit test foundation for shared UI components |
 | E2E tests - Playwright | Pending |
-| Accessibility audit - axe-core | Pending |
+| Accessibility audit - axe-core | Complete | Added an axe-based regression test covering the shared UI shell and skip link |
 
 ---
 
@@ -197,13 +197,13 @@
 - Migrated the app to a locale-scoped route tree under `app/[locale]/` and updated the locale layout to match the Next 15 route contract.
 - Kept i18n routing and auth redirects aligned through `i18n.ts`, `middleware.ts`, and `lib/i18n-config.ts`.
 - Removed the remote Google Fonts fetch from the root layout and switched the app to CSS-driven local/system font fallbacks.
-- Cleaned unused imports in the profile and settings pages and added a Vitest + React Testing Library test foundation for shared UI components.
+- Cleaned unused imports in the profile and settings pages and added Vitest + React Testing Library plus axe-core regression coverage for shared UI components.
 - Verified `npm run lint`, `npm run typecheck`, and `npm run test` all pass.
 - `npm run build` still fails in this sandbox with `spawn EPERM`, so the production build issue appears environment-related rather than a source error.
 
 ### What remains next
 
-- Phase 4: screen reader testing, Jest + React Testing Library, Playwright E2E, and axe-core accessibility audit.
+- Phase 4: screen reader testing and Playwright E2E.
 - Phase 5: connect the backend APIs, configure `.env.local`, and prepare deployment and Lighthouse work.
 
 ---
@@ -224,8 +224,8 @@
 - Phase 3 Voice Interaction is complete with speech-to-text, text-to-speech, and language-aware voice support for 10 Indian languages.
 - Phase 3 Internationalisation is complete for all pages: every user-facing screen now uses `t()` keys.
 - Translation files exist for all 10 locales; Hindi has partial translations for dashboard UI, other locales use English placeholders until translated.
-- Next step: Phase 4 remaining â€” screen reader testing, Playwright E2E, and axe-core audit.
-- Phase 4 accessibility foundations are complete: skip link, focus styles, high contrast, keyboard nav, ARIA labels, CI pipeline, and the core mobile responsive review.
+- Next step: Phase 4 remaining — screen reader testing and Playwright E2E.
+- Phase 4 accessibility foundations are complete: skip link, focus styles, high contrast, keyboard nav, ARIA labels, CI pipeline, core mobile responsive review, and the axe-core audit.
 
 ---
 
@@ -238,7 +238,7 @@ Phase 2 - Core Pages          100% complete
 Phase 3 - Remaining Pages     100% complete
 Phase 3 - Voice Interaction   100% complete
 Phase 3 - Internationalisation  100% complete (keys); Hindi translation ~40%
-Phase 4 - Quality and Tests   80% in progress
+Phase 4 - Quality and Tests   90% in progress
 Phase 5 - Backend and Launch  0% pending
 ```
 
