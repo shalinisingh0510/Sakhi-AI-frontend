@@ -84,17 +84,31 @@ export const authApi = {
     }),
 };
 
+interface ApiMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+}
+
+interface ApiConversationDetail {
+  conversation: {
+    id: string;
+  };
+  messages: ApiMessage[];
+}
+
 export const chatApi = {
   sendMessage: async (content: string, sessionId: string | null, token: string, mode: "text" | "voice" = "text", language: string = "english") => {
-    let res: any;
+    let res: ApiConversationDetail;
     if (!sessionId) {
-      res = await request<any>("/conversations", {
+      res = await request<ApiConversationDetail>("/conversations", {
         method: "POST",
         body: { initial_message: content, preferred_language: language, mode },
         token,
       });
     } else {
-      res = await request<any>(`/conversations/${sessionId}/messages`, {
+      res = await request<ApiConversationDetail>(`/conversations/${sessionId}/messages`, {
         method: "POST",
         body: { message: content, mode },
         token,
