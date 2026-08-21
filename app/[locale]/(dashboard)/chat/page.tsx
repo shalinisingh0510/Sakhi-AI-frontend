@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useTranslations } from "next-intl";
@@ -15,6 +15,7 @@ export default function ChatPage() {
   const t = useTranslations("Chat");
   const tA11y = useTranslations("Accessibility");
   const [input, setInput] = useState("");
+  const [inputMode, setInputMode] = useState<"text" | "voice">("text");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = t.raw("quickPrompts") as string[];
@@ -37,6 +38,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (transcript) {
       setInput(transcript);
+      setInputMode("voice");
     }
   }, [transcript]);
 
@@ -48,9 +50,11 @@ export default function ChatPage() {
     return demoReplies.default;
   }
 
-  async function sendMessage(content: string) {
+  async function sendMessage(content: string, overrideMode?: "text" | "voice") {
     if (!content.trim()) return;
+    const currentMode = overrideMode || inputMode;
     setInput("");
+    setInputMode("text");
     addMessage({ role: "user", content });
     setTyping(true);
 
@@ -58,7 +62,7 @@ export default function ChatPage() {
 
     try {
       if (!isDemoMode() && token) {
-        const response = await chatApi.sendMessage(content, sessionId, token);
+        const response = await chatApi.sendMessage(content, sessionId, token, currentMode, user?.language || "english");
         reply = response.reply;
         setSessionId(response.sessionId);
       } else {
@@ -202,7 +206,10 @@ export default function ChatPage() {
           <input
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setInputMode("text");
+            }}
             placeholder={t("inputPlaceholder")}
             className="flex-1 rounded-full border border-peach/70 bg-white px-5 py-3 text-sm text-ink placeholder:text-ink/30 focus:border-berry/40 focus:outline-none focus:ring-2 focus:ring-berry/30"
           />
