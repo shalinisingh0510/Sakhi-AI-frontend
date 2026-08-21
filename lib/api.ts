@@ -85,12 +85,28 @@ export const authApi = {
 };
 
 export const chatApi = {
-  sendMessage: (content: string, sessionId: string | null, token: string) =>
-    request<ChatResponse>("/chat/message", {
-      method: "POST",
-      body: { content, sessionId },
-      token,
-    }),
+  sendMessage: async (content: string, sessionId: string | null, token: string, mode: "text" | "voice" = "text", language: string = "english") => {
+    let res: any;
+    if (!sessionId) {
+      res = await request<any>("/conversations", {
+        method: "POST",
+        body: { initial_message: content, preferred_language: language, mode },
+        token,
+      });
+    } else {
+      res = await request<any>(`/conversations/${sessionId}/messages`, {
+        method: "POST",
+        body: { message: content, mode },
+        token,
+      });
+    }
+    const messages = res.messages || [];
+    const lastMsg = messages[messages.length - 1];
+    return {
+      reply: lastMsg ? lastMsg.content : "",
+      sessionId: res.conversation.id
+    } as ChatResponse;
+  },
 };
 
 export const learnApi = {
