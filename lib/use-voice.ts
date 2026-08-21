@@ -73,6 +73,12 @@ export function useVoice(language: SupportedLanguage = "en") {
     SpeechRecognition?: typeof window.SpeechRecognition;
     webkitSpeechRecognition?: typeof window.SpeechRecognition;
   }).webkitSpeechRecognition;
+  
+      if (!SpeechRecognition) {
+        setIsSupported(false);
+        return;
+      }
+      
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
