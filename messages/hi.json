@@ -173,7 +173,20 @@
       "description": "The interface should make the platform feel supportive while preserving clear boundaries around education and professional care."
     }
   },
+  "Health": {
+    "title": "Health Hub",
+    "subtitle": "Track your cycle, nutrition, and overall wellness safely and privately.",
+    "overview": "Overview",
+    "cycle": "Cycle & Periods",
+    "nutrition": "Nutrition & Diet",
+    "activity": "Activity",
+    "symptoms": "Symptoms & Mood",
+    "insights": "Insights",
+    "comingSoon": "Coming Soon",
+    "comingSoonDescription": "We are building something special here. The Health Hub will be available in a future update."
+  },
   "Navigation": {
+    "health": "Health",
     "home": "होम",
     "search": "खोजें",
     "chat": "चैट",

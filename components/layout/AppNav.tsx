@@ -19,10 +19,11 @@ export function AppNav() {
 
   const NAV_LINKS = [
     { href: "/dashboard", label: t("home"), icon: HomeIcon },
-    { href: "/search", label: t("search"), icon: SearchIcon },
+    { href: "/health", label: t("health"), icon: HeartIcon },
     { href: "/chat", label: t("chat"), icon: ChatIcon },
     { href: "/learn", label: t("learn"), icon: BookIcon },
     { href: "/progress", label: t("progress"), icon: ChartIcon },
+    { href: "/search", label: t("search"), icon: SearchIcon },
   ];
 
   useEffect(() => {
@@ -164,6 +165,9 @@ export function AppNav() {
 
 function HomeIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+}
+function HeartIcon({ className }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>;
 }
 function SearchIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>;
