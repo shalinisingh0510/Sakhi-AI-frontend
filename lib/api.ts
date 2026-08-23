@@ -139,6 +139,86 @@ export const learnApi = {
 
 export const progressApi = {
   getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
+  getAnalytics: (token: string) => request<any>("/analytics/user", { token }),
+};
+
+export interface CurrentCycleResponse {
+  current_cycle_day?: number;
+  latest_period_start?: string;
+  data_quality: string;
+  completed_cycles_count: number;
+  estimated_next_period?: { date: string; confidence: string; algorithm_version: string };
+  estimated_ovulation?: { date: string; confidence: string; algorithm_version: string };
+  estimated_fertile_window?: { start: string; end: string; confidence: string; algorithm_version: string };
+  irregularity_observation?: string;
+}
+
+export interface CycleStatisticsResponse {
+  average_cycle_length?: number;
+  average_period_duration?: number;
+  shortest_cycle?: number;
+  longest_cycle?: number;
+  cycle_variability_days?: number;
+  completed_cycles: number;
+  has_irregular_pattern: boolean;
+  irregularity_observation?: string;
+}
+
+export interface PeriodLogResponse {
+  id: string;
+  health_profile_id: string;
+  start_date: string;
+  end_date?: string;
+  flow: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MenstrualCycleResponse {
+  id: string;
+  health_profile_id: string;
+  cycle_start_date: string;
+  cycle_end_date?: string;
+  cycle_length_days?: number;
+  period_duration_days?: number;
+  is_complete: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export const cycleApi = {
+  getCurrentCycle: (token: string) =>
+    request<CurrentCycleResponse>("/cycles/current", { token }),
+
+  getStatistics: (token: string) =>
+    request<CycleStatisticsResponse>("/cycles/statistics", { token }),
+
+  listCycles: (token: string, limit: number = 12) =>
+    request<MenstrualCycleResponse[]>(`/cycles?limit=${limit}`, { token }),
+
+  listPeriods: (token: string) =>
+    request<PeriodLogResponse[]>("/cycles/periods", { token }),
+
+  logPeriod: (token: string, data: { start_date: string; end_date?: string; flow?: string; notes?: string }) =>
+    request<PeriodLogResponse>("/cycles/periods", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  updatePeriod: (token: string, logId: string, data: { end_date?: string; flow?: string; notes?: string }) =>
+    request<PeriodLogResponse>(`/cycles/periods/${logId}`, {
+      method: "PATCH",
+      body: data,
+      token,
+    }),
+
+  deletePeriod: (token: string, logId: string) =>
+    request<void>(`/cycles/periods/${logId}`, {
+      method: "DELETE",
+      token,
+    }),
 };
 
 export interface ProfileUpdates {
