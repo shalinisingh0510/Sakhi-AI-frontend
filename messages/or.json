@@ -1169,5 +1169,38 @@
     "highContrast": "High contrast mode",
     "highContrastDesc": "Increase text and border contrast for easier reading.",
     "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "ଆଜିର ଲକ୍ଷଣ",
+        "viewAll": "ସବୁ ଦେଖନ୍ତୁ",
+        "noSymptoms": "ଆଜି କୌଣସି ଲକ୍ଷଣ ଲଗ୍ କରାଯାଇ ନାହିଁ।"
+      },
+      "moodEnergy": {
+        "title": "ମନୋଭାବ ଏବଂ ଶକ୍ତି",
+        "mood": "ମନୋଭାବ",
+        "energy": "ଶକ୍ତି",
+        "notLogged": "ଲଗ୍ କରାଯାଇ ନାହିଁ",
+        "addMood": "ମନୋଭାବ ଯୋଡନ୍ତୁ",
+        "addEnergy": "ଶକ୍ତି ଯୋଡନ୍ତୁ"
+      },
+      "tracking": {
+        "title": "ଆଜିର ସ୍ୱାସ୍ଥ୍ୟ",
+        "checkin": "ଚେକ୍-ଇନ୍",
+        "cycle": "ଋତୁଚକ୍ର",
+        "symptoms": "ଲକ୍ଷଣ",
+        "notLogged": "ଲଗ୍ କରାଯାଇ ନାହିଁ:",
+        "nutrition": "ପୁଷ୍ଟି — ଶୀଘ୍ର ଆସୁଛି",
+        "activity": "କାର୍ଯ୍ୟକଳାପ — ଶୀଘ୍ର ଆସୁଛି"
+      },
+      "noCheckinTitle": "ଆଜି ଆପଣ କିପରି ଅନୁଭବ କରୁଛନ୍ତି?",
+      "noCheckinAction": "ଚେକ୍-ଇନ୍ କରନ୍ତୁ",
+      "checkinComplete": "ଆଜିର ଚେକ୍-ଇନ୍ ସମ୍ପୂର୍ଣ୍ଣ",
+      "updateAction": "ଅପଡେଟ୍ କରନ୍ତୁ",
+      "mood": "ମନୋଭାବ",
+      "energy": "ଶକ୍ତି",
+      "notLogged": "ଲଗ୍ କରାଯାଇ ନାହିଁ"
+    }
   }
 }

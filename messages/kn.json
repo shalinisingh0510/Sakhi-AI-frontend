@@ -1169,5 +1169,38 @@
     "highContrast": "High contrast mode",
     "highContrastDesc": "Increase text and border contrast for easier reading.",
     "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "ಇಂದಿನ ಲಕ್ಷಣಗಳು",
+        "viewAll": "ಎಲ್ಲವನ್ನೂ ವೀಕ್ಷಿಸಿ",
+        "noSymptoms": "ಇಂದು ಯಾವುದೇ ಲಕ್ಷಣಗಳನ್ನು ದಾಖಲಿಸಿಲ್ಲ."
+      },
+      "moodEnergy": {
+        "title": "ಮನಸ್ಥಿತಿ ಮತ್ತು ಶಕ್ತಿ",
+        "mood": "ಮನಸ್ಥಿತಿ",
+        "energy": "ಶಕ್ತಿ",
+        "notLogged": "ದಾಖಲಿಸಿಲ್ಲ",
+        "addMood": "ಮನಸ್ಥಿತಿ ಸೇರಿಸಿ",
+        "addEnergy": "ಶಕ್ತಿ ಸೇರಿಸಿ"
+      },
+      "tracking": {
+        "title": "ಇಂದಿನ ಆರೋಗ್ಯ",
+        "checkin": "ಚೆಕ್-ಇನ್",
+        "cycle": "ಋತುಚಕ್ರ",
+        "symptoms": "ಲಕ್ಷಣಗಳು",
+        "notLogged": "ದಾಖಲಿಸಿಲ್ಲ:",
+        "nutrition": "ಪೋಷಣೆ — ಶೀಘ್ರದಲ್ಲೇ",
+        "activity": "ಚಟುವಟಿಕೆ — ಶೀಘ್ರದಲ್ಲೇ"
+      },
+      "noCheckinTitle": "ಇಂದು ನಿಮಗೆ ಹೇಗನಿಸುತ್ತಿದೆ?",
+      "noCheckinAction": "ಚೆಕ್-ಇನ್ ಮಾಡಿ",
+      "checkinComplete": "ಇಂದಿನ ಚೆಕ್-ಇನ್ ಪೂರ್ಣಗೊಂಡಿದೆ",
+      "updateAction": "ಅಪ್‌ಡೇಟ್ ಮಾಡಿ",
+      "mood": "ಮನಸ್ಥಿತಿ",
+      "energy": "ಶಕ್ತಿ",
+      "notLogged": "ದಾಖಲಿಸಿಲ್ಲ"
+    }
   }
 }

@@ -6,6 +6,9 @@ import { WellnessDashboardHeader } from "./dashboard/WellnessDashboardHeader";
 import { TodayCheckInCard } from "./dashboard/TodayCheckInCard";
 import { CycleSnapshotCard } from "./dashboard/CycleSnapshotCard";
 import { WellnessTrendsCard } from "./dashboard/WellnessTrendsCard";
+import { SymptomsSnapshotCard } from "./dashboard/SymptomsSnapshotCard";
+import { MoodEnergyCard } from "./dashboard/MoodEnergyCard";
+import { TrackingStatus } from "./dashboard/TrackingStatus";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 
@@ -37,7 +40,12 @@ export function HealthDashboard({ data }: Props) {
         <CycleSnapshotCard cycle={data.cycle} isCycleTrackingEnabled={isCycleTrackingEnabled} />
       )}
 
+      <SymptomsSnapshotCard today={data.today} />
+      <MoodEnergyCard today={data.today} />
+      
       <WellnessTrendsCard trends={data.trends} />
+      
+      <TrackingStatus status={data.tracking_status} />
 
       {/* Health Hub Modules (Quick Links) */}
       <div className="mt-2">

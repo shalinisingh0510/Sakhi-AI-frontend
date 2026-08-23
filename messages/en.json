@@ -1047,5 +1047,38 @@
         "getStartedBtn": "Get started 🌸"
       }
     }
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "Today's symptoms",
+        "viewAll": "View all",
+        "noSymptoms": "No symptoms logged today."
+      },
+      "moodEnergy": {
+        "title": "Mood & Energy",
+        "mood": "Mood",
+        "energy": "Energy",
+        "notLogged": "Not logged",
+        "addMood": "Add mood",
+        "addEnergy": "Add energy"
+      },
+      "tracking": {
+        "title": "Today's wellness",
+        "checkin": "Check-in",
+        "cycle": "Cycle",
+        "symptoms": "Symptoms",
+        "notLogged": "Not logged:",
+        "nutrition": "Nutrition — Coming soon",
+        "activity": "Activity — Coming soon"
+      },
+      "noCheckinTitle": "How are you feeling today?",
+      "noCheckinAction": "Check in",
+      "checkinComplete": "Today's check-in complete",
+      "updateAction": "Update",
+      "mood": "Mood",
+      "energy": "Energy",
+      "notLogged": "Not logged"
+    }
   }
 }

@@ -1178,5 +1178,38 @@
     "highContrast": "High contrast mode",
     "highContrastDesc": "Increase text and border contrast for easier reading.",
     "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "నేటి లక్షణాలు",
+        "viewAll": "అన్నీ చూడండి",
+        "noSymptoms": "నేడు ఎలాంటి లక్షణాలు నమోదు కాలేదు."
+      },
+      "moodEnergy": {
+        "title": "మూడ్ మరియు శక్తి",
+        "mood": "మూడ్",
+        "energy": "శక్తి",
+        "notLogged": "నమోదు కాలేదు",
+        "addMood": "మూడ్ జోడించండి",
+        "addEnergy": "శక్తి జోడించండి"
+      },
+      "tracking": {
+        "title": "నేటి ఆరోగ్యం",
+        "checkin": "చెక్-ఇన్",
+        "cycle": "రుతుచక్రం",
+        "symptoms": "లక్షణాలు",
+        "notLogged": "నమోదు కాలేదు:",
+        "nutrition": "పోషకాహారం — త్వరలో",
+        "activity": "కార్యకలాపాలు — త్వరలో"
+      },
+      "noCheckinTitle": "ఈ రోజు మీరు ఎలా భావిస్తున్నారు?",
+      "noCheckinAction": "చెక్-ఇన్ చేయండి",
+      "checkinComplete": "నేటి చెక్-ఇన్ పూర్తయింది",
+      "updateAction": "అప్‌డేట్ చేయండి",
+      "mood": "మూడ్",
+      "energy": "శక్తి",
+      "notLogged": "నమోదు కాలేదు"
+    }
   }
 }

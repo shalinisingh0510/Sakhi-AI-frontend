@@ -1169,5 +1169,38 @@
     "highContrast": "High contrast mode",
     "highContrastDesc": "Increase text and border contrast for easier reading.",
     "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "આજના લક્ષણો",
+        "viewAll": "બધા જુઓ",
+        "noSymptoms": "આજે કોઈ લક્ષણો નોંધાયા નથી."
+      },
+      "moodEnergy": {
+        "title": "મૂડ અને ઉર્જા",
+        "mood": "મૂડ",
+        "energy": "ઉર્જા",
+        "notLogged": "નોંધાયેલ નથી",
+        "addMood": "મૂડ ઉમેરો",
+        "addEnergy": "ઉર્જા ઉમેરો"
+      },
+      "tracking": {
+        "title": "આજનું સ્વાસ્થ્ય",
+        "checkin": "ચેક-ઇન",
+        "cycle": "ચક્ર",
+        "symptoms": "લક્ષણો",
+        "notLogged": "નોંધાયેલ નથી:",
+        "nutrition": "પોષણ — જલ્દી આવી રહ્યું છે",
+        "activity": "પ્રવૃત્તિ — જલ્દી આવી રહ્યું છે"
+      },
+      "noCheckinTitle": "આજે તમે કેવું અનુભવી રહ્યા છો?",
+      "noCheckinAction": "ચેક-ઇન કરો",
+      "checkinComplete": "આજનું ચેક-ઇન પૂર્ણ થયું",
+      "updateAction": "અપડેટ કરો",
+      "mood": "મૂડ",
+      "energy": "ઉર્જા",
+      "notLogged": "નોંધાયેલ નથી"
+    }
   }
 }

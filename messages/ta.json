@@ -1180,5 +1180,38 @@
     "highContrast": "High contrast mode",
     "highContrastDesc": "Increase text and border contrast for easier reading.",
     "reducedMotionNote": "Animations are reduced based on your system preferences."
+  },
+  "Wellness": {
+    "dashboard": {
+      "symptoms": {
+        "title": "இன்றைய அறிகுறிகள்",
+        "viewAll": "அனைத்தையும் காண்க",
+        "noSymptoms": "இன்று எந்த அறிகுறிகளும் பதிவு செய்யப்படவில்லை."
+      },
+      "moodEnergy": {
+        "title": "மனநிலை மற்றும் ஆற்றல்",
+        "mood": "மனநிலை",
+        "energy": "ஆற்றல்",
+        "notLogged": "பதிவு செய்யப்படவில்லை",
+        "addMood": "மனநிலையைச் சேர்",
+        "addEnergy": "ஆற்றலைச் சேர்"
+      },
+      "tracking": {
+        "title": "இன்றைய ஆரோக்கியம்",
+        "checkin": "செக்-இன்",
+        "cycle": "சுழற்சி",
+        "symptoms": "அறிகுறிகள்",
+        "notLogged": "பதிவு செய்யப்படவில்லை:",
+        "nutrition": "ஊட்டச்சத்து — விரைவில்",
+        "activity": "செயல்பாடு — விரைவில்"
+      },
+      "noCheckinTitle": "இன்று நீங்கள் எப்படி உணர்கிறீர்கள்?",
+      "noCheckinAction": "செக்-இன் செய்",
+      "checkinComplete": "இன்றைய செக்-இன் முடிந்தது",
+      "updateAction": "புதுப்பி",
+      "mood": "மனநிலை",
+      "energy": "ஆற்றல்",
+      "notLogged": "பதிவு செய்யப்படவில்லை"
+    }
   }
 }
