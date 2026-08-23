@@ -63,12 +63,22 @@ export function HealthDashboard({ profile }: Props) {
         />
       </div>
 
-      {/* Coming soon modules */}
+      {/* Health Hub Modules */}
       <div>
         <h3 className="mb-3 text-sm font-medium text-ink/60 uppercase tracking-wide">
-          {t("dashboard.comingSoon")}
+          {t("dashboard.healthHub", { fallback: "Health Hub" })}
         </h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <a href="/health/check-in" className="block">
+            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full bg-peach/10 border-peach/40">
+              <span className="text-2xl" aria-hidden="true">📝</span>
+              <span className="text-sm font-medium text-ink">
+                Daily Check-in
+              </span>
+              <span className="text-xs text-berry font-medium mt-auto">How are you today? →</span>
+            </Card>
+          </a>
+          
           <a href="/health/cycle" className="block">
             <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full">
               <span className="text-2xl" aria-hidden="true">🌸</span>
@@ -79,7 +89,17 @@ export function HealthDashboard({ profile }: Props) {
             </Card>
           </a>
           
-          {COMING_SOON_MODULES.filter(m => m.key !== 'cycle').map((mod) => (
+          <a href="/health/symptoms" className="block">
+            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full">
+              <span className="text-2xl" aria-hidden="true">💭</span>
+              <span className="text-sm font-medium text-ink">
+                {t("Health.symptoms", { fallback: "Symptoms History" })}
+              </span>
+              <span className="text-xs text-berry font-medium mt-auto">View logs →</span>
+            </Card>
+          </a>
+          
+          {COMING_SOON_MODULES.filter(m => m.key !== 'cycle' && m.key !== 'symptoms').map((mod) => (
             <Card key={mod.key} padding="md" className="flex flex-col items-center gap-2 text-center opacity-60">
               <span className="text-2xl" aria-hidden="true">{mod.icon}</span>
               <span className="text-sm font-medium text-ink">
