@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { cycleApi, type CurrentCycleResponse, type CycleStatisticsResponse, type MenstrualCycleResponse } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -25,7 +25,7 @@ export function CycleDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLogging, setIsLogging] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!token) return;
     try {
       const [currData, statsData, cyclesData] = await Promise.all([
@@ -41,11 +41,11 @@ export function CycleDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchData();
-  }, [token]);
+  }, [fetchData]);
 
   const handleLogPeriod = async (date: string) => {
     if (!token) return;

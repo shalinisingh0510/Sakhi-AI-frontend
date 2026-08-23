@@ -1,4 +1,4 @@
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
 
 export function CycleCalendar() {
