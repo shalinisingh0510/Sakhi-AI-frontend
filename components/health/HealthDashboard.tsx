@@ -1,124 +1,97 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { type WellnessDashboardResponse } from "@/lib/api";
+import { WellnessDashboardHeader } from "./dashboard/WellnessDashboardHeader";
+import { TodayCheckInCard } from "./dashboard/TodayCheckInCard";
+import { CycleSnapshotCard } from "./dashboard/CycleSnapshotCard";
+import { WellnessTrendsCard } from "./dashboard/WellnessTrendsCard";
 import { Card } from "@/components/ui/Card";
-import { type HealthProfileData } from "@/lib/api";
+import Link from "next/link";
 
 const COMING_SOON_MODULES = [
-  { icon: "🌸", key: "cycle" },
-  { icon: "🥗", key: "nutrition" },
-  { icon: "🏃‍♀️", key: "activity" },
-  { icon: "💭", key: "symptoms" },
+  { icon: "🥗", key: "nutrition", label: "Nutrition & Diet" },
+  { icon: "🏃‍♀️", key: "activity", label: "Activity" },
 ];
 
 interface Props {
-  profile: HealthProfileData;
+  data: WellnessDashboardResponse;
 }
 
-export function HealthDashboard({ profile }: Props) {
+export function HealthDashboard({ data }: Props) {
   const t = useTranslations("HealthProfile");
-  const isTeenMode = profile.age_band === "teen";
+  
+  // Need to extract raw profile data for isCycleTrackingEnabled
+  // We don't have the full HealthProfileData object anymore, but the Dashboard API
+  // currently doesn't export whether cycle tracking is enabled explicitly in the profile snippet.
+  // Wait, if it wasn't enabled, cycle_status would be "Not Tracked". 
+  const isCycleTrackingEnabled = data.tracking_status.cycle_status !== "Not Tracked";
 
   return (
     <div className="flex flex-col gap-6 py-6">
-      {/* Banner */}
-      <Card padding="lg" className="bg-gradient-to-br from-berry/5 to-peach/20 border-berry/10">
-        <div className="flex items-start gap-4">
-          <div className="text-3xl" aria-hidden="true">🌺</div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h2 className="font-semibold text-ink">{t("dashboard.profileComplete")}</h2>
-              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700 font-medium">
-                ✓ {t("dashboard.configured")}
-              </span>
-            </div>
-            <p className="text-sm text-ink/60">{t("dashboard.welcomeBack")}</p>
+      <WellnessDashboardHeader profile={data.profile} />
 
-            {/* Wellness mode badge */}
-            <span
-              className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-                isTeenMode
-                  ? "bg-blue-50 text-blue-700"
-                  : "bg-berry/10 text-berry"
-              }`}
-            >
-              {isTeenMode ? "🌱" : "🌺"}
-              {isTeenMode ? t("dashboard.teenMode") : t("dashboard.adultMode")}
-            </span>
-          </div>
-        </div>
-      </Card>
+      <TodayCheckInCard today={data.today} />
 
-      {/* Quick stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label={t("dashboard.diet")} value={profile.diet_type.replace("_", " ")} />
-        <StatCard label={t("dashboard.activity")} value={profile.activity_level.replace("_", " ")} />
-        <StatCard
-          label={t("dashboard.cycleTracking")}
-          value={profile.cycle_tracking_enabled ? t("dashboard.enabled") : t("dashboard.disabled")}
-        />
-        <StatCard
-          label="AI Personalization"
-          value={profile.ai_health_personalization_enabled ? t("dashboard.enabled") : t("dashboard.disabled")}
-        />
-      </div>
+      {isCycleTrackingEnabled && (
+        <CycleSnapshotCard cycle={data.cycle} isCycleTrackingEnabled={isCycleTrackingEnabled} />
+      )}
 
-      {/* Health Hub Modules */}
-      <div>
+      <WellnessTrendsCard trends={data.trends} />
+
+      {/* Health Hub Modules (Quick Links) */}
+      <div className="mt-2">
         <h3 className="mb-3 text-sm font-medium text-ink/60 uppercase tracking-wide">
-          {t("dashboard.healthHub", { fallback: "Health Hub" })}
+          Explore Health Hub
         </h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <a href="/health/check-in" className="block">
-            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full bg-peach/10 border-peach/40">
+          <Link href="/health/check-in" className="block h-full">
+            <Card padding="md" className="flex flex-col items-center justify-center gap-2 text-center hover:bg-peach/5 transition-colors h-full border border-peach/20 bg-white">
               <span className="text-2xl" aria-hidden="true">📝</span>
-              <span className="text-sm font-medium text-ink">
-                Daily Check-in
-              </span>
-              <span className="text-xs text-berry font-medium mt-auto">How are you today? →</span>
+              <span className="text-sm font-medium text-ink">Check-in</span>
             </Card>
-          </a>
+          </Link>
           
-          <a href="/health/cycle" className="block">
-            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full">
+          <Link href="/health/cycle" className="block h-full">
+            <Card padding="md" className="flex flex-col items-center justify-center gap-2 text-center hover:bg-peach/5 transition-colors h-full border border-peach/20 bg-white">
               <span className="text-2xl" aria-hidden="true">🌸</span>
-              <span className="text-sm font-medium text-ink">
-                {t("Health.cycle")}
-              </span>
-              <span className="text-xs text-berry font-medium mt-auto">Open tracker →</span>
+              <span className="text-sm font-medium text-ink">Cycle</span>
             </Card>
-          </a>
+          </Link>
           
-          <a href="/health/symptoms" className="block">
-            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full">
+          <Link href="/health/symptoms" className="block h-full">
+            <Card padding="md" className="flex flex-col items-center justify-center gap-2 text-center hover:bg-peach/5 transition-colors h-full border border-peach/20 bg-white">
               <span className="text-2xl" aria-hidden="true">💭</span>
-              <span className="text-sm font-medium text-ink">
-                {t("Health.symptoms", { fallback: "Symptoms History" })}
-              </span>
-              <span className="text-xs text-berry font-medium mt-auto">View logs →</span>
+              <span className="text-sm font-medium text-ink">Logs</span>
             </Card>
-          </a>
-          
-          {COMING_SOON_MODULES.filter(m => m.key !== 'cycle' && m.key !== 'symptoms').map((mod) => (
-            <Card key={mod.key} padding="md" className="flex flex-col items-center gap-2 text-center opacity-60">
+          </Link>
+
+          <Link href="/profile" className="block h-full">
+            <Card padding="md" className="flex flex-col items-center justify-center gap-2 text-center hover:bg-peach/5 transition-colors h-full border border-peach/20 bg-white">
+              <span className="text-2xl" aria-hidden="true">⚙️</span>
+              <span className="text-sm font-medium text-ink">Settings</span>
+            </Card>
+          </Link>
+        </div>
+      </div>
+      
+      {/* Coming Soon Features */}
+      <div className="mt-2">
+        <h3 className="mb-3 text-sm font-medium text-ink/60 uppercase tracking-wide">
+          {t("dashboard.comingSoon", { fallback: "Features coming soon" })}
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
+          {COMING_SOON_MODULES.map((mod) => (
+            <Card key={mod.key} padding="md" className="flex flex-col items-center gap-2 text-center opacity-60 bg-gray-50/50">
               <span className="text-2xl" aria-hidden="true">{mod.icon}</span>
               <span className="text-sm font-medium text-ink">
-                {t(`Health.${mod.key}` as any)}
+                {mod.label}
               </span>
-              <span className="text-xs text-ink/40">{t("Health.comingSoon")}</span>
+              <span className="text-xs text-ink/40">Coming Soon</span>
             </Card>
           ))}
         </div>
       </div>
     </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <Card padding="sm" className="flex flex-col gap-1">
-      <span className="text-xs text-ink/50 uppercase tracking-wide">{label}</span>
-      <span className="text-sm font-medium text-ink capitalize">{value.toLowerCase()}</span>
-    </Card>
   );
 }

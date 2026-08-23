@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";

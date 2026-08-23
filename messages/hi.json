@@ -877,8 +877,8 @@
       {
         "id": "privacy-data",
         "category": "safety",
-        "question": "Is my health information private?",
-        "answer": "Yes, your privacy is very important to us. We do not share your personal health information with third parties. We recommend using a personal device and clearing browser history after reading sensitive topics, especially if you use a shared device."
+        "question": "Is my health data private?",
+        "answer": "Yes. Sakhi AI stores only what you choose to share, and you can change or delete it at any time. Your data is stored securely and never sold."
       },
       {
         "id": "first-period",

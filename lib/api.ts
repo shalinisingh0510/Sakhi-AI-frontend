@@ -259,7 +259,53 @@ export interface DailyCheckInResponse {
   symptoms: SymptomLogResponse[];
 }
 
+export interface DashboardProfileSnapshot {
+  is_complete: boolean;
+  mode: string;
+}
+
+export interface TodaySnapshot {
+  check_in_completed: boolean;
+  mood?: string;
+  energy?: string;
+  symptoms_count: number;
+  symptoms: any[];
+}
+
+export interface CycleSnapshot {
+  cycle_day?: number;
+  next_period?: string;
+  ovulation?: string;
+  confidence?: string;
+}
+
+export interface WellnessTrendsSnapshot {
+  symptom_days_last_30: number;
+  check_ins_last_7: number;
+  check_ins_last_30: number;
+}
+
+export interface TrackingStatusSnapshot {
+  check_in_status: string;
+  cycle_status: string;
+  symptoms_status: string;
+}
+
+export interface WellnessDashboardResponse {
+  date: string;
+  profile: DashboardProfileSnapshot;
+  today: TodaySnapshot;
+  cycle: CycleSnapshot;
+  trends: WellnessTrendsSnapshot;
+  tracking_status: TrackingStatusSnapshot;
+}
+
 export const wellnessApi = {
+  getDashboard: (token: string, localDate?: string) => {
+    const url = localDate ? `/wellness/dashboard?local_date=${localDate}` : "/wellness/dashboard";
+    return request<WellnessDashboardResponse>(url, { token });
+  },
+
   getTodayCheckIn: (token: string) =>
     request<DailyCheckInResponse>("/wellness/check-in/today", { token }),
 
