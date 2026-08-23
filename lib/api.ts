@@ -158,3 +158,8 @@ export const profileApi = {
       token,
     }),
 };
+
+export const healthApi = {
+  ping: () => request<{ status: string }>("/health"),
+};
+
