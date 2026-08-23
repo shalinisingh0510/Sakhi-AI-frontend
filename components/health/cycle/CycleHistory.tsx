@@ -1,4 +1,5 @@
 import { useTranslations, useFormatter } from "next-intl";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import type { MenstrualCycleResponse } from "@/lib/api";
 
@@ -18,9 +19,9 @@ export function CycleHistory({ cycles }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-ink">{t("title")}</h3>
-        <a href="/health/cycle/history" className="text-sm font-medium text-berry hover:underline">
+        <Link href="/health/cycle/history" className="text-sm font-medium text-berry hover:underline">
           {t("viewAll")}
-        </a>
+        </Link>
       </div>
 
       <div className="flex flex-col gap-2">
