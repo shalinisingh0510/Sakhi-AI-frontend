@@ -1,6 +1,4 @@
 // Re-use the request function from the main api client
-import { type RequestOptions } from '../api-types';
-
 export interface HealthService {
   ping(token?: string): Promise<{ status: string }>;
 }
