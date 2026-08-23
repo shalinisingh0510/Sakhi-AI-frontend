@@ -39,8 +39,9 @@ export function PeriodLogForm({ onSubmit, onCancel, isLoading }: Props) {
     setError("");
     try {
       await onSubmit(startDate);
-    } catch (err: any) {
-      setError(err.message || t("errorSubmit"));
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message || "Failed to log period");
     }
   };
 

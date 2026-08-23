@@ -200,9 +200,10 @@ export function HealthOnboarding({ token, locale }: Props) {
         }
       }
       router.push(`/${locale}/health`);
-    } catch (err: any) {
-      const msg = err?.message ?? t("errors.general");
-      // Surface age eligibility errors with a friendly message
+    } catch (err) {
+      const error = err as Error;
+      const msg = error.message || t("errors.general");
+      
       if (msg.includes("14")) {
         setErrors({ dob: t("errors.ageMinimum") });
         setStep(1);
