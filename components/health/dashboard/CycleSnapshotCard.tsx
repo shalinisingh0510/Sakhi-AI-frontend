@@ -2,8 +2,6 @@ import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
 import { type CycleSnapshot } from "@/lib/api";
 import Link from "next/link";
-import { format } from "date-fns";
-
 interface Props {
   cycle: CycleSnapshot;
   isCycleTrackingEnabled: boolean;
@@ -11,6 +9,10 @@ interface Props {
 
 export function CycleSnapshotCard({ cycle, isCycleTrackingEnabled }: Props) {
   const t = useTranslations("Wellness.dashboard");
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
 
   if (!isCycleTrackingEnabled) {
     return null; // Don't show the cycle card if cycle tracking isn't enabled
@@ -40,7 +42,7 @@ export function CycleSnapshotCard({ cycle, isCycleTrackingEnabled }: Props) {
                 <div className="bg-blush/10 rounded-xl p-3 border border-blush/20">
                   <span className="block text-xs text-ink/50 mb-1">{t("nextPeriod", { fallback: "Next period" })}</span>
                   <span className="font-medium text-ink text-sm">
-                    {format(new Date(cycle.next_period), "MMM d")}
+                    {formatDate(cycle.next_period)}
                   </span>
                 </div>
               )}
@@ -48,7 +50,7 @@ export function CycleSnapshotCard({ cycle, isCycleTrackingEnabled }: Props) {
                 <div className="bg-blush/10 rounded-xl p-3 border border-blush/20">
                   <span className="block text-xs text-ink/50 mb-1">{t("ovulation", { fallback: "Ovulation" })}</span>
                   <span className="font-medium text-ink text-sm">
-                    {format(new Date(cycle.ovulation), "MMM d")}
+                    {formatDate(cycle.ovulation)}
                   </span>
                 </div>
               )}
