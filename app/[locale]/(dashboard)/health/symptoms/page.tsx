@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { wellnessApi, SymptomLogResponse } from "@/lib/api";
-import { getAuthToken } from "@/lib/auth";
+import { useAuthStore } from "@/lib/auth-store";
 
 export default function SymptomsHistoryPage() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function SymptomsHistoryPage() {
   useEffect(() => {
     async function loadHistory() {
       try {
-        const token = getAuthToken();
+        const token = useAuthStore.getState().token;
         if (!token) throw new Error("unauthorized");
         // Limit to 50 for the list view
         const data = await wellnessApi.listSymptoms(token, 50, 0);
@@ -35,7 +35,7 @@ export default function SymptomsHistoryPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const token = getAuthToken();
+      const token = useAuthStore.getState().token;
       if (!token) return;
       await wellnessApi.deleteSymptom(token, id);
       setSymptoms(symptoms.filter(s => s.id !== id));

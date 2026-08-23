@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { DailyCheckIn } from "@/components/health/check-in";
 import { wellnessApi } from "@/lib/api";
-import { getAuthToken } from "@/lib/auth";
+import { useAuthStore } from "@/lib/auth-store";
 
 export default function CheckInPage() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function CheckInPage() {
   useEffect(() => {
     async function loadToday() {
       try {
-        const token = getAuthToken();
+        const token = useAuthStore.getState().token;
         if (!token) return;
         const data = await wellnessApi.getTodayCheckIn(token);
         setInitialData(data);
