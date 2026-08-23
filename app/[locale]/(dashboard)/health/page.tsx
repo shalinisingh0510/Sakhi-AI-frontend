@@ -43,7 +43,9 @@ export default function HealthPage({ params }: Props) {
         } else {
             setLoadState("no-profile");
         }
-      } catch (err: any) {
+      } catch (err) {
+        const error = err as Error;
+        console.error("Dashboard failed to load", error);
         setLoadState("error");
       }
     }

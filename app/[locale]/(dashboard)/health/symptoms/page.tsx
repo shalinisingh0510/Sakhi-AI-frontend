@@ -24,8 +24,9 @@ export default function SymptomsHistoryPage() {
         // Limit to 50 for the list view
         const data = await wellnessApi.listSymptoms(token, 50, 0);
         setSymptoms(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load symptom history");
+      } catch (err) {
+        const error = err as Error;
+        setError(error.message || "Failed to load symptom history");
       } finally {
         setLoading(false);
       }

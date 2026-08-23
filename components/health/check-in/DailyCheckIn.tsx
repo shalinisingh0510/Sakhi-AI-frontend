@@ -11,7 +11,7 @@ import { useAuthStore } from "@/lib/auth-store";
 interface Props {
   onSuccess?: () => void;
   onCancel?: () => void;
-  initialData?: any;
+  initialData?: Record<string, unknown>;
 }
 
 export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
@@ -26,10 +26,10 @@ export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
   const [mood, setMood] = useState<string | undefined>(initialData?.mood?.mood_code);
   const [energy, setEnergy] = useState<string | undefined>(initialData?.energy?.energy_level);
   const [symptoms, setSymptoms] = useState<any[]>(
-    initialData?.symptoms?.map((s: any) => ({
-      symptom_code: s.symptom_code,
-      category: s.category,
-      severity: s.severity,
+    (initialData?.symptoms as Record<string, unknown>[])?.map((s) => ({
+      symptom_code: s.symptom_code as string,
+      category: s.category as string,
+      severity: s.severity as string,
     })) || []
   );
   
@@ -54,9 +54,10 @@ export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
 
       await wellnessApi.submitCheckIn(token, payload);
       if (onSuccess) onSuccess();
-    } catch (err: any) {
-      console.error("Check-in error:", err);
-      setError(err.message || errT("generic"));
+    } catch (err) {
+      const error = err as Error;
+      console.error("Check-in error:", error);
+      setError(error.message || errT("generic"));
     } finally {
       setLoading(false);
     }
