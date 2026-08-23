@@ -221,6 +221,65 @@ export const cycleApi = {
     }),
 };
 
+// ---------------------------------------------------------------------------
+// Wellness API (Phase 3)
+// ---------------------------------------------------------------------------
+
+export interface SymptomLogCreate {
+  symptom_code: string;
+  category: string;
+  severity: string;
+  start_date: string;
+  end_date?: string;
+  notes?: string;
+}
+
+export interface SymptomLogResponse extends SymptomLogCreate {
+  id: string;
+  health_profile_id: string;
+  cycle_id?: string;
+  cycle_day?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DailyCheckInResponse {
+  log_date: string;
+  mood?: {
+    id: string;
+    mood_code: string;
+    intensity: string;
+    notes?: string;
+  };
+  energy?: {
+    id: string;
+    energy_level: string;
+    notes?: string;
+  };
+  symptoms: SymptomLogResponse[];
+}
+
+export const wellnessApi = {
+  getTodayCheckIn: (token: string) =>
+    request<DailyCheckInResponse>("/wellness/check-in/today", { token }),
+
+  submitCheckIn: (token: string, data: any) =>
+    request<DailyCheckInResponse>("/wellness/check-in", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  listSymptoms: (token: string, limit: number = 50, offset: number = 0) =>
+    request<SymptomLogResponse[]>(`/wellness/symptoms?limit=${limit}&offset=${offset}`, { token }),
+    
+  deleteSymptom: (token: string, logId: string) =>
+    request<void>(`/wellness/symptoms/${logId}`, {
+      method: "DELETE",
+      token,
+    }),
+};
+
 export interface ProfileUpdates {
   name?: string;
   ageGroup?: User["ageGroup"];
