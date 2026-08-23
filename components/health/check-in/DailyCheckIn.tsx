@@ -8,10 +8,16 @@ import { SymptomSelector } from "./SymptomSelector";
 import { wellnessApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 
+export interface InitialCheckInData {
+  mood?: { mood_code: string };
+  energy?: { energy_level: string };
+  symptoms?: Array<{ symptom_code: string; category: string; severity: string }>;
+}
+
 interface Props {
   onSuccess?: () => void;
   onCancel?: () => void;
-  initialData?: Record<string, unknown>;
+  initialData?: InitialCheckInData | null;
 }
 
 export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
@@ -25,11 +31,11 @@ export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
   // Form State
   const [mood, setMood] = useState<string | undefined>(initialData?.mood?.mood_code);
   const [energy, setEnergy] = useState<string | undefined>(initialData?.energy?.energy_level);
-  const [symptoms, setSymptoms] = useState<any[]>(
-    (initialData?.symptoms as Record<string, unknown>[])?.map((s) => ({
-      symptom_code: s.symptom_code as string,
-      category: s.category as string,
-      severity: s.severity as string,
+  const [symptoms, setSymptoms] = useState<Array<{ symptom_code: string; category: string; severity: string }>>(
+    initialData?.symptoms?.map((s) => ({
+      symptom_code: s.symptom_code,
+      category: s.category,
+      severity: s.severity,
     })) || []
   );
   

@@ -11,6 +11,8 @@ export default function SymptomsHistoryPage() {
   const t = useTranslations("Wellness.history");
   const ts = useTranslations("Wellness.symptoms");
   const tsev = useTranslations("Wellness.severity");
+  const tCommon = useTranslations("Common");
+  const tCheckin = useTranslations("Wellness.checkin");
   
   const [symptoms, setSymptoms] = useState<SymptomLogResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ export default function SymptomsHistoryPage() {
           onClick={() => router.back()}
           className="text-sm font-medium text-ink/60 hover:text-berry mb-4 flex items-center gap-1"
         >
-          ← {useTranslations("Common")("back")}
+          ← {tCommon("back")}
         </button>
         <h1 className="text-3xl font-bold text-ink">{t("title")}</h1>
         <p className="text-ink/70 mt-2">{t("subtitle")}</p>
@@ -77,7 +79,7 @@ export default function SymptomsHistoryPage() {
             onClick={() => router.push("/health/check-in")}
             className="mt-4 px-6 py-2 bg-berry text-white rounded-lg font-medium hover:bg-berry/90 transition-colors"
           >
-            {useTranslations("Wellness.checkin")("title")}
+            {tCheckin("title")}
           </button>
         </div>
       ) : (
@@ -107,7 +109,7 @@ export default function SymptomsHistoryPage() {
                 </div>
                 {log.notes && (
                   <p className="mt-2 text-sm text-ink/80 bg-sand/30 p-2 rounded-lg italic">
-                    "{log.notes}"
+                    &quot;{log.notes}&quot;
                   </p>
                 )}
               </div>
