@@ -6,7 +6,7 @@ import { MoodSelector } from "./MoodSelector";
 import { EnergySelector } from "./EnergySelector";
 import { SymptomSelector } from "./SymptomSelector";
 import { wellnessApi } from "@/lib/api";
-import { getAuthToken } from "@/lib/auth";
+import { useAuthStore } from "@/lib/auth-store";
 
 interface Props {
   onSuccess?: () => void;
@@ -17,6 +17,7 @@ interface Props {
 export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
   const t = useTranslations("Wellness.checkin");
   const errT = useTranslations("Common.errors");
+  const token = useAuthStore((s) => s.token);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +40,6 @@ export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const token = getAuthToken();
       if (!token) throw new Error("unauthorized");
 
       const payload = {
