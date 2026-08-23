@@ -69,7 +69,17 @@ export function HealthDashboard({ profile }: Props) {
           {t("dashboard.comingSoon")}
         </h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {COMING_SOON_MODULES.map((mod) => (
+          <a href="/health/cycle" className="block">
+            <Card padding="md" className="flex flex-col items-center gap-2 text-center hover:bg-peach/5 transition-colors h-full">
+              <span className="text-2xl" aria-hidden="true">🌸</span>
+              <span className="text-sm font-medium text-ink">
+                {t("Health.cycle")}
+              </span>
+              <span className="text-xs text-berry font-medium mt-auto">Open tracker →</span>
+            </Card>
+          </a>
+          
+          {COMING_SOON_MODULES.filter(m => m.key !== 'cycle').map((mod) => (
             <Card key={mod.key} padding="md" className="flex flex-col items-center gap-2 text-center opacity-60">
               <span className="text-2xl" aria-hidden="true">{mod.icon}</span>
               <span className="text-sm font-medium text-ink">
