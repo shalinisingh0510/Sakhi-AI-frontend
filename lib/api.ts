@@ -159,7 +159,103 @@ export const profileApi = {
     }),
 };
 
+export interface HealthProfileData {
+  id: string;
+  user_id: string;
+  date_of_birth: string;
+  height_cm: number | null;
+  weight_kg: number | null;
+  activity_level: string;
+  diet_type: string;
+  food_allergies: string[];
+  dietary_restrictions: string[];
+  cycle_tracking_enabled: boolean;
+  nutrition_tracking_enabled: boolean;
+  activity_tracking_enabled: boolean;
+  ai_health_personalization_enabled: boolean;
+  age_band: string;
+  is_health_hub_allowed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HealthProfileCreate {
+  date_of_birth: string;
+  height_cm?: number | null;
+  weight_kg?: number | null;
+  activity_level: string;
+  diet_type: string;
+  food_allergies?: string[];
+  dietary_restrictions?: string[];
+  cycle_tracking_enabled?: boolean;
+  nutrition_tracking_enabled?: boolean;
+  activity_tracking_enabled?: boolean;
+  ai_health_personalization_enabled?: boolean;
+}
+
+export interface HealthCondition {
+  id: string;
+  user_id: string;
+  condition_code: string;
+  display_name: string;
+  status: string;
+  reported_at: string;
+  created_at: string;
+}
+
 export const healthApi = {
   ping: () => request<{ status: string }>("/health"),
+
+  getProfile: (token: string) =>
+    request<HealthProfileData>("/health-profile", { token }),
+
+  createProfile: (data: HealthProfileCreate, token: string) =>
+    request<HealthProfileData>("/health-profile", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  updateProfile: (data: Partial<HealthProfileCreate>, token: string) =>
+    request<HealthProfileData>("/health-profile", {
+      method: "PATCH",
+      body: data,
+      token,
+    }),
+
+  getConditions: (token: string) =>
+    request<HealthCondition[]>("/health-profile/conditions", { token }),
+
+  addCondition: (
+    data: { condition_code: string; display_name: string; notes?: string },
+    token: string
+  ) =>
+    request<HealthCondition>("/health-profile/conditions", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  removeCondition: (conditionId: string, token: string) =>
+    request<void>(`/health-profile/conditions/${conditionId}`, {
+      method: "DELETE",
+      token,
+    }),
+
+  updatePermissions: (
+    data: {
+      cycle_tracking_enabled?: boolean;
+      nutrition_tracking_enabled?: boolean;
+      activity_tracking_enabled?: boolean;
+      ai_health_personalization_enabled?: boolean;
+    },
+    token: string
+  ) =>
+    request<HealthProfileData>("/health-profile/permissions", {
+      method: "PATCH",
+      body: data,
+      token,
+    }),
 };
+
 
