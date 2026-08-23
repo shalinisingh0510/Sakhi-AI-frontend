@@ -139,7 +139,7 @@ export const learnApi = {
 
 export const progressApi = {
   getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
-  getAnalytics: (token: string) => request<any>("/analytics/user", { token }),
+  getAnalytics: (token: string) => request<Record<string, unknown>>("/analytics/user", { token }),
 };
 
 export interface CurrentCycleResponse {
@@ -269,7 +269,7 @@ export interface TodaySnapshot {
   mood?: string;
   energy?: string;
   symptoms_count: number;
-  symptoms: any[];
+  symptoms: Record<string, unknown>[];
 }
 
 export interface CycleSnapshot {
@@ -309,7 +309,7 @@ export const wellnessApi = {
   getTodayCheckIn: (token: string) =>
     request<DailyCheckInResponse>("/wellness/check-in/today", { token }),
 
-  submitCheckIn: (token: string, data: any) =>
+  submitCheckIn: (token: string, data: Record<string, unknown>) =>
     request<DailyCheckInResponse>("/wellness/check-in", {
       method: "POST",
       body: data,
