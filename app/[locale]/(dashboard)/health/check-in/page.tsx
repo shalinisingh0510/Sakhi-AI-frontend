@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { DailyCheckIn } from "@/components/health/check-in";
+import { DailyCheckIn, type InitialCheckInData } from "@/components/health/check-in/DailyCheckIn";
 import { wellnessApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 
 export default function CheckInPage() {
   const router = useRouter();
-  const t = useTranslations("Wellness.checkin");
-  const [initialData, setInitialData] = useState<any>(null);
+  const tCommon = useTranslations("Common");
+  const [initialData, setInitialData] = useState<InitialCheckInData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function CheckInPage() {
           onClick={() => router.back()}
           className="text-sm font-medium text-ink/60 hover:text-berry mb-4 flex items-center gap-1"
         >
-          ← {useTranslations("Common")("back")}
+          ← {tCommon("back")}
         </button>
       </header>
 

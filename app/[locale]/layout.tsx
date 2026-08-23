@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/lib/i18n-config';
 
@@ -13,11 +13,9 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const validLocale: Locale = locales.includes(locale as Locale) ? (locale as Locale) : locales[0];
-  const t = await getTranslations({ locale: validLocale, namespace: 'common' });
-
+  
   return {
-    title: t('appName'),
+    title: 'Sakhi AI',
     description: 'Your trusted guide to women\'s health education',
   };
 }
