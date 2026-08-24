@@ -10,7 +10,7 @@ const intlMiddleware = createMiddleware({
 });
 
 // Routes that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/chat", "/learn", "/profile", "/settings", "/progress", "/notifications", "/search", "/faq", "/help"];
+const PROTECTED_PATHS = ["/dashboard", "/health", "/chat", "/learn", "/profile", "/settings", "/progress", "/notifications", "/search", "/faq", "/help"];
 // Routes only for unauthenticated users
 const AUTH_PATHS = ["/login", "/register", "/onboarding"];
 
