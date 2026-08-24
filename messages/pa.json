@@ -1202,5 +1202,22 @@
       "energy": "ਊਰਜਾ",
       "notLogged": "ਦਰਜ ਨਹੀਂ ਹੈ"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "ਪੋਸ਼ਣ", "history": "ਇਤਿਹਾਸ", "emptyTitle": "ਅੱਜ ਕੋਈ ਖਾਣਾ ਦਰਜ ਨਹੀਂ", "emptySubtitle": "ਪੋਸ਼ਣ ਟ੍ਰੈਕ ਕਰਨ ਲਈ ਖਾਣਾ ਲੱਭੋ ਅਤੇ ਜੋੜੋ", "todaysMeals": "ਅੱਜ ਦੇ ਖਾਣੇ" },
+    "search": { "title": "ਖਾਣਾ ਜੋੜੋ", "placeholder": "ਰੋਟੀ, ਦਾਲ, ਚਾਵਲ ਲੱਭੋ...", "label": "ਖਾਣਾ ਲੱਭੋ", "button": "ਲੱਭੋ", "noResults": "ਖਾਣਾ ਨਹੀਂ ਮਿਲਿਆ।" },
+    "meals": { "breakfast": "ਨਾਸ਼ਤਾ", "lunch": "ਦੁਪਹਿਰ ਦਾ ਖਾਣਾ", "dinner": "ਰਾਤ ਦਾ ਖਾਣਾ", "snack": "ਸਨੈਕ", "other": "ਹੋਰ" },
+    "meal": { "empty": "ਕੋਈ ਖਾਣਾ ਦਰਜ ਨਹੀਂ" },
+    "nutrients": { "calories": "ਕੈਲ", "protein": "ਪ੍ਰੋਟੀਨ", "carbs": "ਕਾਰਬਸ", "fat": "ਚਰਬੀ", "fiber": "ਫਾਈਬਰ" },
+    "summary": { "todayTotal": "ਅੱਜ ਦਾ ਪੋਸ਼ਣ", "foodsLogged": "ਖਾਣੇ", "informationalNote": "ਇਹ ਜਾਣਕਾਰੀ ਮੁੱਲ ਹਨ, ਖੁਰਾਕ ਟੀਚੇ ਨਹੀਂ।" },
+    "snapshot": { "title": "ਅੱਜ ਦਾ ਪੋਸ਼ਣ", "empty": "ਅੱਜ ਕੋਈ ਖਾਣਾ ਨਹੀਂ ਜੋੜਿਆ" },
+    "log": { "serving": "ਸਰਵਿੰਗ ਸਾਈਜ਼", "quantity": "ਮਾਤਰਾ", "meal": "ਖਾਣਾ", "date": "ਤਾਰੀਖ" },
+    "detail": { "nutritionFor": "{grams}g ਲਈ ਪੋਸ਼ਣ", "estimatedNote": "ਪੋਸ਼ਣ ਮੁੱਲ ਅਨੁਮਾਨਿਤ ਹਨ।" },
+    "allergen": { "warningTitle": "ਅਲਰਜੀ ਚੇਤਾਵਨੀ" },
+    "badges": { "dietMismatch": "ਤੁਹਾਡੀ ਖੁਰਾਕ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾ ਸਕਦਾ" },
+    "history": { "title": "ਪੋਸ਼ਣ ਇਤਿਹਾਸ", "subtitle": "ਤੁਹਾਡਾ ਖਾਣੇ ਦਾ ਲੌਗ", "from": "ਤੋਂ", "to": "ਤੱਕ", "apply": "ਲਾਗੂ ਕਰੋ", "empty": "ਇਸ ਸਮੇਂ ਲਈ ਕੋਈ ਡੇਟਾ ਨਹੀਂ" },
+    "actions": { "addFood": "ਖਾਣਾ ਜੋੜੋ", "cancel": "ਰੱਦ ਕਰੋ", "logging": "ਜੋੜ ਰਹੇ ਹਾਂ...", "edit": "ਸੋਧੋ", "delete": "ਮਿਟਾਓ", "retry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼", "viewAll": "ਸਭ ਦੇਖੋ" },
+    "toast": { "foodLogged": "ਖਾਣਾ ਜੋੜਿਆ ਗਿਆ", "foodDeleted": "ਖਾਣਾ ਮਿਟਾਇਆ ਗਿਆ", "foodUpdated": "ਖਾਣਾ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ" },
+    "errors": { "notAuthenticated": "ਪੋਸ਼ਣ ਟ੍ਰੈਕ ਕਰਨ ਲਈ ਲੌਗਇਨ ਕਰੋ" }
   }
-}
+}

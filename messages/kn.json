@@ -1202,5 +1202,22 @@
       "energy": "ಶಕ್ತಿ",
       "notLogged": "ದಾಖಲಿಸಿಲ್ಲ"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "ಪೋಷಣೆ", "history": "ಇತಿಹಾಸ", "emptyTitle": "ಇಂದು ಯಾವ ಆಹಾರವೂ ದಾಖಲಿಸಲಿಲ್ಲ", "emptySubtitle": "ಪೋಷಣೆ ಟ್ರ್ಯಾಕ್ ಮಾಡಲು ಆಹಾರ ಹುಡುಕಿ ಸೇರಿಸಿ", "todaysMeals": "ಇಂದಿನ ಊಟಗಳು" },
+    "search": { "title": "ಆಹಾರ ಸೇರಿಸಿ", "placeholder": "ರೊಟ್ಟಿ, ದಾಲ್, ಅನ್ನ ಹುಡುಕಿ...", "label": "ಆಹಾರ ಹುಡುಕಿ", "button": "ಹುಡುಕಿ", "noResults": "ಆಹಾರ ಕಂಡುಬಂದಿಲ್ಲ." },
+    "meals": { "breakfast": "ತಿಂಡಿ", "lunch": "ಊಟ", "dinner": "ರಾತ್ರಿ ಊಟ", "snack": "ಸ್ನ್ಯಾಕ್", "other": "ಇತರ" },
+    "meal": { "empty": "ಯಾವ ಆಹಾರವೂ ದಾಖಲಿಸಿಲ್ಲ" },
+    "nutrients": { "calories": "ಕ್ಯಾಲ್", "protein": "ಪ್ರೊಟೀನ್", "carbs": "ಕಾರ್ಬ್ಸ್", "fat": "ಕೊಬ್ಬು", "fiber": "ಫೈಬರ್" },
+    "summary": { "todayTotal": "ಇಂದಿನ ಪೋಷಣೆ", "foodsLogged": "ಆಹಾರಗಳು", "informationalNote": "ಇವು ಮಾಹಿತಿ ಮೌಲ್ಯಗಳು, ಆಹಾರ ಗುರಿಗಳಲ್ಲ." },
+    "snapshot": { "title": "ಇಂದಿನ ಪೋಷಣೆ", "empty": "ಇಂದು ಯಾವ ಆಹಾರವೂ ಸೇರಿಸಿಲ್ಲ" },
+    "log": { "serving": "ಸರ್ವಿಂಗ್ ಗಾತ್ರ", "quantity": "ಪ್ರಮಾಣ", "meal": "ಊಟ", "date": "ದಿನಾಂಕ" },
+    "detail": { "nutritionFor": "{grams}g ಗಾಗಿ ಪೋಷಣೆ", "estimatedNote": "ಪೋಷಕಾಂಶ ಮೌಲ್ಯಗಳು ಅಂದಾಜಿನವಾಗಿವೆ." },
+    "allergen": { "warningTitle": "ಅಲರ್ಜಿ ಎಚ್ಚರಿಕೆ" },
+    "badges": { "dietMismatch": "ನಿಮ್ಮ ಆಹಾರ ಕ್ರಮಕ್ಕೆ ಹೊಂದದಿರಬಹುದು" },
+    "history": { "title": "ಪೋಷಣೆ ಇತಿಹಾಸ", "subtitle": "ನಿಮ್ಮ ಆಹಾರ ದಾಖಲೆ", "from": "ಇಂದ", "to": "ವರೆಗೆ", "apply": "ಅನ್ವಯಿಸಿ", "empty": "ಈ ಅವಧಿಗೆ ಡೇಟಾ ಇಲ್ಲ" },
+    "actions": { "addFood": "ಆಹಾರ ಸೇರಿಸಿ", "cancel": "ರದ್ದುಮಾಡಿ", "logging": "ಸೇರಿಸುತ್ತಿದ್ದೇವೆ...", "edit": "ಸಂಪಾದಿಸಿ", "delete": "ಅಳಿಸಿ", "retry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ", "viewAll": "ಎಲ್ಲ ನೋಡಿ" },
+    "toast": { "foodLogged": "ಆಹಾರ ಸೇರಿಸಲಾಗಿದೆ", "foodDeleted": "ಆಹಾರ ಅಳಿಸಲಾಗಿದೆ", "foodUpdated": "ಆಹಾರ ನವೀಕರಿಸಲಾಗಿದೆ" },
+    "errors": { "notAuthenticated": "ಪೋಷಣೆ ಟ್ರ್ಯಾಕ್ ಮಾಡಲು ಲಾಗಿನ್ ಮಾಡಿ" }
   }
-}
+}

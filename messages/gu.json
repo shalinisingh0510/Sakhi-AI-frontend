@@ -1202,5 +1202,22 @@
       "energy": "ઉર્જા",
       "notLogged": "નોંધાયેલ નથી"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "પોષણ", "history": "ઇતિહાસ", "emptyTitle": "આજે કોઈ ખોરાક નોંધ્યો નથી", "emptySubtitle": "પોષણ ટ્રૅક કરવા માટે ખોરાક શોધો અને ઉમેરો", "todaysMeals": "આજના ભોજન" },
+    "search": { "title": "ખોરાક ઉમેરો", "placeholder": "રોટી, દાળ, ભાત શોધો...", "label": "ખોરાક શોધો", "button": "શોધો", "noResults": "ખોરાક મળ્યો નહીં." },
+    "meals": { "breakfast": "નાસ્તો", "lunch": "બપોરનું ભોજન", "dinner": "રાત્રિ ભોજન", "snack": "સ્નૅક", "other": "અન્ય" },
+    "meal": { "empty": "કોઈ ખોરાક નોંધ્યો નથી" },
+    "nutrients": { "calories": "કૅલ", "protein": "પ્રોટીન", "carbs": "કાર્બ્સ", "fat": "ચરબી", "fiber": "ફાઇબર" },
+    "summary": { "todayTotal": "આજનું પોષણ", "foodsLogged": "ખોરાક", "informationalNote": "આ માહિતીપ્રદ મૂલ્યો છે, આહાર લક્ષ્ય નથી." },
+    "snapshot": { "title": "આજનું પોષણ", "empty": "આજે કોઈ ખોરાક ઉમેર્યો નથી" },
+    "log": { "serving": "સર્વિંગ સાઈઝ", "quantity": "જથ્થો", "meal": "ભોજન", "date": "તારીખ" },
+    "detail": { "nutritionFor": "{grams}g માટે પોષણ", "estimatedNote": "પોષક મૂલ્યો અંદાજિત છે." },
+    "allergen": { "warningTitle": "એલર્જન ચેતવણી" },
+    "badges": { "dietMismatch": "તમારા આહાર સાથે ન મળે" },
+    "history": { "title": "પોષણ ઇતિહાસ", "subtitle": "તમારો ખોરાક લૉગ", "from": "થી", "to": "સુધી", "apply": "લાગુ કરો", "empty": "આ સમયગાળા માટે ડેટા નથી" },
+    "actions": { "addFood": "ખોરાક ઉમેરો", "cancel": "રદ કરો", "logging": "ઉમેરી રહ્યા છીએ...", "edit": "સંપાદિત", "delete": "કાઢી નાખો", "retry": "ફરી પ્રયાસ", "viewAll": "બધું જુઓ" },
+    "toast": { "foodLogged": "ખોરાક ઉમેરાયો", "foodDeleted": "ખોરાક કાઢી નાખ્યો", "foodUpdated": "ખોરાક અપડેટ થયો" },
+    "errors": { "notAuthenticated": "પોષણ ટ્રૅક કરવા માટે લૉગ ઇન કરો" }
   }
-}
+}

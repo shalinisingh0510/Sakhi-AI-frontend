@@ -1211,5 +1211,22 @@
       "energy": "శక్తి",
       "notLogged": "నమోదు కాలేదు"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "పోషణ", "history": "చరిత్ర", "emptyTitle": "ఈరోజు ఆహారం నమోదు చేయలేదు", "emptySubtitle": "పోషణను ట్రాక్ చేయడానికి ఆహారాన్ని వెతికి జోడించండి", "todaysMeals": "ఈరోజు భోజనాలు" },
+    "search": { "title": "ఆహారం జోడించు", "placeholder": "రొట్టె, పప్పు, అన్నం వెతకండి...", "label": "ఆహారం వెతుకు", "button": "వెతుకు", "noResults": "ఆహారం కనుగొనబడలేదు." },
+    "meals": { "breakfast": "అల్పాహారం", "lunch": "భోజనం", "dinner": "రాత్రి భోజనం", "snack": "స్నాక్", "other": "ఇతర" },
+    "meal": { "empty": "ఆహారం నమోదు కాలేదు" },
+    "nutrients": { "calories": "కేలరీలు", "protein": "ప్రోటీన్", "carbs": "కార్బ్స్", "fat": "కొవ్వు", "fiber": "ఫైబర్" },
+    "summary": { "todayTotal": "ఈరోజు పోషణ", "foodsLogged": "ఆహారాలు", "informationalNote": "ఇవి సమాచార విలువలు, ఆహార లక్ష్యాలు కాదు." },
+    "snapshot": { "title": "ఈరోజు పోషణ", "empty": "ఈరోజు ఆహారం జోడించలేదు" },
+    "log": { "serving": "సర్వింగ్ సైజ్", "quantity": "పరిమాణం", "meal": "భోజనం", "date": "తేదీ" },
+    "detail": { "nutritionFor": "{grams}g కోసం పోషణ", "estimatedNote": "పోషక విలువలు అంచనాలు." },
+    "allergen": { "warningTitle": "అలెర్జెన్ హెచ్చరిక" },
+    "badges": { "dietMismatch": "మీ ఆహారానికి సరిపోకపోవచ్చు" },
+    "history": { "title": "పోషణ చరిత్ర", "subtitle": "మీ ఆహార లాగ్", "from": "నుండి", "to": "వరకు", "apply": "వర్తించు", "empty": "ఈ కాలానికి డేటా లేదు" },
+    "actions": { "addFood": "ఆహారం జోడించు", "cancel": "రద్దు", "logging": "జోడిస్తున్నాం...", "edit": "సవరించు", "delete": "తొలగించు", "retry": "మళ్ళీ ప్రయత్నించు", "viewAll": "అన్నీ చూడు" },
+    "toast": { "foodLogged": "ఆహారం జోడించబడింది", "foodDeleted": "ఆహారం తొలగించబడింది", "foodUpdated": "ఆహారం నవీకరించబడింది" },
+    "errors": { "notAuthenticated": "పోషణ ట్రాక్ చేయడానికి లాగిన్ చేయండి" }
   }
-}
+}

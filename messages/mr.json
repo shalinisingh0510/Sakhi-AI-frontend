@@ -1202,5 +1202,22 @@
       "energy": "ऊर्जा",
       "notLogged": "नोंदवलेले नाही"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "पोषण", "history": "इतिहास", "emptyTitle": "आज कोणताही आहार नोंदवला नाही", "emptySubtitle": "पोषण ट्रॅक करण्यासाठी अन्न शोधा आणि जोडा", "todaysMeals": "आजचे जेवण" },
+    "search": { "title": "अन्न जोडा", "placeholder": "पोळी, डाळ, भात शोधा...", "label": "अन्न शोधा", "button": "शोधा", "noResults": "अन्न आढळले नाही." },
+    "meals": { "breakfast": "नाश्ता", "lunch": "दुपारचे जेवण", "dinner": "रात्रीचे जेवण", "snack": "स्नॅक", "other": "इतर" },
+    "meal": { "empty": "कोणतेही अन्न नोंदवले नाही" },
+    "nutrients": { "calories": "कॅलरी", "protein": "प्रथिने", "carbs": "कार्ब्स", "fat": "चरबी", "fiber": "फायबर" },
+    "summary": { "todayTotal": "आजचे पोषण", "foodsLogged": "पदार्थ", "informationalNote": "हे माहितीपूर्ण मूल्ये आहेत, आहार लक्ष्य नाही." },
+    "snapshot": { "title": "आजचे पोषण", "empty": "आज कोणताही आहार जोडला नाही" },
+    "log": { "serving": "सर्व्हिंग साइज", "quantity": "प्रमाण", "meal": "जेवण", "date": "तारीख" },
+    "detail": { "nutritionFor": "{grams}g साठी पोषण", "estimatedNote": "पोषण मूल्ये अंदाजे आहेत." },
+    "allergen": { "warningTitle": "ॲलर्जन इशारा" },
+    "badges": { "dietMismatch": "तुमच्या आहाराशी जुळत नाही" },
+    "history": { "title": "पोषण इतिहास", "subtitle": "तुमचा आहार लॉग", "from": "पासून", "to": "पर्यंत", "apply": "लागू करा", "empty": "या कालावधीसाठी डेटा नाही" },
+    "actions": { "addFood": "अन्न जोडा", "cancel": "रद्द करा", "logging": "जोडत आहोत...", "edit": "संपादित करा", "delete": "हटवा", "retry": "पुन्हा प्रयत्न करा", "viewAll": "सर्व पहा" },
+    "toast": { "foodLogged": "अन्न जोडले गेले", "foodDeleted": "अन्न हटवले गेले", "foodUpdated": "अन्न अपडेट केले गेले" },
+    "errors": { "notAuthenticated": "पोषण ट्रॅक करण्यासाठी लॉग इन करा" }
   }
-}
+}
