@@ -443,4 +443,184 @@ export const healthApi = {
     }),
 };
 
+// ---------------------------------------------------------------------------
+// Nutrition API (Phase 5)
+// ---------------------------------------------------------------------------
 
+export interface NutritionFacts {
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+}
+
+export interface FoodServingOptionResponse {
+  id: string;
+  food_id: string;
+  serving_label: string;
+  quantity_grams: number;
+  is_default: boolean;
+  sort_order: number;
+}
+
+export interface FoodSearchResultResponse {
+  id: string;
+  name_en: string;
+  name_hi: string | null;
+  category: string;
+  diet_type: string;
+  calories_per_100g: number;
+  data_quality: string;
+  default_serving_label: string | null;
+  default_serving_grams: number | null;
+  allergen_warnings: string[];
+  is_diet_compatible: boolean;
+}
+
+export interface FoodSearchResponse {
+  results: FoodSearchResultResponse[];
+  total_count: number;
+  page: number;
+  page_size: number;
+  query: string | null;
+}
+
+export interface FoodDetailResponse {
+  id: string;
+  name_en: string;
+  name_hi: string | null;
+  name_regional: string | null;
+  category: string;
+  cuisine: string | null;
+  diet_type: string;
+  search_aliases: string[];
+  calories_per_100g: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+  sugar_g: number;
+  sodium_mg: number;
+  iron_mg: number | null;
+  calcium_mg: number | null;
+  folate_mcg: number | null;
+  data_quality: string;
+  data_source: string | null;
+  is_active: boolean;
+  serving_options: FoodServingOptionResponse[];
+  allergen_warnings: string[];
+  is_diet_compatible: boolean;
+}
+
+export interface NutritionLogItemResponse {
+  id: string;
+  nutrition_log_id: string;
+  food_id: string;
+  serving_option_id: string | null;
+  quantity_servings: number;
+  quantity_grams: number;
+  food_name_snapshot: string;
+  calories_snapshot: number;
+  protein_snapshot: number;
+  carbs_snapshot: number;
+  fat_snapshot: number;
+  fiber_snapshot: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MealSummaryResponse {
+  meal_type: string;
+  items: NutritionLogItemResponse[];
+  subtotal: NutritionFacts;
+}
+
+export interface DailyNutritionResponse {
+  log_date: string;
+  meals: MealSummaryResponse[];
+  total: NutritionFacts;
+  foods_logged_count: number;
+  is_empty: boolean;
+}
+
+export interface NutritionHistoryEntry {
+  log_date: string;
+  total: NutritionFacts;
+  foods_logged_count: number;
+}
+
+export interface NutritionHistoryResponse {
+  entries: NutritionHistoryEntry[];
+  start_date: string;
+  end_date: string;
+}
+
+export interface NutritionLogItemCreate {
+  food_id: string;
+  serving_option_id?: string;
+  quantity_servings: number;
+  quantity_grams_override?: number;
+  meal_type: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK" | "OTHER";
+  log_date: string;
+}
+
+export interface NutritionLogItemUpdate {
+  serving_option_id?: string;
+  quantity_servings?: number;
+  quantity_grams_override?: number;
+  meal_type?: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK" | "OTHER";
+  log_date?: string;
+}
+
+export const nutritionApi = {
+  searchFoods: (
+    token: string,
+    params: { q?: string; category?: string; diet_type?: string; page?: number; page_size?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params.q) qs.set("q", params.q);
+    if (params.category) qs.set("category", params.category);
+    if (params.diet_type) qs.set("diet_type", params.diet_type);
+    if (params.page) qs.set("page", String(params.page));
+    if (params.page_size) qs.set("page_size", String(params.page_size));
+    return request<FoodSearchResponse>(`/nutrition/foods?${qs.toString()}`, { token });
+  },
+
+  getFoodDetail: (token: string, foodId: string) =>
+    request<FoodDetailResponse>(`/nutrition/foods/${foodId}`, { token }),
+
+  logFood: (token: string, data: NutritionLogItemCreate) =>
+    request<NutritionLogItemResponse>("/nutrition/logs", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  getTodaySummary: (token: string, localDate?: string) => {
+    const url = localDate
+      ? `/nutrition/logs/today?local_date=${localDate}`
+      : "/nutrition/logs/today";
+    return request<DailyNutritionResponse>(url, { token });
+  },
+
+  getHistory: (token: string, startDate?: string, endDate?: string) => {
+    const qs = new URLSearchParams();
+    if (startDate) qs.set("start_date", startDate);
+    if (endDate) qs.set("end_date", endDate);
+    return request<NutritionHistoryResponse>(`/nutrition/logs/history?${qs.toString()}`, { token });
+  },
+
+  updateLogItem: (token: string, itemId: string, data: NutritionLogItemUpdate) =>
+    request<NutritionLogItemResponse>(`/nutrition/logs/items/${itemId}`, {
+      method: "PATCH",
+      body: data,
+      token,
+    }),
+
+  deleteLogItem: (token: string, itemId: string) =>
+    request<void>(`/nutrition/logs/items/${itemId}`, {
+      method: "DELETE",
+      token,
+    }),
+};
