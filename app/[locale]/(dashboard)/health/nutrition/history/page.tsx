@@ -9,7 +9,7 @@ import { nutritionApi, type NutritionHistoryResponse } from "@/lib/api";
 export default function NutritionHistoryPage() {
   const t = useTranslations("Nutrition");
   const { user } = useAuthStore();
-  const token = user ? (useAuthStore.getState() as any).token : null;
+  const token = user ? useAuthStore.getState().token : null;
 
   const today = new Date().toISOString().split("T")[0];
   const sevenDaysAgo = new Date(Date.now() - 6 * 86400000).toISOString().split("T")[0];

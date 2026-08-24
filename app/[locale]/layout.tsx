@@ -12,7 +12,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  await params;
   
   return {
     title: 'Sakhi AI',

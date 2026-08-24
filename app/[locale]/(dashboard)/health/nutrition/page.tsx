@@ -28,7 +28,7 @@ export default function NutritionPage() {
   const t = useTranslations("Nutrition");
   const router = useRouter();
   const { user } = useAuthStore();
-  const token = user ? (useAuthStore.getState() as any).token : null;
+  const token = user ? useAuthStore.getState().token : null;
 
   const today = new Date().toISOString().split("T")[0];
   const [summary, setSummary] = useState<DailyNutritionResponse | null>(null);
@@ -87,7 +87,7 @@ export default function NutritionPage() {
     await fetchSummary();
   };
 
-  const handleAddFoodForMeal = async (mealType: string, query = "") => {
+  const handleAddFoodForMeal = async (mealType: string) => {
     // If user clicks "+ Add food" on a specific meal, pre-populate meal
     // We open the search with the selected meal preset
     if (!token) return;

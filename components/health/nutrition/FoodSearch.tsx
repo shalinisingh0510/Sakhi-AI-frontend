@@ -7,10 +7,9 @@ import type { FoodSearchResultResponse } from "@/lib/api";
 interface Props {
   onSelect: (food: FoodSearchResultResponse) => void;
   onSearch: (query: string) => Promise<FoodSearchResultResponse[]>;
-  isLoading?: boolean;
 }
 
-export function FoodSearch({ onSelect, onSearch, isLoading }: Props) {
+export function FoodSearch({ onSelect, onSearch }: Props) {
   const t = useTranslations("Nutrition");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FoodSearchResultResponse[]>([]);
