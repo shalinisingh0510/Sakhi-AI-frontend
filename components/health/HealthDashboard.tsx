@@ -26,7 +26,7 @@ interface Props {
 export function HealthDashboard({ data }: Props) {
   const t = useTranslations("HealthProfile");
   const { user } = useAuthStore();
-  const token = user ? (useAuthStore.getState() as any).token : null;
+  const token = user ? useAuthStore.getState().token : null;
 
   // Nutrition snapshot state
   const [nutritionTotal, setNutritionTotal] = useState<NutritionFacts | null>(null);
