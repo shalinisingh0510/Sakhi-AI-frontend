@@ -269,7 +269,7 @@ export interface TodaySnapshot {
   mood?: string;
   energy?: string;
   symptoms_count: number;
-  symptoms: Record<string, unknown>[];
+  symptoms: { symptom_code: string; severity: string }[];
 }
 
 export interface CycleSnapshot {
