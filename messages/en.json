@@ -1080,5 +1080,59 @@
       "energy": "Energy",
       "notLogged": "Not logged"
     }
+  },
+  "Nutrition": {
+    "hub": {
+      "title": "Nutrition",
+      "history": "History",
+      "emptyTitle": "No foods logged today",
+      "emptySubtitle": "Search and add foods to track your nutrition",
+      "todaysMeals": "Today's Meals"
+    },
+    "search": {
+      "title": "Add Food",
+      "placeholder": "Search roti, dal, rice...",
+      "label": "Search food",
+      "button": "Search",
+      "noResults": "No foods found. Try a different name."
+    },
+    "meals": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack",
+      "other": "Other"
+    },
+    "meal": { "empty": "No foods logged" },
+    "nutrients": { "calories": "Cal", "protein": "Protein", "carbs": "Carbs", "fat": "Fat", "fiber": "Fiber" },
+    "summary": {
+      "todayTotal": "Today's Nutrition",
+      "foodsLogged": "foods",
+      "informationalNote": "These are informational values, not dietary targets."
+    },
+    "snapshot": { "title": "Nutrition Today", "empty": "No foods logged yet today" },
+    "log": { "serving": "Serving Size", "quantity": "Quantity", "meal": "Meal", "date": "Date" },
+    "detail": { "nutritionFor": "Nutrition for {grams}g", "estimatedNote": "Nutritional values are approximate estimates." },
+    "allergen": { "warningTitle": "Allergen Warning" },
+    "badges": { "dietMismatch": "May not match your diet" },
+    "history": {
+      "title": "Nutrition History",
+      "subtitle": "Your food log over time",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "empty": "No nutrition data for this period"
+    },
+    "actions": {
+      "addFood": "Add Food",
+      "cancel": "Cancel",
+      "logging": "Adding...",
+      "edit": "Edit",
+      "delete": "Delete",
+      "retry": "Try Again",
+      "viewAll": "View all"
+    },
+    "toast": { "foodLogged": "Food added", "foodDeleted": "Food removed", "foodUpdated": "Food updated" },
+    "errors": { "notAuthenticated": "Please log in to track nutrition" }
   }
 }
