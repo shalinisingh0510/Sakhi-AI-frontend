@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import {
@@ -12,7 +11,6 @@ import {
   type DailyNutritionResponse,
   type NutritionLogItemCreate,
   type NutritionLogItemResponse,
-  type NutritionLogItemUpdate,
 } from "@/lib/api";
 import { FoodSearch } from "@/components/health/nutrition/FoodSearch";
 import { FoodDetailModal } from "@/components/health/nutrition/FoodDetailModal";
@@ -26,7 +24,6 @@ type ModalState =
 
 export default function NutritionPage() {
   const t = useTranslations("Nutrition");
-  const router = useRouter();
   const { user } = useAuthStore();
   const token = user ? useAuthStore.getState().token : null;
 
@@ -47,8 +44,12 @@ export default function NutritionPage() {
     try {
       const data = await nutritionApi.getTodaySummary(token, today);
       setSummary(data);
-    } catch (e: any) {
-      setError(e.message ?? "Failed to load nutrition data");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Failed to load nutrition data");
+      }
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ export default function NutritionPage() {
     await fetchSummary();
   };
 
-  const handleAddFoodForMeal = async (mealType: string) => {
+  const handleAddFoodForMeal = async (_mealType: string) => {
     // If user clicks "+ Add food" on a specific meal, pre-populate meal
     // We open the search with the selected meal preset
     if (!token) return;

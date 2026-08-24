@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
@@ -19,7 +19,7 @@ export default function NutritionHistoryPage() {
   const [startDate, setStartDate] = useState(sevenDaysAgo);
   const [endDate, setEndDate] = useState(today);
 
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     try {
@@ -28,11 +28,11 @@ export default function NutritionHistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, startDate, endDate]);
 
   useEffect(() => {
     fetchHistory();
-  }, [token]);
+  }, [fetchHistory]);
 
   const handleFilter = () => fetchHistory();
 
