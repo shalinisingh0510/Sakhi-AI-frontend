@@ -1202,5 +1202,22 @@
       "energy": "শক্তি",
       "notLogged": "লগ করা হয়নি"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "পুষ্টি", "history": "ইতিহাস", "emptyTitle": "আজ কোনো খাবার নথিভুক্ত হয়নি", "emptySubtitle": "পুষ্টি ট্র্যাক করতে খাবার খুঁজুন এবং যোগ করুন", "todaysMeals": "আজকের খাবার" },
+    "search": { "title": "খাবার যোগ করুন", "placeholder": "রুটি, ডাল, ভাত খুঁজুন...", "label": "খাবার খুঁজুন", "button": "খুঁজুন", "noResults": "কোনো খাবার পাওয়া যায়নি।" },
+    "meals": { "breakfast": "সকালের নাস্তা", "lunch": "দুপুরের খাবার", "dinner": "রাতের খাবার", "snack": "স্ন্যাক", "other": "অন্যান্য" },
+    "meal": { "empty": "কোনো খাবার নথিভুক্ত নেই" },
+    "nutrients": { "calories": "ক্যালোরি", "protein": "প্রোটিন", "carbs": "কার্বস", "fat": "চর্বি", "fiber": "ফাইবার" },
+    "summary": { "todayTotal": "আজকের পুষ্টি", "foodsLogged": "খাবার", "informationalNote": "এগুলো তথ্যমূলক মান, খাদ্য লক্ষ্য নয়।" },
+    "snapshot": { "title": "আজকের পুষ্টি", "empty": "আজ কোনো খাবার যোগ করা হয়নি" },
+    "log": { "serving": "পরিবেশন আকার", "quantity": "পরিমাণ", "meal": "খাবার", "date": "তারিখ" },
+    "detail": { "nutritionFor": "{grams}g এর জন্য পুষ্টি", "estimatedNote": "পুষ্টির মান আনুমানিক।" },
+    "allergen": { "warningTitle": "অ্যালার্জেন সতর্কতা" },
+    "badges": { "dietMismatch": "আপনার খাদ্যাভ্যাসের সাথে নাও মিলতে পারে" },
+    "history": { "title": "পুষ্টির ইতিহাস", "subtitle": "আপনার খাবার লগ", "from": "থেকে", "to": "পর্যন্ত", "apply": "প্রয়োগ করুন", "empty": "এই সময়কালের জন্য কোনো ডেটা নেই" },
+    "actions": { "addFood": "খাবার যোগ করুন", "cancel": "বাতিল", "logging": "যোগ হচ্ছে...", "edit": "সম্পাদনা", "delete": "মুছুন", "retry": "আবার চেষ্টা", "viewAll": "সব দেখুন" },
+    "toast": { "foodLogged": "খাবার যোগ করা হয়েছে", "foodDeleted": "খাবার মুছে ফেলা হয়েছে", "foodUpdated": "খাবার আপডেট করা হয়েছে" },
+    "errors": { "notAuthenticated": "পুষ্টি ট্র্যাক করতে লগইন করুন" }
   }
-}
+}

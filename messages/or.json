@@ -1202,5 +1202,22 @@
       "energy": "ଶକ୍ତି",
       "notLogged": "ଲଗ୍ କରାଯାଇ ନାହିଁ"
     }
+  },
+  "Nutrition": {
+    "hub": { "title": "ପୋଷଣ", "history": "ଇତିହାସ", "emptyTitle": "ଆଜି କୌଣସି ଖାଦ୍ୟ ଲଗ ହୋଇନାହିଁ", "emptySubtitle": "ପୋଷଣ ଟ୍ରାକ କରିବାକୁ ଖାଦ୍ୟ ଖୋଜ ଏବଂ ଯୋଡ଼", "todaysMeals": "ଆଜିର ଭୋଜନ" },
+    "search": { "title": "ଖାଦ୍ୟ ଯୋଡ଼", "placeholder": "ରୁଟି, ଡାଲ, ଭାତ ଖୋଜ...", "label": "ଖାଦ୍ୟ ଖୋଜ", "button": "ଖୋଜ", "noResults": "ଖାଦ୍ୟ ମିଳିଲା ନାହିଁ।" },
+    "meals": { "breakfast": "ଜଳଖିଆ", "lunch": "ଦୁପୁର ଖାଣ", "dinner": "ରାତ୍ରି ଖାଣ", "snack": "ସ୍ନ୍ୟାକ", "other": "ଅନ୍ୟ" },
+    "meal": { "empty": "କୌଣସି ଖାଦ୍ୟ ଲଗ ନାହିଁ" },
+    "nutrients": { "calories": "କ୍ୟାଲ", "protein": "ପ୍ରୋଟିନ", "carbs": "କାର୍ବସ", "fat": "ଚର୍ବି", "fiber": "ଫାଇବର" },
+    "summary": { "todayTotal": "ଆଜିର ପୋଷଣ", "foodsLogged": "ଖାଦ୍ୟ", "informationalNote": "ଏଗୁଡ଼ିକ ସୂଚନାମୂଳକ ମୂଲ୍ୟ, ଖାଦ୍ୟ ଲକ୍ଷ୍ୟ ନୁହେଁ।" },
+    "snapshot": { "title": "ଆଜିର ପୋଷଣ", "empty": "ଆଜି କୌଣସି ଖାଦ୍ୟ ଯୋଡ଼ି ନାହିଁ" },
+    "log": { "serving": "ସର୍ଭିଂ ଆକାର", "quantity": "ପରିମାଣ", "meal": "ଭୋଜନ", "date": "ତାରିଖ" },
+    "detail": { "nutritionFor": "{grams}g ପାଇଁ ପୋଷଣ", "estimatedNote": "ପୋଷଣ ମୂଲ୍ୟ ଆନୁମାନିକ।" },
+    "allergen": { "warningTitle": "ଆଲର୍ଜି ଚେତାବନୀ" },
+    "badges": { "dietMismatch": "ଆପଣଙ୍କ ଖାଦ୍ୟ ସହ ମେଳ ନ ହୋଇ ପାରେ" },
+    "history": { "title": "ପୋଷଣ ଇତିହାସ", "subtitle": "ଆପଣଙ୍କ ଖାଦ୍ୟ ଲଗ", "from": "ଠାରୁ", "to": "ପର୍ଯ୍ୟନ୍ତ", "apply": "ପ୍ରଯୁକ୍ତ", "empty": "ଏହି ସମୟ ପାଇଁ ଡାଟା ନାହିଁ" },
+    "actions": { "addFood": "ଖାଦ୍ୟ ଯୋଡ଼", "cancel": "ବାତିଲ", "logging": "ଯୋଡ଼ୁଛୁ...", "edit": "ସଂଶୋଧନ", "delete": "ମଛ", "retry": "ପୁନଃ ଚେଷ୍ଟା", "viewAll": "ସବୁ ଦେଖ" },
+    "toast": { "foodLogged": "ଖାଦ୍ୟ ଯୋଡ଼ାଗଲା", "foodDeleted": "ଖାଦ୍ୟ ବାଦ ଦିଆଗଲା", "foodUpdated": "ଖାଦ୍ୟ ଅପଡ଼େଟ ହଲା" },
+    "errors": { "notAuthenticated": "ପୋଷଣ ଟ୍ରାକ କରିବାକୁ ଲଗ୍-ଇନ୍ କରନ୍ତୁ" }
   }
-}
+}
