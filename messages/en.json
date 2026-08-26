@@ -1,6 +1,13 @@
 {
   "Landing": {
-    "languageHighlights": ["English", "Hindi", "Bengali", "Marathi", "Tamil", "Telugu"],
+    "languageHighlights": [
+      "English",
+      "Hindi",
+      "Bengali",
+      "Marathi",
+      "Tamil",
+      "Telugu"
+    ],
     "supportCards": [
       {
         "title": "First periods, explained gently",
@@ -22,16 +29,40 @@
       "Accessible, low-stress interfaces"
     ],
     "stats": [
-      { "value": "11", "label": "planned languages" },
-      { "value": "24/7", "label": "guided learning" },
-      { "value": "100%", "label": "education first" }
+      {
+        "value": "11",
+        "label": "planned languages"
+      },
+      {
+        "value": "24/7",
+        "label": "guided learning"
+      },
+      {
+        "value": "100%",
+        "label": "education first"
+      }
     ],
     "navItems": [
-      { "href": "#chat", "label": "Chat" },
-      { "href": "#support", "label": "Support" },
-      { "href": "#journey", "label": "Journey" },
-      { "href": "#languages", "label": "Languages" },
-      { "href": "#safety", "label": "Safety" }
+      {
+        "href": "#chat",
+        "label": "Chat"
+      },
+      {
+        "href": "#support",
+        "label": "Support"
+      },
+      {
+        "href": "#journey",
+        "label": "Journey"
+      },
+      {
+        "href": "#languages",
+        "label": "Languages"
+      },
+      {
+        "href": "#safety",
+        "label": "Safety"
+      }
     ],
     "journeySteps": [
       {
@@ -225,16 +256,6 @@
       "general": "Something went wrong. Please try again."
     }
   },
-  "HealthProfile": {
-    "loading": "Loading your health profile…",
-    "onboarding": { "title": "Let's personalise your Sakhi experience 🌸", "subtitle": "We only ask what we need to make Sakhi work better for you.", "next": "Next", "back": "Back", "complete": "Complete setup", "saving": "Saving…" },
-    "aboutYou": { "title": "About You", "hint": "This helps personalise future wellness features.", "dobLabel": "Date of birth", "dobDay": "Day", "dobMonth": "Month", "dobYear": "Year", "heightLabel": "Height (cm)", "heightHint": "Used to personalise future wellness calculations.", "weightLabel": "Weight (kg) — Optional", "weightHint": "Optional. Used only for eligible wellness features.", "activityLabel": "Activity level", "activityHint": "How active are you on a typical week?" },
-    "diet": { "title": "Dietary Preferences", "hint": "Helps us make food-related suggestions appropriate for you.", "typeLabel": "Diet type", "allergiesLabel": "Food allergies or restrictions (optional)", "allergiesPlaceholder": "e.g. gluten, dairy…", "add": "Add" },
-    "conditions": { "title": "Anything you'd like Sakhi to know?", "hint": "This is completely optional. You can change this at any time.", "disclaimer": "These are self-reported and are not used to diagnose you.", "none": "None of the above" },
-    "privacy": { "title": "Your health information is private.", "description": "Sakhi stores only what you choose to share, and you can change or delete it at any time.", "what1": "Your data is stored securely and never sold.", "what2": "Health information is separate from your account profile.", "what3": "You control what Sakhi AI can see.", "aiConsentLabel": "Allow Sakhi AI to use my health-tracker information for personalised wellness insights.", "aiConsentHint": "You can change this at any time in Health Settings. Off by default." },
-    "dashboard": { "profileComplete": "Health Profile", "configured": "Configured", "welcomeBack": "Your wellness foundation is set up.", "teenMode": "Teen Wellness Mode", "adultMode": "Adult Wellness Mode", "diet": "Diet", "activity": "Activity", "cycleTracking": "Cycle Tracking", "enabled": "Enabled", "disabled": "Disabled", "comingSoon": "Features coming soon" },
-    "errors": { "dobRequired": "Please select your date of birth.", "dobInvalid": "Please enter a valid date.", "dobFuture": "Date of birth cannot be in the future.", "ageMinimum": "Sakhi Health Hub is available for users aged 14 and older.", "activityRequired": "Please select your activity level.", "dietRequired": "Please select your diet type.", "loadFailed": "Unable to load your health profile. Please try again.", "general": "Something went wrong. Please try again." }
-  },
   "CycleTracker": {
     "loading": "Loading cycle data…",
     "cycleDay": "Cycle Day",
@@ -367,9 +388,18 @@
     "hiName": "Hi, {name}!",
     "subtitle": "Your trusted guide for women's health education.",
     "stats": [
-      { "value": "3", "label": "Day streak 🔥" },
-      { "value": "2", "label": "Lessons done" },
-      { "value": "120", "label": "Points earned" }
+      {
+        "value": "3",
+        "label": "Day streak 🔥"
+      },
+      {
+        "value": "2",
+        "label": "Lessons done"
+      },
+      {
+        "value": "120",
+        "label": "Points earned"
+      }
     ],
     "quickTilesTitle": "What would you like to do?",
     "quickTiles": [
@@ -496,20 +526,44 @@
     "title": "My Progress 📊",
     "subtitle": "Keep going — every lesson counts!",
     "stats": [
-      { "label": "Day streak", "emoji": "🔥" },
-      { "label": "Modules done", "emoji": "📖" },
-      { "label": "Points", "emoji": "⭐" }
+      {
+        "label": "Day streak",
+        "emoji": "🔥"
+      },
+      {
+        "label": "Modules done",
+        "emoji": "📖"
+      },
+      {
+        "label": "Points",
+        "emoji": "⭐"
+      }
     ],
     "moduleProgressTitle": "Module Progress",
     "badgesTitle": "Badges Earned 🏅",
     "modules": [
-      { "title": "Personal Hygiene", "pct": 100 },
-      { "title": "Menstrual Health", "pct": 33 }
+      {
+        "title": "Personal Hygiene",
+        "pct": 100
+      },
+      {
+        "title": "Menstrual Health",
+        "pct": 33
+      }
     ],
     "badges": [
-      { "label": "First Step", "desc": "Completed your first lesson" },
-      { "label": "On Fire", "desc": "3-day learning streak" },
-      { "label": "Hygiene Hero", "desc": "Finished Hygiene module" }
+      {
+        "label": "First Step",
+        "desc": "Completed your first lesson"
+      },
+      {
+        "label": "On Fire",
+        "desc": "3-day learning streak"
+      },
+      {
+        "label": "Hygiene Hero",
+        "desc": "Finished Hygiene module"
+      }
     ],
     "demoValues": {
       "streak": 3,
@@ -641,9 +695,18 @@
     "title": "Find the right support, lesson, or tip in seconds.",
     "subtitle": "Search across lessons, follow-up guidance, wellbeing check-ins, and safety resources. We keep it calm, simple, and easy to revisit.",
     "stats": [
-      { "value": "6", "label": "Topics" },
-      { "value": "3", "label": "Support routes" },
-      { "value": "1", "label": "Search box" }
+      {
+        "value": "6",
+        "label": "Topics"
+      },
+      {
+        "value": "3",
+        "label": "Support routes"
+      },
+      {
+        "value": "1",
+        "label": "Search box"
+      }
     ],
     "inputLabel": "Search",
     "inputPlaceholder": "Try menstrual cycle, cramps, hygiene, safety, or chat",
@@ -660,12 +723,31 @@
     "quickActionsTitle": "Quick actions",
     "searchTipTitle": "Search tip",
     "searchTipDesc": "You can search for a health topic, a lesson title, or a support action like chat, progress, and safety.",
-    "quickSearches": ["Menstrual cycle", "Cramps", "Hygiene tips", "Puberty changes", "Consent", "Ask Sakhi"],
+    "quickSearches": [
+      "Menstrual cycle",
+      "Cramps",
+      "Hygiene tips",
+      "Puberty changes",
+      "Consent",
+      "Ask Sakhi"
+    ],
     "quickActions": [
-      { "href": "/chat", "label": "Ask Sakhi a question" },
-      { "href": "/learn", "label": "Continue learning" },
-      { "href": "/progress", "label": "Review progress" },
-      { "href": "/learn/safety-consent", "label": "Safety resources" }
+      {
+        "href": "/chat",
+        "label": "Ask Sakhi a question"
+      },
+      {
+        "href": "/learn",
+        "label": "Continue learning"
+      },
+      {
+        "href": "/progress",
+        "label": "Review progress"
+      },
+      {
+        "href": "/learn/safety-consent",
+        "label": "Safety resources"
+      }
     ],
     "filters": {
       "all": "All",
@@ -687,7 +769,11 @@
         "description": "Understand your cycle, track symptoms, and feel more confident each month.",
         "href": "/learn/menstrual-health",
         "category": "modules",
-        "tags": ["cycle", "period", "tracking"]
+        "tags": [
+          "cycle",
+          "period",
+          "tracking"
+        ]
       },
       {
         "id": "puberty-basics",
@@ -695,7 +781,11 @@
         "description": "Learn about the body and emotional changes that can happen during puberty.",
         "href": "/learn/puberty-basics",
         "category": "modules",
-        "tags": ["growth", "changes", "body"]
+        "tags": [
+          "growth",
+          "changes",
+          "body"
+        ]
       },
       {
         "id": "personal-hygiene",
@@ -703,7 +793,11 @@
         "description": "Simple daily habits to stay clean, healthy, and comfortable at school or at home.",
         "href": "/learn/personal-hygiene",
         "category": "lessons",
-        "tags": ["hygiene", "routine", "care"]
+        "tags": [
+          "hygiene",
+          "routine",
+          "care"
+        ]
       },
       {
         "id": "cramps-help",
@@ -711,7 +805,11 @@
         "description": "A gentle explanation of period cramps and what can help you feel better.",
         "href": "/chat",
         "category": "support",
-        "tags": ["cramps", "pain", "chat"]
+        "tags": [
+          "cramps",
+          "pain",
+          "chat"
+        ]
       },
       {
         "id": "nutrition-health",
@@ -719,7 +817,11 @@
         "description": "Find iron-rich foods, calcium tips, and balanced meal ideas to support your body.",
         "href": "/learn/nutrition-health",
         "category": "modules",
-        "tags": ["iron", "food", "calcium"]
+        "tags": [
+          "iron",
+          "food",
+          "calcium"
+        ]
       },
       {
         "id": "safety-consent",
@@ -727,7 +829,11 @@
         "description": "Know your rights, understand consent, and find help when you need it.",
         "href": "/learn/safety-consent",
         "category": "safety",
-        "tags": ["safety", "boundaries", "consent"]
+        "tags": [
+          "safety",
+          "boundaries",
+          "consent"
+        ]
       },
       {
         "id": "mental-wellbeing",
@@ -735,7 +841,11 @@
         "description": "Use Sakhi for a calm conversation when you feel stressed, worried, or overwhelmed.",
         "href": "/chat",
         "category": "support",
-        "tags": ["stress", "feelings", "chat"]
+        "tags": [
+          "stress",
+          "feelings",
+          "chat"
+        ]
       },
       {
         "id": "progress-review",
@@ -743,7 +853,11 @@
         "description": "See streaks, points, and badges so you know what you have already completed.",
         "href": "/progress",
         "category": "lessons",
-        "tags": ["streak", "points", "badges"]
+        "tags": [
+          "streak",
+          "points",
+          "badges"
+        ]
       }
     ]
   },
@@ -889,43 +1003,88 @@
         "id": "getting-started",
         "title": "Getting Started",
         "description": "Learn how to create an account, complete onboarding, and navigate the app.",
-        "items": ["How to create an account", "Completing your profile", "Choosing your language", "Understanding the dashboard"]
+        "items": [
+          "How to create an account",
+          "Completing your profile",
+          "Choosing your language",
+          "Understanding the dashboard"
+        ]
       },
       {
         "id": "learning",
         "title": "Learning & Lessons",
         "description": "Find help with health modules, tracking progress, and accessing content.",
-        "items": ["Browsing health modules", "Starting a lesson", "Tracking your progress", "Resuming where you left off"]
+        "items": [
+          "Browsing health modules",
+          "Starting a lesson",
+          "Tracking your progress",
+          "Resuming where you left off"
+        ]
       },
       {
         "id": "chat",
         "title": "Chat with Sakhi",
         "description": "Get the most out of your conversations with Sakhi AI.",
-        "items": ["Asking effective questions", "Understanding Sakhi's responses", "Using quick prompts", "Chat history and privacy"]
+        "items": [
+          "Asking effective questions",
+          "Understanding Sakhi's responses",
+          "Using quick prompts",
+          "Chat history and privacy"
+        ]
       },
       {
         "id": "account",
         "title": "Account & Settings",
         "description": "Manage your profile, preferences, and privacy settings.",
-        "items": ["Updating your profile", "Changing language preference", "Notification settings", "Deleting your account"]
+        "items": [
+          "Updating your profile",
+          "Changing language preference",
+          "Notification settings",
+          "Deleting your account"
+        ]
       },
       {
         "id": "safety",
         "title": "Safety & Privacy",
         "description": "Important information about keeping your information safe.",
-        "items": ["Privacy policy overview", "Data security measures", "Safe browsing tips", "Reporting concerns"]
+        "items": [
+          "Privacy policy overview",
+          "Data security measures",
+          "Safe browsing tips",
+          "Reporting concerns"
+        ]
       },
       {
         "id": "technical",
         "title": "Technical Support",
         "description": "Troubleshoot common issues and find technical help.",
-        "items": ["App not loading properly", "Login problems", "Sync issues across devices", "Reporting bugs"]
+        "items": [
+          "App not loading properly",
+          "Login problems",
+          "Sync issues across devices",
+          "Reporting bugs"
+        ]
       }
     ],
     "resources": [
-      { "id": "user-guide", "title": "User Guide", "description": "Complete guide to using Sakhi AI effectively.", "href": "/learn" },
-      { "id": "health-resources", "title": "Health Resources", "description": "Curated list of trusted health information sources.", "href": "/learn" },
-      { "id": "for-parents", "title": "For Parents & Caregivers", "description": "Guidance for supporting young users.", "href": "/learn" }
+      {
+        "id": "user-guide",
+        "title": "User Guide",
+        "description": "Complete guide to using Sakhi AI effectively.",
+        "href": "/learn"
+      },
+      {
+        "id": "health-resources",
+        "title": "Health Resources",
+        "description": "Curated list of trusted health information sources.",
+        "href": "/learn"
+      },
+      {
+        "id": "for-parents",
+        "title": "For Parents & Caregivers",
+        "description": "Guidance for supporting young users.",
+        "href": "/learn"
+      }
     ]
   },
   "LearnDetail": {
@@ -940,30 +1099,100 @@
         "title": "Menstrual Health",
         "desc": "Understand your cycle, manage symptoms, and feel confident every month.",
         "lessons": [
-          { "id": 1, "title": "What is the menstrual cycle?", "duration": "3 min", "done": true },
-          { "id": 2, "title": "The 4 phases of your cycle", "duration": "4 min", "done": true },
-          { "id": 3, "title": "Why do cramps happen?", "duration": "3 min", "done": false },
-          { "id": 4, "title": "Choosing the right period product", "duration": "4 min", "done": false },
-          { "id": 5, "title": "Tracking your period", "duration": "3 min", "done": false },
-          { "id": 6, "title": "When to see a doctor", "duration": "2 min", "done": false }
+          {
+            "id": 1,
+            "title": "What is the menstrual cycle?",
+            "duration": "3 min",
+            "done": true
+          },
+          {
+            "id": 2,
+            "title": "The 4 phases of your cycle",
+            "duration": "4 min",
+            "done": true
+          },
+          {
+            "id": 3,
+            "title": "Why do cramps happen?",
+            "duration": "3 min",
+            "done": false
+          },
+          {
+            "id": 4,
+            "title": "Choosing the right period product",
+            "duration": "4 min",
+            "done": false
+          },
+          {
+            "id": 5,
+            "title": "Tracking your period",
+            "duration": "3 min",
+            "done": false
+          },
+          {
+            "id": 6,
+            "title": "When to see a doctor",
+            "duration": "2 min",
+            "done": false
+          }
         ]
       },
       "personal-hygiene": {
         "title": "Personal Hygiene",
         "desc": "Simple daily habits to stay clean, healthy, and confident.",
         "lessons": [
-          { "id": 1, "title": "Daily hygiene basics", "duration": "3 min", "done": true },
-          { "id": 2, "title": "Period hygiene tips", "duration": "3 min", "done": true },
-          { "id": 3, "title": "Skin and hair care", "duration": "3 min", "done": true },
-          { "id": 4, "title": "Building a hygiene routine", "duration": "3 min", "done": true }
+          {
+            "id": 1,
+            "title": "Daily hygiene basics",
+            "duration": "3 min",
+            "done": true
+          },
+          {
+            "id": 2,
+            "title": "Period hygiene tips",
+            "duration": "3 min",
+            "done": true
+          },
+          {
+            "id": 3,
+            "title": "Skin and hair care",
+            "duration": "3 min",
+            "done": true
+          },
+          {
+            "id": 4,
+            "title": "Building a hygiene routine",
+            "duration": "3 min",
+            "done": true
+          }
         ]
       }
     },
     "defaultLessons": [
-      { "id": 1, "title": "Introduction", "duration": "3 min", "done": false },
-      { "id": 2, "title": "Key concepts", "duration": "4 min", "done": false },
-      { "id": 3, "title": "Practical tips", "duration": "3 min", "done": false },
-      { "id": 4, "title": "Quiz", "duration": "2 min", "done": false }
+      {
+        "id": 1,
+        "title": "Introduction",
+        "duration": "3 min",
+        "done": false
+      },
+      {
+        "id": 2,
+        "title": "Key concepts",
+        "duration": "4 min",
+        "done": false
+      },
+      {
+        "id": 3,
+        "title": "Practical tips",
+        "duration": "3 min",
+        "done": false
+      },
+      {
+        "id": 4,
+        "title": "Quiz",
+        "duration": "2 min",
+        "done": false
+      }
     ]
   },
   "Auth": {
@@ -973,7 +1202,11 @@
       "welcome": "Welcome to",
       "sakhiAi": "Sakhi AI",
       "description": "Sign in to continue your learning journey with Sakhi and get calm, trusted support whenever you need it.",
-      "benefits": ["Kind, private support", "Easy learning access", "Designed for girls"],
+      "benefits": [
+        "Kind, private support",
+        "Easy learning access",
+        "Designed for girls"
+      ],
       "emailLabel": "Email address",
       "emailPlaceholder": "priya@example.com",
       "passwordLabel": "Password",
@@ -1034,10 +1267,22 @@
         "backBtn": "← Back",
         "continueBtn": "Continue →",
         "ageGroups": {
-          "10-13": { "label": "10–13 years", "desc": "Just starting to learn" },
-          "14-18": { "label": "14–18 years", "desc": "Growing and curious" },
-          "18+": { "label": "18+ years", "desc": "Adult learner" },
-          "caregiver": { "label": "Caregiver / Mother", "desc": "Learning for someone I care for" }
+          "10-13": {
+            "label": "10–13 years",
+            "desc": "Just starting to learn"
+          },
+          "14-18": {
+            "label": "14–18 years",
+            "desc": "Growing and curious"
+          },
+          "18+": {
+            "label": "18+ years",
+            "desc": "Adult learner"
+          },
+          "caregiver": {
+            "label": "Caregiver / Mother",
+            "desc": "Learning for someone I care for"
+          }
         }
       },
       "step3": {
@@ -1049,36 +1294,112 @@
     }
   },
   "Wellness": {
+    "checkin": {
+      "title": "Daily Check-in",
+      "subtitle": "Take a moment to record how you're feeling today.",
+      "save": "Save check-in",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "mood": {
+      "question": "How is your mood today?",
+      "options": {
+        "HAPPY": "Happy",
+        "CALM": "Calm",
+        "NEUTRAL": "Neutral",
+        "SAD": "Sad",
+        "IRRITATED": "Irritated",
+        "ANXIOUS": "Anxious",
+        "STRESSED": "Stressed",
+        "LOW": "Low",
+        "ENERGETIC": "Energetic",
+        "OTHER": "Other"
+      }
+    },
+    "energy": {
+      "question": "What is your energy level?",
+      "options": {
+        "VERY_LOW": "Very Low",
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "VERY_HIGH": "Very High"
+      }
+    },
+    "symptoms": {
+      "question": "Any symptoms today?",
+      "categories": {
+        "PAIN": "Pain",
+        "MENSTRUAL": "Menstrual",
+        "DIGESTIVE": "Digestive",
+        "GENERAL": "General",
+        "SKIN": "Skin"
+      },
+      "options": {
+        "headache": "Headache",
+        "back_pain": "Back Pain",
+        "pelvic_pain": "Pelvic Pain",
+        "body_pain": "Body Pain",
+        "cramps": "Cramps",
+        "period_pain": "Period Pain",
+        "spotting": "Spotting",
+        "bloating": "Bloating",
+        "nausea": "Nausea",
+        "constipation": "Constipation",
+        "diarrhea": "Diarrhea",
+        "fatigue": "Fatigue",
+        "dizziness": "Dizziness",
+        "weakness": "Weakness",
+        "fever": "Fever",
+        "acne": "Acne",
+        "skin_changes": "Skin Changes"
+      }
+    },
+    "severity": {
+      "options": {
+        "NONE": "None",
+        "MILD": "Mild",
+        "MODERATE": "Moderate",
+        "SEVERE": "Severe"
+      }
+    },
+    "history": {
+      "title": "Symptoms History",
+      "subtitle": "Your logged symptoms over time.",
+      "noData": "You haven't logged any symptoms yet."
+    },
     "dashboard": {
-      "symptoms": {
-        "title": "Today's symptoms",
-        "viewAll": "View all",
-        "noSymptoms": "No symptoms logged today."
-      },
-      "moodEnergy": {
-        "title": "Mood & Energy",
-        "mood": "Mood",
-        "energy": "Energy",
-        "notLogged": "Not logged",
-        "addMood": "Add mood",
-        "addEnergy": "Add energy"
-      },
-      "tracking": {
-        "title": "Today's wellness",
-        "checkin": "Check-in",
-        "cycle": "Cycle",
-        "symptoms": "Symptoms",
-        "notLogged": "Not logged:",
-        "nutrition": "Nutrition — Coming soon",
-        "activity": "Activity — Coming soon"
-      },
+      "title": "Your Wellness Today",
+      "greeting": "Good morning, {name} 🌸",
       "noCheckinTitle": "How are you feeling today?",
       "noCheckinAction": "Check in",
       "checkinComplete": "Today's check-in complete",
       "updateAction": "Update",
+      "cycleTitle": "Cycle",
+      "cycleDay": "Cycle Day {day}",
+      "nextPeriod": "Estimated next period",
+      "ovulation": "Estimated ovulation",
+      "fertileWindow": "Fertile window",
+      "lowConfidence": "Low confidence estimate",
+      "keepTracking": "Keep tracking your periods to get personalized cycle estimates.",
+      "viewCycle": "View cycle",
+      "symptomsTitle": "Today's symptoms",
+      "noSymptoms": "No symptoms logged today.",
+      "viewAllSymptoms": "View all symptoms",
       "mood": "Mood",
       "energy": "Energy",
-      "notLogged": "Not logged"
+      "addMood": "Add mood",
+      "addEnergy": "Add energy",
+      "trackingStatus": "Today's wellness",
+      "trendsTitle": "Recent Wellness",
+      "symptomSummary": "Over the last {days} days, you logged symptoms on {count} days and completed {checkins} check-ins.",
+      "welcomeNewTitle": "Welcome to your Wellness Hub 🌸",
+      "welcomeNewDesc": "Track what matters to you and build a clearer picture of your wellness over time.",
+      "setupProfile": "Set up Health Profile",
+      "incompleteProfile": "Complete your health profile",
+      "incompleteProfileDesc": "This helps personalize your wellness features.",
+      "unableToLoad": "Unable to load your wellness data right now.",
+      "healthHub": "Health Hub"
     }
   },
   "Nutrition": {
@@ -1103,18 +1424,41 @@
       "snack": "Snack",
       "other": "Other"
     },
-    "meal": { "empty": "No foods logged" },
-    "nutrients": { "calories": "Cal", "protein": "Protein", "carbs": "Carbs", "fat": "Fat", "fiber": "Fiber" },
+    "meal": {
+      "empty": "No foods logged"
+    },
+    "nutrients": {
+      "calories": "Cal",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fat": "Fat",
+      "fiber": "Fiber"
+    },
     "summary": {
       "todayTotal": "Today's Nutrition",
       "foodsLogged": "foods",
       "informationalNote": "These are informational values, not dietary targets."
     },
-    "snapshot": { "title": "Nutrition Today", "empty": "No foods logged yet today" },
-    "log": { "serving": "Serving Size", "quantity": "Quantity", "meal": "Meal", "date": "Date" },
-    "detail": { "nutritionFor": "Nutrition for {grams}g", "estimatedNote": "Nutritional values are approximate estimates." },
-    "allergen": { "warningTitle": "Allergen Warning" },
-    "badges": { "dietMismatch": "May not match your diet" },
+    "snapshot": {
+      "title": "Nutrition Today",
+      "empty": "No foods logged yet today"
+    },
+    "log": {
+      "serving": "Serving Size",
+      "quantity": "Quantity",
+      "meal": "Meal",
+      "date": "Date"
+    },
+    "detail": {
+      "nutritionFor": "Nutrition for {grams}g",
+      "estimatedNote": "Nutritional values are approximate estimates."
+    },
+    "allergen": {
+      "warningTitle": "Allergen Warning"
+    },
+    "badges": {
+      "dietMismatch": "May not match your diet"
+    },
     "history": {
       "title": "Nutrition History",
       "subtitle": "Your food log over time",
@@ -1132,7 +1476,13 @@
       "retry": "Try Again",
       "viewAll": "View all"
     },
-    "toast": { "foodLogged": "Food added", "foodDeleted": "Food removed", "foodUpdated": "Food updated" },
-    "errors": { "notAuthenticated": "Please log in to track nutrition" }
+    "toast": {
+      "foodLogged": "Food added",
+      "foodDeleted": "Food removed",
+      "foodUpdated": "Food updated"
+    },
+    "errors": {
+      "notAuthenticated": "Please log in to track nutrition"
+    }
   }
 }
