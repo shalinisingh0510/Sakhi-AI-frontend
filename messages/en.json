@@ -186,74 +186,15 @@
     "comingSoonDescription": "We are building something special here. The Health Hub will be available in a future update."
   },
   "HealthProfile": {
-    "loading": "Loading your health profile…",
-    "onboarding": {
-      "title": "Let's personalise your Sakhi experience 🌸",
-      "subtitle": "We only ask what we need to make Sakhi work better for you.",
-      "next": "Next",
-      "back": "Back",
-      "complete": "Complete setup",
-      "saving": "Saving…"
+    "activity": {
+      "title": "Activity",
+      "subtitle": "Movement & Exercise",
+      "add": "Log",
+      "empty": "No activity logged today"
     },
-    "aboutYou": {
-      "title": "About You",
-      "hint": "This helps personalise future wellness features.",
-      "dobLabel": "Date of birth",
-      "dobDay": "Day",
-      "dobMonth": "Month",
-      "dobYear": "Year",
-      "heightLabel": "Height (cm)",
-      "heightHint": "Used to personalise future wellness calculations.",
-      "weightLabel": "Weight (kg) — Optional",
-      "weightHint": "Optional. Used only for eligible wellness features.",
-      "activityLabel": "Activity level",
-      "activityHint": "How active are you on a typical week?"
-    },
-    "diet": {
-      "title": "Dietary Preferences",
-      "hint": "Helps us make food-related suggestions appropriate for you.",
-      "typeLabel": "Diet type",
-      "allergiesLabel": "Food allergies or restrictions (optional)",
-      "allergiesPlaceholder": "e.g. gluten, dairy…",
-      "add": "Add"
-    },
-    "conditions": {
-      "title": "Anything you'd like Sakhi to know?",
-      "hint": "This is completely optional. You can change this at any time.",
-      "disclaimer": "These are self-reported and are not used to diagnose you.",
-      "none": "None of the above"
-    },
-    "privacy": {
-      "title": "Your health information is private.",
-      "description": "Sakhi stores only what you choose to share, and you can change or delete it at any time.",
-      "what1": "Your data is stored securely and never sold.",
-      "what2": "Health information is separate from your account profile.",
-      "what3": "You control what Sakhi AI can see.",
-      "aiConsentLabel": "Allow Sakhi AI to use my health-tracker information for personalised wellness insights.",
-      "aiConsentHint": "You can change this at any time in Health Settings. Off by default."
-    },
-    "dashboard": {
-      "profileComplete": "Health Profile",
-      "configured": "Configured",
-      "welcomeBack": "Your wellness foundation is set up.",
-      "teenMode": "Teen Wellness Mode",
-      "adultMode": "Adult Wellness Mode",
-      "diet": "Diet",
-      "activity": "Activity",
-      "cycleTracking": "Cycle Tracking",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
-      "comingSoon": "Features coming soon"
-    },
-    "errors": {
-      "dobRequired": "Please select your date of birth.",
-      "dobInvalid": "Please enter a valid date.",
-      "dobFuture": "Date of birth cannot be in the future.",
-      "ageMinimum": "Sakhi Health Hub is available for users aged 14 and older.",
-      "activityRequired": "Please select your activity level.",
-      "dietRequired": "Please select your diet type.",
-      "loadFailed": "Unable to load your health profile. Please try again.",
-      "general": "Something went wrong. Please try again."
+    "energy": {
+      "title": "Energy Overview",
+      "subtitle": "Calories Consumed & Burned"
     }
   },
   "CycleTracker": {
