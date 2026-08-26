@@ -1,7 +1,7 @@
 import type { AgeGroup, SupportedLanguage, User } from "./auth-store";
 
 export function isDemoMode(): boolean {
-  return process.env.NEXT_PUBLIC_USE_DEMO_MODE !== "false";
+  return process.env.NEXT_PUBLIC_USE_DEMO_MODE === "true";
 }
 
 export class ApiError extends Error {
