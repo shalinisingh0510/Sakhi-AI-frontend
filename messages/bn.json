@@ -187,13 +187,74 @@
   },
   "HealthProfile": {
     "loading": "Loading your health profile…",
-    "onboarding": { "title": "Let's personalise your Sakhi experience 🌸", "subtitle": "We only ask what we need to make Sakhi work better for you.", "next": "Next", "back": "Back", "complete": "Complete setup", "saving": "Saving…" },
-    "aboutYou": { "title": "About You", "hint": "This helps personalise future wellness features.", "dobLabel": "Date of birth", "dobDay": "Day", "dobMonth": "Month", "dobYear": "Year", "heightLabel": "Height (cm)", "heightHint": "Used to personalise future wellness calculations.", "weightLabel": "Weight (kg) — Optional", "weightHint": "Optional. Used only for eligible wellness features.", "activityLabel": "Activity level", "activityHint": "How active are you on a typical week?" },
-    "diet": { "title": "Dietary Preferences", "hint": "Helps us make food-related suggestions appropriate for you.", "typeLabel": "Diet type", "allergiesLabel": "Food allergies or restrictions (optional)", "allergiesPlaceholder": "e.g. gluten, dairy…", "add": "Add" },
-    "conditions": { "title": "Anything you'd like Sakhi to know?", "hint": "This is completely optional. You can change this at any time.", "disclaimer": "These are self-reported and are not used to diagnose you.", "none": "None of the above" },
-    "privacy": { "title": "Your health information is private.", "description": "Sakhi stores only what you choose to share, and you can change or delete it at any time.", "what1": "Your data is stored securely and never sold.", "what2": "Health information is separate from your account profile.", "what3": "You control what Sakhi AI can see.", "aiConsentLabel": "Allow Sakhi AI to use my health-tracker information for personalised wellness insights.", "aiConsentHint": "You can change this at any time in Health Settings. Off by default." },
-    "dashboard": { "profileComplete": "Health Profile", "configured": "Configured", "welcomeBack": "Your wellness foundation is set up.", "teenMode": "Teen Wellness Mode", "adultMode": "Adult Wellness Mode", "diet": "Diet", "activity": "Activity", "cycleTracking": "Cycle Tracking", "enabled": "Enabled", "disabled": "Disabled", "comingSoon": "Features coming soon" },
-    "errors": { "dobRequired": "Please select your date of birth.", "dobInvalid": "Please enter a valid date.", "dobFuture": "Date of birth cannot be in the future.", "ageMinimum": "Sakhi Health Hub is available for users aged 14 and older.", "activityRequired": "Please select your activity level.", "dietRequired": "Please select your diet type.", "loadFailed": "Unable to load your health profile. Please try again.", "general": "Something went wrong. Please try again." }
+    "onboarding": {
+      "title": "Let's personalise your Sakhi experience 🌸",
+      "subtitle": "We only ask what we need to make Sakhi work better for you.",
+      "next": "Next",
+      "back": "Back",
+      "complete": "Complete setup",
+      "saving": "Saving…"
+    },
+    "aboutYou": {
+      "title": "About You",
+      "hint": "This helps personalise future wellness features.",
+      "dobLabel": "Date of birth",
+      "dobDay": "Day",
+      "dobMonth": "Month",
+      "dobYear": "Year",
+      "heightLabel": "Height (cm)",
+      "heightHint": "Used to personalise future wellness calculations.",
+      "weightLabel": "Weight (kg) — Optional",
+      "weightHint": "Optional. Used only for eligible wellness features.",
+      "activityLabel": "Activity level",
+      "activityHint": "How active are you on a typical week?"
+    },
+    "diet": {
+      "title": "Dietary Preferences",
+      "hint": "Helps us make food-related suggestions appropriate for you.",
+      "typeLabel": "Diet type",
+      "allergiesLabel": "Food allergies or restrictions (optional)",
+      "allergiesPlaceholder": "e.g. gluten, dairy…",
+      "add": "Add"
+    },
+    "conditions": {
+      "title": "Anything you'd like Sakhi to know?",
+      "hint": "This is completely optional. You can change this at any time.",
+      "disclaimer": "These are self-reported and are not used to diagnose you.",
+      "none": "None of the above"
+    },
+    "privacy": {
+      "title": "Your health information is private.",
+      "description": "Sakhi stores only what you choose to share, and you can change or delete it at any time.",
+      "what1": "Your data is stored securely and never sold.",
+      "what2": "Health information is separate from your account profile.",
+      "what3": "You control what Sakhi AI can see.",
+      "aiConsentLabel": "Allow Sakhi AI to use my health-tracker information for personalised wellness insights.",
+      "aiConsentHint": "You can change this at any time in Health Settings. Off by default."
+    },
+    "dashboard": {
+      "profileComplete": "Health Profile",
+      "configured": "Configured",
+      "welcomeBack": "Your wellness foundation is set up.",
+      "teenMode": "Teen Wellness Mode",
+      "adultMode": "Adult Wellness Mode",
+      "diet": "Diet",
+      "activity": "Activity",
+      "cycleTracking": "Cycle Tracking",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "comingSoon": "Features coming soon"
+    },
+    "errors": {
+      "dobRequired": "Please select your date of birth.",
+      "dobInvalid": "Please enter a valid date.",
+      "dobFuture": "Date of birth cannot be in the future.",
+      "ageMinimum": "Sakhi Health Hub is available for users aged 14 and older.",
+      "activityRequired": "Please select your activity level.",
+      "dietRequired": "Please select your diet type.",
+      "loadFailed": "Unable to load your health profile. Please try again.",
+      "general": "Something went wrong. Please try again."
+    }
   },
   "Navigation": {
     "health": "Health",
@@ -1171,53 +1232,195 @@
     "reducedMotionNote": "Animations are reduced based on your system preferences."
   },
   "Wellness": {
+    "checkin": {
+      "title": "[NEEDS_REVIEW] Daily Check-in",
+      "subtitle": "[NEEDS_REVIEW] Take a moment to record how you're feeling today.",
+      "save": "[NEEDS_REVIEW] Save check-in",
+      "saving": "[NEEDS_REVIEW] Saving...",
+      "cancel": "[NEEDS_REVIEW] Cancel"
+    },
+    "mood": {
+      "question": "[NEEDS_REVIEW] How is your mood today?",
+      "options": {
+        "HAPPY": "[NEEDS_REVIEW] Happy",
+        "CALM": "[NEEDS_REVIEW] Calm",
+        "NEUTRAL": "[NEEDS_REVIEW] Neutral",
+        "SAD": "[NEEDS_REVIEW] Sad",
+        "IRRITATED": "[NEEDS_REVIEW] Irritated",
+        "ANXIOUS": "[NEEDS_REVIEW] Anxious",
+        "STRESSED": "[NEEDS_REVIEW] Stressed",
+        "LOW": "[NEEDS_REVIEW] Low",
+        "ENERGETIC": "[NEEDS_REVIEW] Energetic",
+        "OTHER": "[NEEDS_REVIEW] Other"
+      }
+    },
+    "energy": {
+      "question": "[NEEDS_REVIEW] What is your energy level?",
+      "options": {
+        "VERY_LOW": "[NEEDS_REVIEW] Very Low",
+        "LOW": "[NEEDS_REVIEW] Low",
+        "MEDIUM": "[NEEDS_REVIEW] Medium",
+        "HIGH": "[NEEDS_REVIEW] High",
+        "VERY_HIGH": "[NEEDS_REVIEW] Very High"
+      }
+    },
+    "symptoms": {
+      "question": "[NEEDS_REVIEW] Any symptoms today?",
+      "categories": {
+        "PAIN": "[NEEDS_REVIEW] Pain",
+        "MENSTRUAL": "[NEEDS_REVIEW] Menstrual",
+        "DIGESTIVE": "[NEEDS_REVIEW] Digestive",
+        "GENERAL": "[NEEDS_REVIEW] General",
+        "SKIN": "[NEEDS_REVIEW] Skin"
+      },
+      "options": {
+        "headache": "[NEEDS_REVIEW] Headache",
+        "back_pain": "[NEEDS_REVIEW] Back Pain",
+        "pelvic_pain": "[NEEDS_REVIEW] Pelvic Pain",
+        "body_pain": "[NEEDS_REVIEW] Body Pain",
+        "cramps": "[NEEDS_REVIEW] Cramps",
+        "period_pain": "[NEEDS_REVIEW] Period Pain",
+        "spotting": "[NEEDS_REVIEW] Spotting",
+        "bloating": "[NEEDS_REVIEW] Bloating",
+        "nausea": "[NEEDS_REVIEW] Nausea",
+        "constipation": "[NEEDS_REVIEW] Constipation",
+        "diarrhea": "[NEEDS_REVIEW] Diarrhea",
+        "fatigue": "[NEEDS_REVIEW] Fatigue",
+        "dizziness": "[NEEDS_REVIEW] Dizziness",
+        "weakness": "[NEEDS_REVIEW] Weakness",
+        "fever": "[NEEDS_REVIEW] Fever",
+        "acne": "[NEEDS_REVIEW] Acne",
+        "skin_changes": "[NEEDS_REVIEW] Skin Changes"
+      }
+    },
+    "severity": {
+      "options": {
+        "NONE": "[NEEDS_REVIEW] None",
+        "MILD": "[NEEDS_REVIEW] Mild",
+        "MODERATE": "[NEEDS_REVIEW] Moderate",
+        "SEVERE": "[NEEDS_REVIEW] Severe"
+      }
+    },
+    "history": {
+      "title": "[NEEDS_REVIEW] Symptoms History",
+      "subtitle": "[NEEDS_REVIEW] Your logged symptoms over time.",
+      "noData": "[NEEDS_REVIEW] You haven't logged any symptoms yet."
+    },
     "dashboard": {
-      "symptoms": {
-        "title": "আজকের লক্ষণ",
-        "viewAll": "সব দেখুন",
-        "noSymptoms": "আজ কোনও লক্ষণ লগ করা হয়নি।"
-      },
-      "moodEnergy": {
-        "title": "মেজাজ এবং শক্তি",
-        "mood": "মেজাজ",
-        "energy": "শক্তি",
-        "notLogged": "লগ করা হয়নি",
-        "addMood": "মেজাজ যোগ করুন",
-        "addEnergy": "শক্তি যোগ করুন"
-      },
-      "tracking": {
-        "title": "আজকের স্বাস্থ্য",
-        "checkin": "চেক-ইন",
-        "cycle": "চক্র",
-        "symptoms": "লक्षण",
-        "notLogged": "লগ করা হয়নি:",
-        "nutrition": "পুষ্টি — শীঘ্রই আসছে",
-        "activity": "কার্যকলাপ — শীঘ্রই আসছে"
-      },
-      "noCheckinTitle": "আজ আপনার কেমন লাগছে?",
-      "noCheckinAction": "চেক-ইন করুন",
-      "checkinComplete": "আজকের চেক-ইন সম্পূর্ণ",
-      "updateAction": "আপডেট করুন",
-      "mood": "মেজাজ",
-      "energy": "শক্তি",
-      "notLogged": "লগ করা হয়নি"
+      "title": "[NEEDS_REVIEW] Your Wellness Today",
+      "greeting": "[NEEDS_REVIEW] Good morning, {name} 🌸",
+      "noCheckinTitle": "[NEEDS_REVIEW] How are you feeling today?",
+      "noCheckinAction": "[NEEDS_REVIEW] Check in",
+      "checkinComplete": "[NEEDS_REVIEW] Today's check-in complete",
+      "updateAction": "[NEEDS_REVIEW] Update",
+      "cycleTitle": "[NEEDS_REVIEW] Cycle",
+      "cycleDay": "[NEEDS_REVIEW] Cycle Day {day}",
+      "nextPeriod": "[NEEDS_REVIEW] Estimated next period",
+      "ovulation": "[NEEDS_REVIEW] Estimated ovulation",
+      "fertileWindow": "[NEEDS_REVIEW] Fertile window",
+      "lowConfidence": "[NEEDS_REVIEW] Low confidence estimate",
+      "keepTracking": "[NEEDS_REVIEW] Keep tracking your periods to get personalized cycle estimates.",
+      "viewCycle": "[NEEDS_REVIEW] View cycle",
+      "symptomsTitle": "[NEEDS_REVIEW] Today's symptoms",
+      "noSymptoms": "[NEEDS_REVIEW] No symptoms logged today.",
+      "viewAllSymptoms": "[NEEDS_REVIEW] View all symptoms",
+      "mood": "[NEEDS_REVIEW] Mood",
+      "energy": "[NEEDS_REVIEW] Energy",
+      "addMood": "[NEEDS_REVIEW] Add mood",
+      "addEnergy": "[NEEDS_REVIEW] Add energy",
+      "trackingStatus": "[NEEDS_REVIEW] Today's wellness",
+      "trendsTitle": "[NEEDS_REVIEW] Recent Wellness",
+      "symptomSummary": "[NEEDS_REVIEW] Over the last {days} days, you logged symptoms on {count} days and completed {checkins} check-ins.",
+      "welcomeNewTitle": "[NEEDS_REVIEW] Welcome to your Wellness Hub 🌸",
+      "welcomeNewDesc": "[NEEDS_REVIEW] Track what matters to you and build a clearer picture of your wellness over time.",
+      "setupProfile": "[NEEDS_REVIEW] Set up Health Profile",
+      "incompleteProfile": "[NEEDS_REVIEW] Complete your health profile",
+      "incompleteProfileDesc": "[NEEDS_REVIEW] This helps personalize your wellness features.",
+      "unableToLoad": "[NEEDS_REVIEW] Unable to load your wellness data right now.",
+      "healthHub": "[NEEDS_REVIEW] Health Hub"
     }
   },
   "Nutrition": {
-    "hub": { "title": "পুষ্টি", "history": "ইতিহাস", "emptyTitle": "আজ কোনো খাবার নথিভুক্ত হয়নি", "emptySubtitle": "পুষ্টি ট্র্যাক করতে খাবার খুঁজুন এবং যোগ করুন", "todaysMeals": "আজকের খাবার" },
-    "search": { "title": "খাবার যোগ করুন", "placeholder": "রুটি, ডাল, ভাত খুঁজুন...", "label": "খাবার খুঁজুন", "button": "খুঁজুন", "noResults": "কোনো খাবার পাওয়া যায়নি।" },
-    "meals": { "breakfast": "সকালের নাস্তা", "lunch": "দুপুরের খাবার", "dinner": "রাতের খাবার", "snack": "স্ন্যাক", "other": "অন্যান্য" },
-    "meal": { "empty": "কোনো খাবার নথিভুক্ত নেই" },
-    "nutrients": { "calories": "ক্যালোরি", "protein": "প্রোটিন", "carbs": "কার্বস", "fat": "চর্বি", "fiber": "ফাইবার" },
-    "summary": { "todayTotal": "আজকের পুষ্টি", "foodsLogged": "খাবার", "informationalNote": "এগুলো তথ্যমূলক মান, খাদ্য লক্ষ্য নয়।" },
-    "snapshot": { "title": "আজকের পুষ্টি", "empty": "আজ কোনো খাবার যোগ করা হয়নি" },
-    "log": { "serving": "পরিবেশন আকার", "quantity": "পরিমাণ", "meal": "খাবার", "date": "তারিখ" },
-    "detail": { "nutritionFor": "{grams}g এর জন্য পুষ্টি", "estimatedNote": "পুষ্টির মান আনুমানিক।" },
-    "allergen": { "warningTitle": "অ্যালার্জেন সতর্কতা" },
-    "badges": { "dietMismatch": "আপনার খাদ্যাভ্যাসের সাথে নাও মিলতে পারে" },
-    "history": { "title": "পুষ্টির ইতিহাস", "subtitle": "আপনার খাবার লগ", "from": "থেকে", "to": "পর্যন্ত", "apply": "প্রয়োগ করুন", "empty": "এই সময়কালের জন্য কোনো ডেটা নেই" },
-    "actions": { "addFood": "খাবার যোগ করুন", "cancel": "বাতিল", "logging": "যোগ হচ্ছে...", "edit": "সম্পাদনা", "delete": "মুছুন", "retry": "আবার চেষ্টা", "viewAll": "সব দেখুন" },
-    "toast": { "foodLogged": "খাবার যোগ করা হয়েছে", "foodDeleted": "খাবার মুছে ফেলা হয়েছে", "foodUpdated": "খাবার আপডেট করা হয়েছে" },
-    "errors": { "notAuthenticated": "পুষ্টি ট্র্যাক করতে লগইন করুন" }
+    "hub": {
+      "title": "পুষ্টি",
+      "history": "ইতিহাস",
+      "emptyTitle": "আজ কোনো খাবার নথিভুক্ত হয়নি",
+      "emptySubtitle": "পুষ্টি ট্র্যাক করতে খাবার খুঁজুন এবং যোগ করুন",
+      "todaysMeals": "আজকের খাবার"
+    },
+    "search": {
+      "title": "খাবার যোগ করুন",
+      "placeholder": "রুটি, ডাল, ভাত খুঁজুন...",
+      "label": "খাবার খুঁজুন",
+      "button": "খুঁজুন",
+      "noResults": "কোনো খাবার পাওয়া যায়নি।"
+    },
+    "meals": {
+      "breakfast": "সকালের নাস্তা",
+      "lunch": "দুপুরের খাবার",
+      "dinner": "রাতের খাবার",
+      "snack": "স্ন্যাক",
+      "other": "অন্যান্য"
+    },
+    "meal": {
+      "empty": "কোনো খাবার নথিভুক্ত নেই"
+    },
+    "nutrients": {
+      "calories": "ক্যালোরি",
+      "protein": "প্রোটিন",
+      "carbs": "কার্বস",
+      "fat": "চর্বি",
+      "fiber": "ফাইবার"
+    },
+    "summary": {
+      "todayTotal": "আজকের পুষ্টি",
+      "foodsLogged": "খাবার",
+      "informationalNote": "এগুলো তথ্যমূলক মান, খাদ্য লক্ষ্য নয়।"
+    },
+    "snapshot": {
+      "title": "আজকের পুষ্টি",
+      "empty": "আজ কোনো খাবার যোগ করা হয়নি"
+    },
+    "log": {
+      "serving": "পরিবেশন আকার",
+      "quantity": "পরিমাণ",
+      "meal": "খাবার",
+      "date": "তারিখ"
+    },
+    "detail": {
+      "nutritionFor": "{grams}g এর জন্য পুষ্টি",
+      "estimatedNote": "পুষ্টির মান আনুমানিক।"
+    },
+    "allergen": {
+      "warningTitle": "অ্যালার্জেন সতর্কতা"
+    },
+    "badges": {
+      "dietMismatch": "আপনার খাদ্যাভ্যাসের সাথে নাও মিলতে পারে"
+    },
+    "history": {
+      "title": "পুষ্টির ইতিহাস",
+      "subtitle": "আপনার খাবার লগ",
+      "from": "থেকে",
+      "to": "পর্যন্ত",
+      "apply": "প্রয়োগ করুন",
+      "empty": "এই সময়কালের জন্য কোনো ডেটা নেই"
+    },
+    "actions": {
+      "addFood": "খাবার যোগ করুন",
+      "cancel": "বাতিল",
+      "logging": "যোগ হচ্ছে...",
+      "edit": "সম্পাদনা",
+      "delete": "মুছুন",
+      "retry": "আবার চেষ্টা",
+      "viewAll": "সব দেখুন"
+    },
+    "toast": {
+      "foodLogged": "খাবার যোগ করা হয়েছে",
+      "foodDeleted": "খাবার মুছে ফেলা হয়েছে",
+      "foodUpdated": "খাবার আপডেট করা হয়েছে"
+    },
+    "errors": {
+      "notAuthenticated": "পুষ্টি ট্র্যাক করতে লগইন করুন"
+    }
   }
-}
+}
