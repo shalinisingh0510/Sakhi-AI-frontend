@@ -12,12 +12,13 @@ import { SymptomsSnapshotCard } from "./dashboard/SymptomsSnapshotCard";
 import { MoodEnergyCard } from "./dashboard/MoodEnergyCard";
 import { TrackingStatus } from "./dashboard/TrackingStatus";
 import { NutritionSnapshotCard } from "./dashboard/NutritionSnapshotCard";
+import { ActivityTodayCard } from "./activity/ActivityTodayCard";
+import { EnergyOverviewCard } from "./energy/EnergyOverviewCard";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
+import { energyApi, type EnergySummaryResponse } from "@/lib/api";
 
-const COMING_SOON_MODULES = [
-  { icon: "🏃‍♀️", key: "activity", label: "Activity" },
-];
+const COMING_SOON_MODULES: { icon: string; key: string; label: string }[] = [];
 
 interface Props {
   data: WellnessDashboardResponse;
@@ -43,6 +44,20 @@ export function HealthDashboard({ data }: Props) {
       })
       .catch(() => {})
       .finally(() => setNutritionLoading(false));
+  }, [token]);
+
+  const [energySummary, setEnergySummary] = useState<EnergySummaryResponse | null>(null);
+
+  const fetchEnergy = () => {
+    if (!token) return;
+    const today = new Date().toISOString().split("T")[0];
+    energyApi.getTodaySummary(token, today)
+      .then(setEnergySummary)
+      .catch(console.error);
+  };
+
+  useEffect(() => {
+    fetchEnergy();
   }, [token]);
 
   const isCycleTrackingEnabled = data.tracking_status.cycle_status !== "Not Tracked";
@@ -106,6 +121,17 @@ export function HealthDashboard({ data }: Props) {
         foodsCount={nutritionCount}
         loading={nutritionLoading}
       />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ActivityTodayCard
+          token={token || ""}
+          summary={energySummary?.activity_summary || null}
+          onActivityLogged={() => {
+            fetchEnergy();
+          }}
+        />
+        <EnergyOverviewCard summary={energySummary} />
+      </div>
 
       {/* Coming Soon Features */}
       {COMING_SOON_MODULES.length > 0 && (
