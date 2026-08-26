@@ -348,6 +348,7 @@ export interface HealthProfileData {
   id: string;
   user_id: string;
   date_of_birth: string;
+  biological_sex: string | null;
   height_cm: number | null;
   weight_kg: number | null;
   activity_level: string;
@@ -366,6 +367,7 @@ export interface HealthProfileData {
 
 export interface HealthProfileCreate {
   date_of_birth: string;
+  biological_sex?: string | null;
   height_cm?: number | null;
   weight_kg?: number | null;
   activity_level: string;
@@ -623,4 +625,74 @@ export const nutritionApi = {
       method: "DELETE",
       token,
     }),
+};
+
+// --- Activity API (Phase 6/7) ---
+
+export interface ActivityResponse {
+  id: string;
+  health_profile_id: string;
+  activity_date: string;
+  activity_type: string;
+  duration_minutes: number;
+  intensity: string;
+  distance_km: number | null;
+  steps: number | null;
+  estimated_calories_burned: number;
+  source: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ActivityCreate {
+  activity_date: string;
+  activity_type: string;
+  duration_minutes: number;
+  intensity?: string;
+  distance_km?: number | null;
+  steps?: number | null;
+  notes?: string | null;
+}
+
+export interface ActivityDailySummary {
+  activity_date: string;
+  total_duration_minutes: number;
+  total_estimated_calories_burned: number;
+  total_steps: number | null;
+  activities: ActivityResponse[];
+}
+
+export const activityApi = {
+  addActivity: (token: string, data: ActivityCreate) =>
+    request<ActivityResponse>("/activity", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+  deleteActivity: (token: string, activityId: string) =>
+    request<void>(`/activity/${activityId}`, {
+      method: "DELETE",
+      token,
+    }),
+};
+
+// --- Energy API (Phase 6/7) ---
+
+export interface EnergySummaryResponse {
+  target_date: string;
+  calories_consumed: number;
+  estimated_bmr: number | null;
+  activity_calories_burned: number;
+  total_estimated_expenditure: number | null;
+  energy_balance: number | null;
+  calculation_status: "SUCCESS" | "INSUFFICIENT_DATA" | "TEEN_RESTRICTED";
+  activity_summary: ActivityDailySummary;
+}
+
+export const energyApi = {
+  getTodaySummary: (token: string, localDate?: string) => {
+    const url = localDate ? `/energy/today?target_date=${localDate}` : "/energy/today";
+    return request<EnergySummaryResponse>(url, { token });
+  },
 };

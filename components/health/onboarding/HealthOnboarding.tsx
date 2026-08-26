@@ -23,6 +23,12 @@ const ACTIVITY_LEVELS = [
   { value: "VERY_ACTIVE", label: "Very Active (twice a day)" },
 ];
 
+const BIOLOGICAL_SEX_OPTIONS = [
+  { value: "", label: "Prefer not to say" },
+  { value: "FEMALE", label: "Female" },
+  { value: "MALE", label: "Male" },
+];
+
 const DIET_TYPES = [
   { value: "VEGETARIAN", label: "Vegetarian" },
   { value: "NON_VEGETARIAN", label: "Non-Vegetarian" },
@@ -69,6 +75,7 @@ export function HealthOnboarding({ token, locale }: Props) {
   const [dobDay, setDobDay] = useState("");
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
+  const [biologicalSex, setBiologicalSex] = useState("");
   const [heightCm, setHeightCm] = useState("");
   const [weightKg, setWeightKg] = useState("");
   const [activityLevel, setActivityLevel] = useState("SEDENTARY");
@@ -174,6 +181,7 @@ export function HealthOnboarding({ token, locale }: Props) {
 
     const profileData: HealthProfileCreate = {
       date_of_birth: dobIso,
+      biological_sex: biologicalSex || null,
       height_cm: heightCm ? parseFloat(heightCm) : null,
       weight_kg: weightKg ? parseFloat(weightKg) : null,
       activity_level: activityLevel,
@@ -268,6 +276,14 @@ export function HealthOnboarding({ token, locale }: Props) {
               onMonthChange={setDobMonth}
               onYearChange={setDobYear}
               error={errors.dob}
+            />
+
+            <Select
+              label={t("aboutYou.sexLabel") || "Biological Sex (Optional)"}
+              hint={t("aboutYou.sexHint") || "Used for basal metabolic rate calculations"}
+              value={biologicalSex}
+              onChange={(e) => setBiologicalSex(e.target.value)}
+              options={BIOLOGICAL_SEX_OPTIONS}
             />
 
             <Input
