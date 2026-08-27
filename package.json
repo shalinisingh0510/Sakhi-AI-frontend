@@ -16,7 +16,8 @@
         "next-intl": "^4.13.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "zustand": "^5.0.14"
+        "zustand": "^5.0.14",
+        "lucide-react": "^0.300.0"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^7.0.0",
