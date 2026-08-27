@@ -68,9 +68,9 @@ export default function RegisterPage() {
         return;
       }
 
-      const { user, access_token } = await authApi.register(form.name, form.email, form.password);
+      const { user, token } = await authApi.register(form.name, form.email, form.password);
       const normalized = normalizeUser(user, form.email);
-      login({ ...normalized, name: form.name }, access_token);
+      login({ ...normalized, name: form.name }, token);
       router.push("/onboarding");
     } catch {
       setErrors({ general: t("errors.general") });
