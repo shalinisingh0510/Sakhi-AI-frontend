@@ -186,6 +186,10 @@
     "comingSoonDescription": "We are building something special here. The Health Hub will be available in a future update."
   },
   "HealthProfile": {
+    "loading": "Loading...",
+    "errors": {
+      "loadFailed": "Unable to load your wellness data right now."
+    },
     "activity": {
       "title": "Activity",
       "subtitle": "Movement & Exercise",
