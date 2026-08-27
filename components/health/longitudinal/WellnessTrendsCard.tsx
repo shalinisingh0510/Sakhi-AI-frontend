@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { longitudinalApi, LongitudinalTrendsResponse } from "@/lib/api";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuthStore } from "@/lib/auth-store";
 import { ArrowUp, ArrowDown, Minus, Activity } from "lucide-react";
 
 export function WellnessTrendsCard() {
-  const { token } = useAuth();
+  const { token } = useAuthStore();
   const [data, setData] = useState<LongitudinalTrendsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
