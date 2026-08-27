@@ -196,8 +196,9 @@ export function HealthOnboarding({ token, locale }: Props) {
       } else {
         try {
           await healthApi.createProfile(profileData, token);
-        } catch (createErr: any) {
-          const msg = createErr.message || "";
+        } catch (err: unknown) {
+          const createErr = err as Record<string, unknown>;
+          const msg = (createErr.message as string) || "";
           if (createErr.status === 409 || msg.includes("409") || msg.includes("PATCH") || msg.includes("already exists")) {
             await healthApi.updateProfile(profileData, token);
           } else {
@@ -210,7 +211,7 @@ export function HealthOnboarding({ token, locale }: Props) {
         try {
           const existing = await healthApi.getConditions(token);
           existingCodes = existing.map((c) => c.condition_code);
-        } catch (e) {
+        } catch {
           // ignore if we can't fetch existing
         }
 
