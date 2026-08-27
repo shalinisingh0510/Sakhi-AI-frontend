@@ -71,17 +71,21 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 }
 
 export const authApi = {
-  login: (email: string, password: string) =>
-    request<AuthResponse>("/auth/login", {
+  login: async (email: string, password: string) => {
+    const res = await request<any>("/auth/login", {
       method: "POST",
       body: { email, password },
-    }),
+    });
+    return { user: res.user, token: res.access_token } as AuthResponse;
+  },
 
-  register: (name: string, email: string, password: string) =>
-    request<AuthResponse>("/auth/register", {
+  register: async (name: string, email: string, password: string) => {
+    const res = await request<any>("/auth/register", {
       method: "POST",
       body: { name, email, password },
-    }),
+    });
+    return { user: res.user, token: res.access_token } as AuthResponse;
+  },
 
   forgotPassword: (email: string) =>
     request<{ message: string }>("/auth/forgot-password", {
