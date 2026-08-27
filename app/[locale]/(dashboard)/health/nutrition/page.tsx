@@ -16,6 +16,7 @@ import { FoodSearch } from "@/components/health/nutrition/FoodSearch";
 import { FoodDetailModal } from "@/components/health/nutrition/FoodDetailModal";
 import { MealSection } from "@/components/health/nutrition/MealSection";
 import { DailyNutritionSummary } from "@/components/health/nutrition/DailyNutritionSummary";
+import { FoodVisionUpload } from "@/components/health/nutrition/FoodVisionUpload";
 
 type ModalState =
   | { type: "none" }
@@ -177,6 +178,11 @@ export default function NutritionPage() {
           onSearch={handleSearch}
           onSelect={(food) => handleSelectFood(food)}
         />
+      </div>
+
+      {/* AI Vision upload */}
+      <div className="mt-2">
+        <FoodVisionUpload />
       </div>
 
       {/* Meal sections */}
