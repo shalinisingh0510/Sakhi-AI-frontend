@@ -194,10 +194,29 @@ export function HealthOnboarding({ token, locale }: Props) {
       if (isDemoMode()) {
         await demoDelay(1200);
       } else {
-        await healthApi.createProfile(profileData, token);
+        try {
+          await healthApi.createProfile(profileData, token);
+        } catch (createErr: any) {
+          const msg = createErr.message || "";
+          if (createErr.status === 409 || msg.includes("409") || msg.includes("PATCH") || msg.includes("already exists")) {
+            await healthApi.updateProfile(profileData, token);
+          } else {
+            throw createErr;
+          }
+        }
 
         // Add self-reported conditions
+        let existingCodes: string[] = [];
+        try {
+          const existing = await healthApi.getConditions(token);
+          existingCodes = existing.map((c) => c.condition_code);
+        } catch (e) {
+          // ignore if we can't fetch existing
+        }
+
         for (const code of selectedConditions) {
+          if (existingCodes.includes(code)) continue;
+
           const opt = CONDITION_OPTIONS.find((c) => c.code === code);
           if (opt) {
             await healthApi.addCondition(
