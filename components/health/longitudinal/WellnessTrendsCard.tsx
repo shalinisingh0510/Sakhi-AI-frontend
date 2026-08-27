@@ -14,7 +14,7 @@ export function WellnessTrendsCard() {
     if (!token) return;
     longitudinalApi.getTrends(token, "30d")
       .then((res) => {
-        setData(res.data);
+        setData(res);
       })
       .catch((err) => console.error("Failed to load trends", err))
       .finally(() => setLoading(false));

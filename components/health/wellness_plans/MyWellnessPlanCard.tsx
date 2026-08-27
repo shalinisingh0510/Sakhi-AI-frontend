@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Check, CheckCircle, RefreshCw, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -25,7 +25,7 @@ export function MyWellnessPlanCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     if (!token) return;
     try {
       setLoading(true);
@@ -41,7 +41,7 @@ export function MyWellnessPlanCard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   const generatePlans = async () => {
     if (!token) return;
@@ -87,7 +87,7 @@ export function MyWellnessPlanCard() {
 
   useEffect(() => {
     fetchPlans();
-  }, [token]);
+  }, [fetchPlans]);
 
   if (loading && plans.length === 0) {
     return (

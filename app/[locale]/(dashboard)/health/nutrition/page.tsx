@@ -88,7 +88,7 @@ export default function NutritionPage() {
     await fetchSummary();
   };
 
-  const handleAddFoodForMeal = async (_mealType: string) => {
+  const handleAddFoodForMeal = async () => {
     // If user clicks "+ Add food" on a specific meal, pre-populate meal
     // We open the search with the selected meal preset
     if (!token) return;
@@ -189,7 +189,7 @@ export default function NutritionPage() {
               meal={meal}
               onEditItem={(item) => setModal({ type: "edit", item })}
               onDeleteItem={handleDeleteItem}
-              onAddFood={(mealType) => handleAddFoodForMeal(mealType)}
+              onAddFood={() => handleAddFoodForMeal()}
             />
           ))}
         </div>
