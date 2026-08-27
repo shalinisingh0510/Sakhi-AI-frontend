@@ -24,8 +24,7 @@ export default function HealthPage({ params }: Props) {
   const [dashboardData, setDashboardData] = useState<WellnessDashboardResponse | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [locale, setLocale] = useState("en");
-  // Track whether we have already fetched once so token re-renders don't re-fetch
-  const hasFetched = useRef(false);
+
 
   useEffect(() => {
     params.then((p) => setLocale(p.locale));
@@ -43,8 +42,6 @@ export default function HealthPage({ params }: Props) {
       return () => clearTimeout(timer);
     }
 
-    if (hasFetched.current) return;
-    hasFetched.current = true;
 
     async function fetchDashboard() {
       try {
@@ -101,11 +98,9 @@ export default function HealthPage({ params }: Props) {
             </p>
             <button
               onClick={() => {
-                hasFetched.current = false;
                 setLoadState("loading");
                 const t2 = useAuthStore.getState().token;
                 if (t2) {
-                  hasFetched.current = true;
                   wellnessApi
                     .getDashboard(t2)
                     .then((data) => {
