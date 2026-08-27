@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { longitudinalApi, LongitudinalPatternsResponse } from "@/lib/api";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuthStore } from "@/lib/auth-store";
 import { Activity, AlertCircle } from "lucide-react";
 
 export function SymptomPatternsCard() {
-  const { token } = useAuth();
+  const { token } = useAuthStore();
   const [data, setData] = useState<LongitudinalPatternsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
