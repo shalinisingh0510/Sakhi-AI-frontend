@@ -58,7 +58,13 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
-    throw new ApiError(error.message ?? `Request failed (${res.status})`, res.status);
+    const errorMsg =
+      typeof error.detail === "string"
+        ? error.detail
+        : Array.isArray(error.detail) && error.detail[0]?.msg
+        ? error.detail[0].msg
+        : error.message ?? `Request failed (${res.status})`;
+    throw new ApiError(errorMsg, res.status);
   }
 
   return res.json() as Promise<T>;
@@ -84,42 +90,41 @@ export const authApi = {
     }),
 };
 
-interface ApiMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  created_at: string;
-}
-
-interface ApiConversationDetail {
-  conversation: {
-    id: string;
+interface ApiChatResponse {
+  success: boolean;
+  data: {
+    conversation_id: string;
+    conversationId: string;
+    message: {
+      id: string;
+      role: "assistant" | "user";
+      content: string;
+      created_at: string;
+    };
   };
-  messages: ApiMessage[];
 }
 
 export const chatApi = {
-  sendMessage: async (content: string, sessionId: string | null, token: string, mode: "text" | "voice" = "text", language: string = "english") => {
-    let res: ApiConversationDetail;
-    if (!sessionId) {
-      res = await request<ApiConversationDetail>("/conversations", {
-        method: "POST",
-        body: { initial_message: content, preferred_language: language, mode },
-        token,
-      });
-    } else {
-      res = await request<ApiConversationDetail>(`/conversations/${sessionId}/messages`, {
-        method: "POST",
-        body: { message: content, mode },
-        token,
-      });
-    }
-    const messages = res.messages || [];
-    const lastMsg = messages[messages.length - 1];
+  sendMessage: async (
+    content: string,
+    sessionId: string | null,
+    token: string,
+    mode: "text" | "voice" = "text",
+    language: string = "english"
+  ): Promise<ChatResponse> => {
+    const res = await request<ApiChatResponse>("/chat/message", {
+      method: "POST",
+      body: {
+        message: content,
+        conversationId: sessionId || undefined,
+        language,
+      },
+      token,
+    });
     return {
-      reply: lastMsg ? lastMsg.content : "",
-      sessionId: res.conversation.id
-    } as ChatResponse;
+      reply: res.data.message.content,
+      sessionId: res.data.conversationId || res.data.conversation_id,
+    };
   },
 };
 
