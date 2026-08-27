@@ -72,19 +72,19 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
 export const authApi = {
   login: async (email: string, password: string) => {
-    const res = await request<any>("/auth/login", {
+    const res = await request<Record<string, unknown>>("/auth/login", {
       method: "POST",
       body: { email, password },
     });
-    return { user: res.user, token: res.access_token } as AuthResponse;
+    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
   },
 
   register: async (name: string, email: string, password: string) => {
-    const res = await request<any>("/auth/register", {
+    const res = await request<Record<string, unknown>>("/auth/register", {
       method: "POST",
       body: { name, email, password },
     });
-    return { user: res.user, token: res.access_token } as AuthResponse;
+    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
   },
 
   forgotPassword: (email: string) =>
@@ -113,7 +113,7 @@ export const chatApi = {
     content: string,
     sessionId: string | null,
     token: string,
-    mode: "text" | "voice" = "text",
+    _mode: "text" | "voice" = "text",
     language: string = "english"
   ): Promise<ChatResponse> => {
     const res = await request<ApiChatResponse>("/chat/message", {
