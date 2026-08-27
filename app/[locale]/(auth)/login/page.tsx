@@ -69,9 +69,9 @@ export default function LoginPage() {
         return;
       }
 
-      const { user, token } = await authApi.login(form.email, form.password);
+      const { user, access_token } = await authApi.login(form.email, form.password);
       const normalized = normalizeUser(user, form.email);
-      login(normalized, token);
+      login(normalized, access_token);
       router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
     } catch {
       setErrors({ general: t("errors.general") });

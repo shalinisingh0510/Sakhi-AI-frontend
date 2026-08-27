@@ -318,7 +318,7 @@ export const wellnessApi = {
 
   listSymptoms: (token: string, limit: number = 50, offset: number = 0) =>
     request<SymptomLogResponse[]>(`/wellness/symptoms?limit=${limit}&offset=${offset}`, { token }),
-    
+
   deleteSymptom: (token: string, logId: string) =>
     request<void>(`/wellness/symptoms/${logId}`, {
       method: "DELETE",
