@@ -94,14 +94,28 @@ const newKeys = {
     lowConfidence: "Low confidence estimate",
     keepTracking: "Keep tracking your periods to get personalized cycle estimates.",
     viewCycle: "View cycle",
-    symptomsTitle: "Today's symptoms",
-    noSymptoms: "No symptoms logged today.",
-    viewAllSymptoms: "View all symptoms",
-    mood: "Mood",
-    energy: "Energy",
-    addMood: "Add mood",
-    addEnergy: "Add energy",
-    trackingStatus: "Today's wellness",
+    symptoms: {
+      title: "Today's symptoms",
+      noSymptoms: "No symptoms logged today.",
+      viewAll: "View all symptoms"
+    },
+    moodEnergy: {
+      title: "Mood & Energy",
+      mood: "Mood",
+      energy: "Energy",
+      notLogged: "Not logged",
+      addMood: "Add mood",
+      addEnergy: "Add energy"
+    },
+    tracking: {
+      title: "Today's wellness",
+      checkin: "Check-in",
+      cycle: "Cycle",
+      symptoms: "Symptoms",
+      notLogged: "Not logged:",
+      nutrition: "Nutrition — Coming soon",
+      activity: "Activity — Coming soon"
+    },
     trendsTitle: "Recent Wellness",
     symptomSummary: "Over the last {days} days, you logged symptoms on {count} days and completed {checkins} check-ins.",
     welcomeNewTitle: "Welcome to your Wellness Hub 🌸",

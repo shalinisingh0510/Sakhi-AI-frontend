@@ -1321,14 +1321,28 @@
       "lowConfidence": "[NEEDS_REVIEW] Low confidence estimate",
       "keepTracking": "[NEEDS_REVIEW] Keep tracking your periods to get personalized cycle estimates.",
       "viewCycle": "[NEEDS_REVIEW] View cycle",
-      "symptomsTitle": "[NEEDS_REVIEW] Today's symptoms",
-      "noSymptoms": "[NEEDS_REVIEW] No symptoms logged today.",
-      "viewAllSymptoms": "[NEEDS_REVIEW] View all symptoms",
-      "mood": "[NEEDS_REVIEW] Mood",
-      "energy": "[NEEDS_REVIEW] Energy",
-      "addMood": "[NEEDS_REVIEW] Add mood",
-      "addEnergy": "[NEEDS_REVIEW] Add energy",
-      "trackingStatus": "[NEEDS_REVIEW] Today's wellness",
+      "symptoms": {
+        "title": "[NEEDS_REVIEW] Today's symptoms",
+        "noSymptoms": "[NEEDS_REVIEW] No symptoms logged today.",
+        "viewAll": "[NEEDS_REVIEW] View all symptoms"
+      },
+      "moodEnergy": {
+        "title": "[NEEDS_REVIEW] Mood & Energy",
+        "mood": "[NEEDS_REVIEW] Mood",
+        "energy": "[NEEDS_REVIEW] Energy",
+        "notLogged": "[NEEDS_REVIEW] Not logged",
+        "addMood": "[NEEDS_REVIEW] Add mood",
+        "addEnergy": "[NEEDS_REVIEW] Add energy"
+      },
+      "tracking": {
+        "title": "[NEEDS_REVIEW] Today's wellness",
+        "checkin": "[NEEDS_REVIEW] Check-in",
+        "cycle": "[NEEDS_REVIEW] Cycle",
+        "symptoms": "[NEEDS_REVIEW] Symptoms",
+        "notLogged": "[NEEDS_REVIEW] Not logged:",
+        "nutrition": "[NEEDS_REVIEW] Nutrition — Coming soon",
+        "activity": "[NEEDS_REVIEW] Activity — Coming soon"
+      },
       "trendsTitle": "[NEEDS_REVIEW] Recent Wellness",
       "symptomSummary": "[NEEDS_REVIEW] Over the last {days} days, you logged symptoms on {count} days and completed {checkins} check-ins.",
       "welcomeNewTitle": "[NEEDS_REVIEW] Welcome to your Wellness Hub 🌸",
