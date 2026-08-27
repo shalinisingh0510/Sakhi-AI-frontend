@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -36,7 +35,6 @@ const INTENSITY_OPTIONS = [
 ];
 
 export function ActivityLogDialog({ isOpen, onClose, token, onSuccess }: Props) {
-  const t = useTranslations("HealthProfile.activity");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -124,7 +122,7 @@ export function ActivityLogDialog({ isOpen, onClose, token, onSuccess }: Props) 
           />
           
           <div className="pt-4 flex gap-3">
-            <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" className="flex-1" disabled={isSubmitting}>

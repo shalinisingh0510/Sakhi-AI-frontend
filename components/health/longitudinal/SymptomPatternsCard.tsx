@@ -14,7 +14,7 @@ export function SymptomPatternsCard() {
     if (!token) return;
     longitudinalApi.getPatterns(token, "90d")
       .then((res) => {
-        setData(res.data);
+        setData(res);
       })
       .catch((err) => console.error("Failed to load patterns", err))
       .finally(() => setLoading(false));

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { type WellnessDashboardResponse, nutritionApi, type NutritionFacts } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { WellnessDashboardHeader } from "./dashboard/WellnessDashboardHeader";
@@ -50,17 +50,17 @@ export function HealthDashboard({ data }: Props) {
 
   const [energySummary, setEnergySummary] = useState<EnergySummaryResponse | null>(null);
 
-  const fetchEnergy = () => {
+  const fetchEnergy = useCallback(() => {
     if (!token) return;
     const today = new Date().toISOString().split("T")[0];
     energyApi.getTodaySummary(token, today)
       .then(setEnergySummary)
       .catch(console.error);
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchEnergy();
-  }, [token]);
+  }, [fetchEnergy]);
 
   const isCycleTrackingEnabled = data.tracking_status.cycle_status !== "Not Tracked";
 
