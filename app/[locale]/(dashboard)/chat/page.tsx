@@ -6,7 +6,6 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useChatStore } from "@/lib/chat-store";
 import { useVoice } from "@/lib/use-voice";
 import { chatApi } from "@/lib/api";
-import { demoDelay, isDemoMode } from "@/lib/api-config";
 import { Button } from "@/components/ui/Button";
 
 export default function ChatPage() {
@@ -16,10 +15,10 @@ export default function ChatPage() {
   const tA11y = useTranslations("Accessibility");
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"text" | "voice">("text");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = t.raw("quickPrompts") as string[];
-  const demoReplies = t.raw("demoReplies") as Record<string, string>;
 
   const {
     isListening,
@@ -42,41 +41,43 @@ export default function ChatPage() {
     }
   }, [transcript]);
 
-  function getSakhiReply(userMsg: string): string {
-    const lower = userMsg.toLowerCase();
-    if (lower.includes("cramp")) return demoReplies.cramp;
-    if (lower.includes("cycle") || lower.includes("menstrual")) return demoReplies.cycle;
-    if (lower.includes("hygiene") || lower.includes("clean")) return demoReplies.hygiene;
-    return demoReplies.default;
-  }
-
   async function sendMessage(content: string, overrideMode?: "text" | "voice") {
-    if (!content.trim()) return;
+    const trimmed = content.trim();
+    if (!trimmed || isTyping) return;
     const currentMode = overrideMode || inputMode;
     setInput("");
     setInputMode("text");
-    addMessage({ role: "user", content });
+    setErrorMessage(null);
+    addMessage({ role: "user", content: trimmed });
     setTyping(true);
 
-    let reply: string;
-
     try {
-      if (!isDemoMode() && token) {
-        const response = await chatApi.sendMessage(content, sessionId, token, currentMode, user?.language || "english");
-        reply = response.reply;
-        setSessionId(response.sessionId);
-      } else {
-        await demoDelay(1200 + Math.random() * 800);
-        reply = getSakhiReply(content);
+      if (!token) {
+        throw new Error("Please log in to chat with Sakhi.");
       }
-    } catch {
-      await demoDelay(600);
-      reply = getSakhiReply(content);
+      const response = await chatApi.sendMessage(
+        trimmed,
+        sessionId,
+        token,
+        currentMode,
+        user?.language || "english"
+      );
+      setSessionId(response.sessionId);
+      addMessage({ role: "sakhi", content: response.reply });
+      speak(response.reply);
+    } catch (err: unknown) {
+      const displayError =
+        err instanceof Error
+          ? err.message
+          : "Unable to reach the Sakhi service. Please check your connection and try again.";
+      setErrorMessage(displayError);
+      addMessage({
+        role: "sakhi",
+        content: `I'm having trouble connecting right now (${displayError}). Please try again shortly.`,
+      });
+    } finally {
+      setTyping(false);
     }
-
-    setTyping(false);
-    addMessage({ role: "sakhi", content: reply });
-    speak(reply);
   }
 
   function handleSubmit(e: FormEvent) {
