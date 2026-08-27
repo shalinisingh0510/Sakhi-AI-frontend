@@ -696,3 +696,47 @@ export const energyApi = {
     return request<EnergySummaryResponse>(url, { token });
   },
 };
+
+// --- Longitudinal API (Phase 8) ---
+
+export interface WellnessTrend {
+  domain: string;
+  metric: string;
+  direction: "INCREASING" | "DECREASING" | "STABLE" | "VARIABLE" | "INSUFFICIENT_DATA";
+  current_value: number | null;
+  previous_value: number | null;
+  unit: string | null;
+  confidence: "LOW" | "MEDIUM" | "HIGH" | "INSUFFICIENT_DATA";
+}
+
+export interface TrackingCompleteness {
+  overall_score: number;
+  domain_scores: Record<string, number>;
+  days_in_range: number;
+}
+
+export interface LongitudinalTrendsResponse {
+  date_range: string;
+  trends: WellnessTrend[];
+  completeness: TrackingCompleteness;
+}
+
+export interface SymptomPattern {
+  symptom_code: string;
+  occurrences: number;
+  confidence: "LOW" | "MEDIUM" | "HIGH" | "INSUFFICIENT_DATA";
+  cycle_correlation: string | null;
+}
+
+export interface LongitudinalPatternsResponse {
+  date_range: string;
+  symptom_patterns: SymptomPattern[];
+}
+
+export const longitudinalApi = {
+  getTrends: (token: string, timeRange: string = "30d") =>
+    request<LongitudinalTrendsResponse>(`/wellness/trends?time_range=${timeRange}`, { token }),
+  getPatterns: (token: string, timeRange: string = "90d") =>
+    request<LongitudinalPatternsResponse>(`/wellness/patterns?time_range=${timeRange}`, { token }),
+};
+

@@ -7,7 +7,9 @@ import { useAuthStore } from "@/lib/auth-store";
 import { WellnessDashboardHeader } from "./dashboard/WellnessDashboardHeader";
 import { TodayCheckInCard } from "./dashboard/TodayCheckInCard";
 import { CycleSnapshotCard } from "./dashboard/CycleSnapshotCard";
-import { WellnessTrendsCard } from "./dashboard/WellnessTrendsCard";
+import { WellnessTrendsCard } from "./longitudinal/WellnessTrendsCard";
+import { SymptomPatternsCard } from "./longitudinal/SymptomPatternsCard";
+import { MyWellnessPlanCard } from "./wellness_plans/MyWellnessPlanCard";
 import { SymptomsSnapshotCard } from "./dashboard/SymptomsSnapshotCard";
 import { MoodEnergyCard } from "./dashboard/MoodEnergyCard";
 import { TrackingStatus } from "./dashboard/TrackingStatus";
@@ -66,6 +68,8 @@ export function HealthDashboard({ data }: Props) {
     <div className="flex flex-col gap-6 py-6">
       <WellnessDashboardHeader profile={data.profile} />
 
+      <MyWellnessPlanCard />
+
       <TodayCheckInCard today={data.today} />
 
       {isCycleTrackingEnabled && (
@@ -75,8 +79,8 @@ export function HealthDashboard({ data }: Props) {
       <SymptomsSnapshotCard today={data.today} />
       <MoodEnergyCard today={data.today} />
       
-      <WellnessTrendsCard trends={data.trends} />
-      
+      <WellnessTrendsCard />
+      <SymptomPatternsCard />
       <TrackingStatus status={data.tracking_status} />
 
       {/* Health Hub Modules (Quick Links) */}
