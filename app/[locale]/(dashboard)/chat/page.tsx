@@ -15,7 +15,6 @@ export default function ChatPage() {
   const tA11y = useTranslations("Accessibility");
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"text" | "voice">("text");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = t.raw("quickPrompts") as string[];
@@ -47,7 +46,6 @@ export default function ChatPage() {
     const currentMode = overrideMode || inputMode;
     setInput("");
     setInputMode("text");
-    setErrorMessage(null);
     addMessage({ role: "user", content: trimmed });
     setTyping(true);
 
@@ -70,7 +68,6 @@ export default function ChatPage() {
         err instanceof Error
           ? err.message
           : "Unable to reach the Sakhi service. Please check your connection and try again.";
-      setErrorMessage(displayError);
       addMessage({
         role: "sakhi",
         content: `I'm having trouble connecting right now (${displayError}). Please try again shortly.`,
