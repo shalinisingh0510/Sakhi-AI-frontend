@@ -50,8 +50,8 @@ export function DailyCheckIn({ onSuccess, onCancel, initialData }: Props) {
 
       const payload = {
         log_date: today,
-        mood: mood ? { mood_code: mood, intensity: "MEDIUM" } : undefined,
-        energy: energy ? { energy_level: energy } : undefined,
+        mood: mood ? { mood_code: mood, intensity: "MEDIUM", log_date: today } : undefined,
+        energy: energy ? { energy_level: energy, log_date: today } : undefined,
         symptoms: symptoms.map(s => ({
           ...s,
           start_date: today,
