@@ -9,6 +9,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { learningApi, type LearningContent, type LearningProgress } from "@/lib/api";
 import { Loader2, AlertCircle, BookOpen } from "lucide-react";
 import { LearningArticleRenderer, calculateReadingTime } from "@/components/learning/LearningArticleRenderer";
+import { BookmarkButton } from "@/components/learning/BookmarkButton";
 import { LearningVideoPlayer } from "@/components/learning/LearningVideoPlayer";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
@@ -122,9 +123,12 @@ export default function ContentDetailPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 md:px-8">
-      <Link href="/learn" className="mb-6 inline-flex items-center gap-1 text-sm text-berry hover:underline">
-        ← Back to Learn
-      </Link>
+      <div className="mb-6 flex items-center justify-between">
+        <Link href="/learn" className="inline-flex items-center gap-1 text-sm text-berry hover:underline">
+          ← Back to Learn
+        </Link>
+        <BookmarkButton contentId={content.id} showLabel={true} />
+      </div>
 
       <div className="mb-6">
         <div className="mb-3 flex flex-wrap items-center gap-2">

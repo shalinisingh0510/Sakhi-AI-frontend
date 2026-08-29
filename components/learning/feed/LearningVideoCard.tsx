@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { type LearningContent } from "@/lib/api";
 import { PlayCircle } from "lucide-react";
+import { BookmarkButton } from "@/components/learning/BookmarkButton";
 
 export function LearningVideoCard({ content, href }: { content: LearningContent; href: string }) {
   return (
@@ -41,11 +42,14 @@ export function LearningVideoCard({ content, href }: { content: LearningContent;
           <h3 className="line-clamp-2 text-lg font-bold text-ink leading-tight group-hover:text-berry transition-colors">
             {content.title}
           </h3>
-          <div className="mt-auto pt-4 flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs">
-              👩‍⚕️
+          <div className="mt-auto pt-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs">
+                👩‍⚕️
+              </div>
+              <span className="text-xs text-slate-500 font-medium truncate">Sakhi Health</span>
             </div>
-            <span className="text-xs text-slate-500 font-medium truncate">Sakhi Health</span>
+            <BookmarkButton contentId={content.id} className="z-10 bg-slate-50 p-1.5 rounded-full hover:bg-slate-100" />
           </div>
         </div>
       </div>

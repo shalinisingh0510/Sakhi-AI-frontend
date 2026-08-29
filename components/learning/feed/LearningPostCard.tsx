@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { type LearningContent } from "@/lib/api";
+import { BookmarkButton } from "@/components/learning/BookmarkButton";
 
 export function LearningPostCard({ content, href }: { content: LearningContent; href: string }) {
   return (
@@ -34,6 +35,7 @@ export function LearningPostCard({ content, href }: { content: LearningContent; 
             </div>
             <span className="text-[11px] text-slate-500 font-medium truncate">Sakhi Health</span>
           </div>
+          <BookmarkButton contentId={content.id} className="z-10 bg-white/80 p-1.5 rounded-full backdrop-blur-sm shadow-sm" />
         </div>
       </div>
     </Link>
