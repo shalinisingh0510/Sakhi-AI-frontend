@@ -20,6 +20,7 @@ export function normalizeUser(raw: unknown, fallbackEmail = ""): User {
     id: u.id ?? `user-${Date.now()}`,
     name: u.name ?? "",
     email: u.email ?? fallbackEmail,
+    role: u.role ?? "user",
     ageGroup: (u.ageGroup as AgeGroup) ?? "18+",
     language: (u.language as SupportedLanguage) ?? "en",
     avatarUrl: u.avatarUrl,

@@ -60,6 +60,7 @@ export default function RegisterPage() {
             email: form.email,
             ageGroup: "18+",
             language: "en",
+            role: "user",
             onboardingComplete: false,
           },
           "demo-token-123"

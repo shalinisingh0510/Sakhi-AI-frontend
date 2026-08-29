@@ -5,13 +5,16 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import {
   learningApi,
-  type LearningContent,
   type ContentType,
   type SourceType,
   type ContentBlock,
+  type LearningContentCreateInput,
 } from "@/lib/api";
-import { Loader2, Plus, Trash2, ChevronUp, ChevronDown, ArrowLeft } from "lucide-react";
+import { Loader2, Plus, Trash2, ChevronUp, ChevronDown, ArrowLeft, Eye, Edit2 } from "lucide-react";
 import Link from "next/link";
+import { AdminMediaUploader } from "@/components/admin/AdminMediaUploader";
+import { LearningArticleRenderer, calculateReadingTime } from "@/components/learning/LearningArticleRenderer";
+import { LearningVideoPlayer } from "@/components/learning/LearningVideoPlayer";
 
 const CATEGORIES = [
   "menstrual-health",
@@ -87,7 +90,26 @@ function BlockEditor({
       )}
       {(block.type === "image" || block.type === "video") && (
         <>
-          <input type="url" value={block.url || ""} placeholder={block.type === "image" ? "Image URL..." : "Video URL..."} onChange={(e) => onChange({ ...block, url: e.target.value })} className="mb-2 w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30" />
+          <div className="mb-2">
+            {!block.media_file_id ? (
+              <AdminMediaUploader
+                type={block.type === "image" ? "image" : "video"}
+                onSuccess={(id) => onChange({ ...block, media_file_id: id })}
+                label={block.type === "image" ? "Upload Image" : "Upload Video"}
+              />
+            ) : (
+              <div className="flex items-center justify-between rounded-xl border border-moss/30 bg-moss/5 px-4 py-3">
+                <span className="text-sm font-medium text-moss">Media Attached ({block.media_file_id.substring(0, 8)}...)</span>
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...block, media_file_id: undefined })}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
           <input type="text" value={block.caption || ""} placeholder="Optional caption..." onChange={(e) => onChange({ ...block, caption: e.target.value })} className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30" />
         </>
       )}
@@ -117,6 +139,7 @@ export default function EditContentPage() {
   const [language, setLanguage] = useState("en");
   const [durationMinutes, setDurationMinutes] = useState(0);
   const [isFeatured, setIsFeatured] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
 
   useEffect(() => {
@@ -169,7 +192,7 @@ export default function EditContentPage() {
     if (!token) return;
     setErrors([]);
     const tags = tagsInput.split(",").map((t) => t.trim()).filter(Boolean);
-    const payload: any = {
+    const payload: Partial<LearningContentCreateInput> = {
       title,
       description: description || undefined,
       content_type: contentType,
@@ -192,9 +215,14 @@ export default function EditContentPage() {
     try {
       await learningApi.admin.update(token, id, payload);
       router.push("../");
-    } catch (e: any) {
-      const detail = e?.message || "Failed to save.";
-      setErrors([detail]);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setErrors([e.message]);
+      } else if (typeof e === 'object' && e !== null && 'message' in e) {
+        setErrors([String(e.message)]);
+      } else {
+        setErrors(["Failed to save."]);
+      }
     } finally {
       setSaving(false);
     }
@@ -209,7 +237,23 @@ export default function EditContentPage() {
       <Link href="../" className="mb-6 inline-flex items-center gap-1.5 text-sm text-berry hover:underline">
         <ArrowLeft className="h-4 w-4" /> Back to Content List
       </Link>
-      <h2 className="mb-6 text-2xl font-bold text-ink">Edit Content</h2>
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-ink">Edit Content</h2>
+        <div className="flex bg-slate-100 p-1 rounded-lg">
+          <button
+            onClick={() => setPreviewMode(false)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition ${!previewMode ? "bg-white shadow-sm text-berry" : "text-slate-500 hover:text-ink"}`}
+          >
+            <Edit2 className="h-4 w-4" /> Editor
+          </button>
+          <button
+            onClick={() => setPreviewMode(true)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition ${previewMode ? "bg-white shadow-sm text-berry" : "text-slate-500 hover:text-ink"}`}
+          >
+            <Eye className="h-4 w-4" /> Preview
+          </button>
+        </div>
+      </div>
 
       {errors.length > 0 && (
         <div className="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm">
@@ -217,7 +261,90 @@ export default function EditContentPage() {
         </div>
       )}
 
-      <div className="space-y-6">
+      {previewMode ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="max-w-2xl mx-auto">
+            <header className="mb-8">
+              {thumbnailFileId && (
+                <div className="mb-6 overflow-hidden rounded-3xl aspect-video w-full bg-slate-100 shadow-sm relative">
+                  <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                    Image Preview (Media ID: {thumbnailFileId.substring(0, 8)}...)
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-berry/80 mb-3">
+                <span className="rounded-full bg-berry/10 px-3 py-1">{category}</span>
+                {(contentType === "ARTICLE" || contentType === "POST") && (
+                  <span className="rounded-full bg-slate-100 px-3 py-1">
+                    {calculateReadingTime(blocks)} min read
+                  </span>
+                )}
+              </div>
+              <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+                {title || "Untitled"}
+              </h1>
+              {description && (
+                <p className="mt-3 text-lg text-ink/70 leading-relaxed">{description}</p>
+              )}
+            </header>
+
+            {contentType === "VIDEO" && (
+              <div className="mb-6">
+                <LearningVideoPlayer 
+                  content={{
+                    id: "preview",
+                    title,
+                    description,
+                    content_type: contentType,
+                    source_type: sourceType,
+                    media_url: mediaUrl,
+                    media_file_url: mediaFileId ? "preview" : undefined,
+                    thumbnail_url: thumbnailFileId ? "preview" : undefined,
+                    body: blocks,
+                    category,
+                    author_id: "preview-author",
+                    tags: [],
+                    language,
+                    duration_minutes: durationMinutes,
+                    is_featured: isFeatured,
+                    status: "DRAFT",
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                  }}
+                />
+              </div>
+            )}
+
+            {(contentType === "ARTICLE" || contentType === "POST") && (
+              <div className="mb-6">
+                <LearningArticleRenderer 
+                  content={{
+                    id: "preview",
+                    title,
+                    description,
+                    content_type: contentType,
+                    source_type: sourceType,
+                    media_url: mediaUrl,
+                    media_file_id: mediaFileId,
+                    thumbnail_file_id: thumbnailFileId,
+                    body: blocks,
+                    category,
+                    author_id: "preview-author",
+                    tags: [],
+                    language,
+                    duration_minutes: durationMinutes,
+                    is_featured: isFeatured,
+                    status: "DRAFT",
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
           <h3 className="text-sm font-semibold text-ink">Content Details</h3>
           <div>
@@ -235,9 +362,51 @@ export default function EditContentPage() {
             </div>
           )}
           {sourceType === "PRIVATE_VIDEO" && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <label className="mb-1.5 block text-sm font-semibold text-amber-700">🔒 Private Video Upload</label>
+              {!mediaFileId ? (
+                <AdminMediaUploader
+                  type="video"
+                  onSuccess={(id) => setMediaFileId(id)}
+                />
+              ) : (
+                <div className="flex items-center justify-between rounded-xl border border-moss/30 bg-moss/5 px-4 py-3">
+                  <span className="text-sm font-medium text-moss">Video Uploaded successfully</span>
+                  <button
+                    type="button"
+                    onClick={() => setMediaFileId("")}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Replace
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {(contentType === "VIDEO" || contentType === "POST") && (
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink">Media File ID (R2)</label>
-              <input value={mediaFileId} onChange={(e) => setMediaFileId(e.target.value)} className="w-full rounded-xl border border-peach/70 px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30" />
+              <label className="mb-1.5 block text-sm font-medium text-ink">
+                Thumbnail Image
+              </label>
+              {!thumbnailFileId ? (
+                <AdminMediaUploader
+                  type="image"
+                  label="Upload Thumbnail"
+                  onSuccess={(id) => setThumbnailFileId(id)}
+                />
+              ) : (
+                <div className="flex items-center justify-between rounded-xl border border-moss/30 bg-moss/5 px-4 py-3">
+                  <span className="text-sm font-medium text-moss">Thumbnail Uploaded</span>
+                  <button
+                    type="button"
+                    onClick={() => setThumbnailFileId("")}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Replace
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -306,6 +475,7 @@ export default function EditContentPage() {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }
