@@ -750,3 +750,137 @@ export const longitudinalApi = {
     request<LongitudinalPatternsResponse>(`/wellness/patterns?time_range=${timeRange}`, { token }),
 };
 
+// --- Learning API (Phase 3 + 4) ---
+
+export type ContentType = "VIDEO" | "ARTICLE" | "POST";
+export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL";
+export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+
+export interface ContentBlock {
+  type: "heading" | "paragraph" | "image" | "video" | "important_box";
+  text?: string;
+  url?: string;
+  caption?: string;
+}
+
+export interface LearningContent {
+  id: string;
+  title: string;
+  description?: string;
+  content_type: ContentType;
+  source_type: SourceType;
+  media_url?: string;
+  media_file_id?: string;
+  thumbnail_file_id?: string;
+  body?: ContentBlock[];
+  category: string;
+  tags: string[];
+  language: string;
+  is_featured: boolean;
+  status: ContentStatus;
+  duration_minutes: number;
+  author_id: string;
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+}
+
+export interface LearningProgress {
+  user_id: string;
+  content_id: string;
+  completed: boolean;
+  watch_time_seconds: number;
+  progress_percent: number;
+  last_accessed_at: string;
+  completed_at?: string;
+}
+
+export interface LearningSummary {
+  completed_lessons: number;
+  learning_minutes: number;
+  videos_watched: number;
+  articles_read: number;
+}
+
+export interface LearningContentListResponse {
+  items: LearningContent[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LearningContentCreateInput {
+  title: string;
+  description?: string;
+  content_type: ContentType;
+  source_type: SourceType;
+  media_url?: string;
+  media_file_id?: string;
+  thumbnail_file_id?: string;
+  body?: ContentBlock[];
+  category: string;
+  tags?: string[];
+  language?: string;
+  is_featured?: boolean;
+  status?: ContentStatus;
+  duration_minutes?: number;
+}
+
+export const learningApi = {
+  // --- Public ---
+  getFeed: (
+    token: string,
+    params?: { category?: string; type?: string; search?: string; page?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.page) qs.set("page", String(params.page));
+    if (params?.category) qs.set("category", params.category);
+    if (params?.type) qs.set("content_type", params.type);
+    if (params?.search) qs.set("search", params.search);
+    return request<LearningContentListResponse>(`/learning?${qs.toString()}`, { token });
+  },
+  getContent: (token: string, id: string) =>
+    request<LearningContent>(`/learning/${id}`, { token }),
+  getProgress: (token: string, id: string) =>
+    request<LearningProgress>(`/learning/${id}/progress`, { token }),
+  updateProgress: (
+    token: string,
+    id: string,
+    data: { completed: boolean; watch_time_seconds?: number; progress_percent?: number }
+  ) =>
+    request<LearningProgress>(`/learning/${id}/progress`, {
+      method: "POST",
+      body: data,
+      token,
+    }),
+  getSummary: (token: string) =>
+    request<LearningSummary>(`/learning/progress/summary`, { token }),
+
+  // --- Admin ---
+  admin: {
+    list: (
+      token: string,
+      params?: { status?: string; content_type?: string; category?: string; search?: string; page?: number }
+    ) => {
+      const qs = new URLSearchParams();
+      if (params?.page) qs.set("page", String(params.page));
+      if (params?.status) qs.set("status", params.status);
+      if (params?.content_type) qs.set("content_type", params.content_type);
+      if (params?.category) qs.set("category", params.category);
+      if (params?.search) qs.set("search", params.search);
+      return request<LearningContentListResponse>(`/admin/learning?${qs.toString()}`, { token });
+    },
+    get: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}`, { token }),
+    create: (token: string, data: LearningContentCreateInput) =>
+      request<LearningContent>(`/admin/learning`, { method: "POST", body: data, token }),
+    update: (token: string, id: string, data: Partial<LearningContentCreateInput>) =>
+      request<LearningContent>(`/admin/learning/${id}`, { method: "PATCH", body: data, token }),
+    publish: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}/publish`, { method: "POST", token }),
+    archive: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}/archive`, { method: "POST", token }),
+    delete: (token: string, id: string) =>
+      request<void>(`/admin/learning/${id}`, { method: "DELETE", token }),
+  },
+};

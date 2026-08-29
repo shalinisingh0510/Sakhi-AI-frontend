@@ -26,6 +26,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  role: string;
   ageGroup: AgeGroup;
   language: SupportedLanguage;
   avatarUrl?: string;
