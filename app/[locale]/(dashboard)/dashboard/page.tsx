@@ -1,9 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { Card } from "@/components/ui/Card";
+import { wellnessApi, learningApi, type WellnessDashboardResponse, type LearningSummary } from "@/lib/api";
+import { HealthCard } from "@/components/dashboard/HealthCard";
+import { LearningCard } from "@/components/dashboard/LearningCard";
 
 const QUICK_TILE_META = [
   { href: "/chat", emoji: "??", bg: "from-rose/10 to-blush", border: "border-rose/20" },
@@ -15,14 +19,29 @@ const QUICK_TILE_META = [
 const TOPIC_EMOJIS = ["??", "??", "??", "??", "??", "???"];
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
   const t = useTranslations("Dashboard");
 
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? t("greetings.morning") : hour < 17 ? t("greetings.afternoon") : t("greetings.evening");
 
-  const stats = t.raw("stats") as { value: string; label: string }[];
+  const [healthData, setHealthData] = useState<WellnessDashboardResponse | null>(null);
+  const [learningData, setLearningData] = useState<LearningSummary | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+
+    // Parallel fetching
+    Promise.allSettled([
+      wellnessApi.getDashboard(token),
+      learningApi.getSummary(token)
+    ]).then(([healthRes, learningRes]) => {
+      if (healthRes.status === "fulfilled") setHealthData(healthRes.value);
+      if (learningRes.status === "fulfilled") setLearningData(learningRes.value);
+    });
+  }, [token]);
+
   const quickTiles = t.raw("quickTiles") as { title: string; desc: string }[];
   const topics = t.raw("topics") as string[];
 
@@ -38,17 +57,14 @@ export default function DashboardPage() {
             <p className="mt-1 text-sm text-ink/60">{t("subtitle")}</p>
           </div>
           <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-soft">
-            <span className="text-2xl">??</span>
+            <span className="text-2xl">✨</span>
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {stats.map((s) => (
-            <Card key={s.label} padding="sm" className="text-center">
-              <p className="font-display text-2xl font-bold text-berry">{s.value}</p>
-              <p className="mt-0.5 text-xs text-ink/60">{s.label}</p>
-            </Card>
-          ))}
+        {/* Phase 11 New Dashboard Cards */}
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <HealthCard data={healthData} />
+          <LearningCard data={learningData} />
         </div>
       </section>
 

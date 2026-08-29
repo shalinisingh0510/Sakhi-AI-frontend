@@ -760,6 +760,7 @@ export interface ContentBlock {
   type: "heading" | "paragraph" | "image" | "video" | "important_box";
   text?: string;
   url?: string;
+  media_file_id?: string;
   caption?: string;
 }
 
@@ -772,6 +773,8 @@ export interface LearningContent {
   media_url?: string;
   media_file_id?: string;
   thumbnail_file_id?: string;
+  thumbnail_url?: string;
+  media_file_url?: string;
   body?: ContentBlock[];
   category: string;
   tags: string[];
@@ -800,6 +803,7 @@ export interface LearningSummary {
   learning_minutes: number;
   videos_watched: number;
   articles_read: number;
+  continue_learning?: LearningContent;
 }
 
 export interface LearningContentListResponse {
@@ -841,6 +845,8 @@ export const learningApi = {
   },
   getContent: (token: string, id: string) =>
     request<LearningContent>(`/learning/${id}`, { token }),
+  getRelated: (token: string, id: string) =>
+    request<LearningContentListResponse>(`/learning/${id}/related`, { token }),
   getProgress: (token: string, id: string) =>
     request<LearningProgress>(`/learning/${id}/progress`, { token }),
   updateProgress: (
@@ -883,4 +889,29 @@ export const learningApi = {
     delete: (token: string, id: string) =>
       request<void>(`/admin/learning/${id}`, { method: "DELETE", token }),
   },
+};
+
+// --- Media API (Phase 6) ---
+
+export interface MediaUploadResponse {
+  upload_url: string;
+  storage_key: string;
+  media: {
+    id: string;
+    filename: string;
+    content_type: string;
+    size_bytes: number;
+    created_at: string;
+  };
+}
+
+export const mediaApi = {
+  generatePresignedUrl: (token: string, filename: string, content_type: string, size_bytes: number) =>
+    request<MediaUploadResponse>("/media/presigned-url", {
+      method: "POST",
+      body: { filename, content_type, size_bytes },
+      token,
+    }),
+  getMediaUrl: (token: string, id: string) =>
+    request<{ url: string }>(`/media/${id}/url`, { token }),
 };

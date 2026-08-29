@@ -16,7 +16,6 @@ import {
   Edit2,
   Trash2,
   Eye,
-  EyeOff,
   Archive,
   Video,
   FileText,
@@ -60,7 +59,7 @@ export default function AdminLearningPage() {
         page,
       });
       setData(res);
-    } catch (e) {
+    } catch {
       setError("Failed to load content. Please try again.");
     } finally {
       setLoading(false);

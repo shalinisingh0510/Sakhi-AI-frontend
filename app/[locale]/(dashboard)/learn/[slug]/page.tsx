@@ -1,91 +1,18 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useAuthStore } from "@/lib/auth-store";
-import { learningApi, type LearningContent, type ContentBlock, type LearningProgress } from "@/lib/api";
-import { Loader2, AlertCircle } from "lucide-react";
-
-function ArticleBody({ blocks }: { blocks: ContentBlock[] }) {
-  return (
-    <div className="space-y-5">
-      {blocks.map((block, i) => {
-        switch (block.type) {
-          case "heading":
-            return (
-              <h2 key={i} className="text-xl font-bold text-ink mt-6 first:mt-0">
-                {block.text}
-              </h2>
-            );
-          case "paragraph":
-            return (
-              <p key={i} className="text-sm leading-relaxed text-ink/80">
-                {block.text}
-              </p>
-            );
-          case "important_box":
-            return (
-              <div key={i} className="rounded-2xl border border-berry/20 bg-blush/50 px-5 py-4">
-                <p className="mb-1 text-xs font-bold uppercase tracking-wider text-berry">
-                  Important
-                </p>
-                <p className="text-sm text-ink/80">{block.text}</p>
-              </div>
-            );
-          case "image":
-            return (
-              <figure key={i} className="overflow-hidden rounded-2xl">
-                {block.url && (
-                  <img src={block.url} alt={block.caption || ""} className="w-full object-cover" />
-                )}
-                {block.caption && (
-                  <figcaption className="mt-2 text-center text-xs text-ink/50">
-                    {block.caption}
-                  </figcaption>
-                )}
-              </figure>
-            );
-          case "video":
-            return (
-              <div key={i} className="rounded-2xl overflow-hidden aspect-video bg-black">
-                <iframe
-                  src={block.url}
-                  className="h-full w-full"
-                  allowFullScreen
-                  title={block.caption || "video"}
-                />
-              </div>
-            );
-          default:
-            return null;
-        }
-      })}
-    </div>
-  );
-}
-
-function YouTubeEmbed({ url }: { url: string }) {
-  const getEmbedId = (u: string) => {
-    const m = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_\-]{11})/);
-    return m ? m[1] : null;
-  };
-  const videoId = getEmbedId(url);
-  if (!videoId) return <p className="text-sm text-red-500">Invalid YouTube URL</p>;
-  return (
-    <div className="aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-md">
-      <iframe
-        src={`https://www.youtube.com/embed/${videoId}`}
-        className="h-full w-full"
-        allowFullScreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        title="YouTube video"
-      />
-    </div>
-  );
-}
+import { learningApi, type LearningContent, type LearningProgress } from "@/lib/api";
+import { Loader2, AlertCircle, BookOpen } from "lucide-react";
+import { LearningArticleRenderer, calculateReadingTime } from "@/components/learning/LearningArticleRenderer";
+import { LearningVideoPlayer } from "@/components/learning/LearningVideoPlayer";
+import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
+import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
+import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
 
 export default function ContentDetailPage() {
   const params = useParams();
@@ -93,11 +20,13 @@ export default function ContentDetailPage() {
   const { token } = useAuthStore();
 
   const [content, setContent] = useState<LearningContent | null>(null);
-  const [progress, setProgress] = useState<LearningProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [markingComplete, setMarkingComplete] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [progress, setProgress] = useState<LearningProgress | null>(null);
+
+  const [relatedItems, setRelatedItems] = useState<LearningContent[]>([]);
 
   const fetchContent = useCallback(async () => {
     if (!token || !id) return;
@@ -107,11 +36,19 @@ export default function ContentDetailPage() {
       setContent(c);
       // Attempt to fetch progress (may 404 if not started)
       try {
-        const p = await learningApi.getProgress(token, id);
-        setProgress(p);
-        setCompleted(p.completed);
+        const progressData = await learningApi.getProgress(token, id);
+        setProgress(progressData);
+        setCompleted(progressData.completed);
       } catch {
         // No progress record yet
+      }
+      
+      // Fetch related items
+      try {
+        const r = await learningApi.getRelated(token, id);
+        setRelatedItems(r.items);
+      } catch {
+        // Silently fail related
       }
     } catch {
       setError("This content is not available.");
@@ -124,22 +61,44 @@ export default function ContentDetailPage() {
     fetchContent();
   }, [fetchContent]);
 
-  async function handleMarkComplete() {
+  const handleMarkComplete = useCallback(async () => {
     if (!token || !content) return;
     setMarkingComplete(true);
     try {
-      const p = await learningApi.updateProgress(token, content.id, {
+      await learningApi.updateProgress(token, content.id, {
         completed: true,
         progress_percent: 100,
       });
-      setProgress(p);
       setCompleted(true);
     } catch {
       // silently fail
     } finally {
       setMarkingComplete(false);
     }
-  }
+  }, [token, content]);
+
+  // Setup intersection observer for article completion
+  const observerTarget = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (!content || content.content_type === "VIDEO" || completed || !token) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !markingComplete) {
+          handleMarkComplete();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [content, completed, token, markingComplete, handleMarkComplete]);
+
 
   if (loading) {
     return (
@@ -181,33 +140,44 @@ export default function ContentDetailPage() {
             </span>
           )}
         </div>
-        <h1 className="font-display text-3xl font-bold text-ink">{content.title}</h1>
+        <header className="mb-8">
+        {content.thumbnail_url && (
+          <div className="mb-6 overflow-hidden rounded-3xl aspect-video w-full bg-slate-100 shadow-sm relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={content.thumbnail_url} alt={content.title} className="h-full w-full object-cover" />
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-berry/80 mb-3">
+          <span className="rounded-full bg-berry/10 px-3 py-1">{content.category}</span>
+          {(content.content_type === "ARTICLE" || content.content_type === "POST") && (
+            <span className="flex items-center gap-1 text-ink/50 bg-slate-100 rounded-full px-3 py-1">
+              <BookOpen className="h-3 w-3" />
+              {calculateReadingTime(content.body || [])} min read
+            </span>
+          )}
+        </div>
+        <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+          {content.title}
+        </h1>
         {content.description && (
-          <p className="mt-2 text-sm text-ink/60">{content.description}</p>
+          <p className="mt-3 text-lg text-ink/70 leading-relaxed">{content.description}</p>
         )}
-        {content.duration_minutes > 0 && (
-          <p className="mt-1 text-xs text-ink/40">{content.duration_minutes} min</p>
-        )}
+      </header>
       </div>
 
-      {/* YouTube */}
-      {content.source_type === "YOUTUBE" && content.media_url && (
+      {/* Video Player */}
+      {(content.content_type === "VIDEO") && (
         <div className="mb-6">
-          <YouTubeEmbed url={content.media_url} />
+          <LearningVideoPlayer content={content} progress={progress} />
         </div>
       )}
 
-      {/* Private Video */}
-      {content.source_type === "PRIVATE_VIDEO" && content.media_file_id && (
-        <div className="mb-6 rounded-2xl border border-berry/20 bg-lavender/50 p-4 text-center text-sm text-ink/60">
-          🔒 Private video — streaming link is generated securely on demand.
-        </div>
-      )}
-
-      {/* Article/Post Body */}
-      {content.body && content.body.length > 0 && (
+      {/* Article / Post */}
+      {(content.content_type === "ARTICLE" || content.content_type === "POST") && (
         <div className="mb-6">
-          <ArticleBody blocks={content.body as ContentBlock[]} />
+          <LearningArticleRenderer content={content} />
+          {/* Intersection Target for marking completion */}
+          <div ref={observerTarget} className="h-4 w-full mt-8" />
         </div>
       )}
 
@@ -244,6 +214,30 @@ export default function ContentDetailPage() {
             "Mark as Complete"
           )}
         </Button>
+      )}
+
+      {/* Related Learning */}
+      {relatedItems.length > 0 && (
+        <div className="mt-16 border-t border-slate-200 pt-10">
+          <h2 className="mb-6 font-display text-2xl font-bold text-ink">
+            Related Learning
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedItems.map((item) => {
+              const href = `/learn/${item.id}`;
+              switch (item.content_type) {
+                case "VIDEO":
+                  return <LearningVideoCard key={item.id} content={item} href={href} />;
+                case "ARTICLE":
+                  return <LearningArticleCard key={item.id} content={item} href={href} />;
+                case "POST":
+                  return <LearningPostCard key={item.id} content={item} href={href} />;
+                default:
+                  return null;
+              }
+            })}
+          </div>
+        </div>
       )}
     </div>
   );
