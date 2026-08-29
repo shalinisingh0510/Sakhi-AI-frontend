@@ -127,7 +127,7 @@ export function FoodVisionUpload() {
                   <p className="text-xs text-slate-500">Est: {c.estimated_quantity}</p>
                   {c.warning && <p className="text-xs text-orange-600 mt-1">{c.warning}</p>}
                 </div>
-                <Button size="sm" variant={c.canonical_food_id ? "primary" : "outline"} disabled={!c.canonical_food_id}>
+                <Button size="sm" variant={c.canonical_food_id ? "primary" : "secondary"} disabled={!c.canonical_food_id}>
                   {c.canonical_food_id ? 'Log Food' : 'Unrecognized'}
                 </Button>
               </div>
