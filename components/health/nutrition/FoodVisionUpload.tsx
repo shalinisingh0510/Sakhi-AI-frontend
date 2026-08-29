@@ -50,8 +50,12 @@ export function FoodVisionUpload() {
       
       const data = await res.json();
       setCandidates(data);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -83,6 +87,7 @@ export function FoodVisionUpload() {
 
         {previewUrl && (
           <div className="relative rounded-lg overflow-hidden h-48 w-full border border-slate-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={previewUrl} alt="Food preview" className="object-cover w-full h-full" />
             <Button 
               size="sm" 
@@ -135,7 +140,7 @@ export function FoodVisionUpload() {
             <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <p className="font-semibold text-sm">No food detected</p>
-              <p className="text-sm">We couldn't confidently identify food in this image. Try taking a clearer photo.</p>
+              <p className="text-sm">We couldn&apos;t confidently identify food in this image. Try taking a clearer photo.</p>
             </div>
           </div>
         )}

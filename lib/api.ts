@@ -113,6 +113,7 @@ export const chatApi = {
     content: string,
     sessionId: string | null,
     token: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _mode: "text" | "voice" = "text",
     language: string = "english"
   ): Promise<ChatResponse> => {
