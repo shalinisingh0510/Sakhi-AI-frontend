@@ -8,6 +8,7 @@ import { Loader2, Search } from "lucide-react";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
+import { LearningProgressCard } from "@/components/learning/LearningProgressCard";
 
 const CATEGORIES = [
   { id: "", label: "All Topics" },
@@ -113,6 +114,8 @@ export default function LearnPage() {
           />
         </div>
       </div>
+      
+      <LearningProgressCard />
 
       {/* Filters Area */}
       <div className="mb-8 space-y-4">

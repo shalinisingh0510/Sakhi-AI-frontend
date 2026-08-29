@@ -2,6 +2,7 @@ import Link from "next/link";
 import { type LearningContent } from "@/lib/api";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { calculateReadingTime } from "../LearningArticleRenderer";
+import { BookmarkButton } from "@/components/learning/BookmarkButton";
 
 export function LearningArticleCard({ content, href }: { content: LearningContent; href: string }) {
   const readTime = calculateReadingTime(content.body || []);
@@ -42,15 +43,18 @@ export function LearningArticleCard({ content, href }: { content: LearningConten
               {content.description}
             </p>
           )}
-          <div className="mt-auto pt-2 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="mt-auto pt-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 overflow-hidden">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs">
                 👩‍⚕️
               </div>
               <span className="text-xs text-slate-500 font-medium truncate">Sakhi Health</span>
             </div>
-            <div className="flex items-center gap-1 text-sm font-semibold text-berry group-hover:underline">
-              Read <ArrowRight className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-3">
+              <BookmarkButton contentId={content.id} className="z-10 bg-slate-50 p-1.5 rounded-full hover:bg-slate-100" />
+              <div className="flex items-center gap-1 text-sm font-semibold text-berry group-hover:underline">
+                Read <ArrowRight className="h-3.5 w-3.5" />
+              </div>
             </div>
           </div>
         </div>

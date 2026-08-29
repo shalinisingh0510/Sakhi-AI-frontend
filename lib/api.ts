@@ -145,6 +145,22 @@ export const learnApi = {
       method: "POST",
       token,
     }),
+
+  // New Progress Center Endpoints
+  getLearningSummary: (token: string) =>
+    request<unknown>("/learning/progress/summary", { token }),
+
+  getLearningHistory: (token: string) =>
+    request<unknown>("/learning/history", { token }),
+
+  getLearningBookmarks: (token: string) =>
+    request<unknown>("/learning/bookmarks", { token }),
+
+  toggleBookmark: (contentId: string, token: string) =>
+    request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
+      method: "POST",
+      token,
+    }),
 };
 
 export const progressApi = {
