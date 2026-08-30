@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { learningApi, type LearningContent } from "@/lib/api";
+import { learningApi, type RecommendationResponse } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Sparkles } from "lucide-react";
 import { LearningVideoCard } from "../feed/LearningVideoCard";
@@ -11,19 +11,17 @@ import { LearningPostCard } from "../feed/LearningPostCard";
 
 export function RecommendedContent() {
   const { token } = useAuthStore();
-  const [items, setItems] = useState<LearningContent[]>([]);
+  const [items, setItems] = useState<RecommendationResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!token) return;
     
-    // In the future this would be a dedicated recommendation endpoint.
-    // For now, we fetch a few non-featured items that have high ranking or recent dates.
-    learningApi.getFeed(token, { is_featured: false })
+    // Phase 7: Fetch personalized recommendations
+    learningApi.getRecommendations(token, 4)
       .then((res) => {
         if (res.items) {
-          // Take top 4 items for recommendations
-          setItems(res.items.slice(0, 4));
+          setItems(res.items);
         }
       })
       .catch(() => {})
@@ -56,18 +54,21 @@ export function RecommendedContent() {
       </div>
       
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
-        {items.map(item => {
+        {items.map(rec => {
+          const item = rec.content;
           const href = `/learn/${item.id}`;
-          if (item.content_type === "VIDEO" || item.content_type === "TUTORIAL") {
-            return <LearningVideoCard key={item.id} content={item} href={href} />;
-          }
-          if (item.content_type === "ARTICLE") {
-            return <LearningArticleCard key={item.id} content={item} href={href} />;
-          }
-          if (item.content_type === "POST") {
-            return <LearningPostCard key={item.id} content={item} href={href} />;
-          }
-          return null;
+          return (
+            <div key={item.id} className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-berry">{rec.reason}</div>
+              {item.content_type === "VIDEO" || item.content_type === "TUTORIAL" ? (
+                <LearningVideoCard content={item} href={href} />
+              ) : item.content_type === "ARTICLE" ? (
+                <LearningArticleCard content={item} href={href} />
+              ) : (
+                <LearningPostCard content={item} href={href} />
+              )}
+            </div>
+          );
         })}
       </div>
     </div>

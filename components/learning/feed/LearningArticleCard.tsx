@@ -3,6 +3,7 @@ import { type LearningContent } from "@/lib/api";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { calculateReadingTime } from "../LearningArticleRenderer";
 import { BookmarkButton } from "@/components/learning/BookmarkButton";
+import { MedicalReviewBadge } from "@/components/learning/MedicalReviewBadge";
 
 export function LearningArticleCard({ content, href }: { content: LearningContent; href: string }) {
   const readTime = calculateReadingTime(content.body || []);
@@ -33,7 +34,10 @@ export function LearningArticleCard({ content, href }: { content: LearningConten
         <div className="flex flex-1 flex-col p-5">
           <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wider">
             <span className="text-berry/80">{content.category.replace("-", " ")}</span>
-            <span className="text-slate-400 font-medium lowercase tracking-normal">{readTime} min read</span>
+            <div className="flex items-center gap-2">
+              <MedicalReviewBadge status={content.medical_review_status} />
+              <span className="text-slate-400 font-medium lowercase tracking-normal hidden sm:inline">{readTime} min read</span>
+            </div>
           </div>
           <h3 className="mb-2 line-clamp-2 text-lg font-bold text-ink leading-tight group-hover:text-berry transition-colors">
             {content.title}

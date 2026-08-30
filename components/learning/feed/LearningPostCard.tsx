@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { type LearningContent } from "@/lib/api";
 import { BookmarkButton } from "@/components/learning/BookmarkButton";
+import { MedicalReviewBadge } from "@/components/learning/MedicalReviewBadge";
 
 export function LearningPostCard({ content, href }: { content: LearningContent; href: string }) {
   return (
@@ -25,6 +26,7 @@ export function LearningPostCard({ content, href }: { content: LearningContent; 
         <div className="flex flex-col p-4 bg-white">
           <div className="mb-1 flex items-center justify-between text-xs font-semibold text-slate-500 uppercase tracking-wider">
             <span className="text-berry/80">{content.category.replace("-", " ")}</span>
+            <MedicalReviewBadge status={content.medical_review_status} />
           </div>
           <h3 className="line-clamp-2 text-sm font-semibold text-ink">
             {content.title}

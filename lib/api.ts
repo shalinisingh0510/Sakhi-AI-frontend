@@ -848,6 +848,74 @@ export interface LearningContent {
   updated_at: string;
   published_at?: string;
   is_short_form?: boolean;
+  // Phase 8: Medical Trust
+  medical_review_status?: string;
+  medical_reviewer_id?: string;
+  medical_reviewed_at?: string;
+  // Phase 10: Sponsorship
+  sponsor_id?: string;
+  sponsor?: Sponsor;
+}
+
+export interface Sponsor {
+  id: string;
+  name: string;
+  logo_url?: string;
+  website?: string;
+  description?: string;
+  status: string;
+}
+
+export interface AffiliateProduct {
+  id: string;
+  partner_id: string;
+  name: string;
+  description?: string;
+  image_url?: string;
+  url: string;
+  disclosure_text?: string;
+  status: string;
+}
+
+export interface AdPlacementConfig {
+  id: string;
+  placement: string;
+  provider: string;
+  is_enabled: boolean;
+  audience_policy: string;
+  config_json?: Record<string, unknown>;
+}
+
+export interface AdConfigPublicResponse {
+  ads_enabled: boolean;
+  provider: string;
+  publisher_id?: string;
+  network_id?: string;
+  placements: Record<string, AdPlacementConfig>;
+}
+
+export const monetizationApi = {
+  getAdConfig: (token?: string) =>
+    request<AdConfigPublicResponse>("/monetization/ad-config", { token }),
+
+  getSponsors: (token?: string) =>
+    request<Sponsor[]>("/monetization/sponsors", { token }),
+
+  getAffiliateProducts: (token?: string) =>
+    request<AffiliateProduct[]>("/monetization/affiliate-products", { token }),
+}
+
+export interface RecommendationResponse {
+  content: LearningContent;
+  reason: string;
+  score: number;
+}
+
+export interface RecommendationListResponse {
+  items: RecommendationResponse[];
+  total: number;
+  page: number;
+  page_size: number;
 }
 
 export interface LearningModuleItem {
@@ -994,6 +1062,13 @@ export const learningApi = {
     }),
   getSummary: (token: string) =>
     request<LearningSummary>(`/learning/progress/summary`, { token }),
+    
+  getRecommendations: (token: string, limit?: number, includeCompleted?: boolean) => {
+    const qs = new URLSearchParams();
+    if (limit) qs.set("limit", String(limit));
+    if (includeCompleted !== undefined) qs.set("include_completed", String(includeCompleted));
+    return request<RecommendationListResponse>(`/learning/recommendations?${qs.toString()}`, { token });
+  },
 
   // --- Topic API (Phase 1) ---
   getTopics: (token: string) =>
