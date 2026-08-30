@@ -1,68 +1,76 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
-import { learningApi, type LearningContent } from "@/lib/api";
+import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
+import { learningApi, type LearningContent, type Topic, type Subtopic } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 import { LearnSidebar } from "@/components/learning/sidebar/LearnSidebar";
 import { LearnMobileDrawer } from "@/components/learning/sidebar/LearnMobileDrawer";
 import { LearnHeader } from "@/components/learning/LearnHeader";
 import { LearnRightRail } from "@/components/learning/LearnRightRail";
 
-import { FeaturedLearning } from "@/components/learning/sections/FeaturedLearning";
-import { RecommendedContent } from "@/components/learning/sections/RecommendedContent";
-import { QuickLearn } from "@/components/learning/sections/QuickLearn";
-import { LatestContent } from "@/components/learning/sections/LatestContent";
-
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
 
 const TYPES = [
-  { id: "", label: "All" },
+  { id: "", label: "All Content" },
   { id: "VIDEO", label: "Videos" },
   { id: "ARTICLE", label: "Articles" },
   { id: "POST", label: "Posts" }
 ];
 
-export default function LearnPage() {
+export default function TopicPage() {
   const { token } = useAuthStore();
+  const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   
+  const slug = typeof params.slug === "string" ? params.slug : "";
+  const subtopicSlug = searchParams?.get("subtopic") || "";
+  const typeFilter = searchParams?.get("type") || "";
+  const languageFilter = searchParams?.get("language") || "";
+  
+  const [topic, setTopic] = useState<Topic | null>(null);
   const [data, setData] = useState<LearningContent[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  
-  const searchQuery = searchParams?.get("search") || "";
-  const typeFilter = searchParams?.get("type") || "";
-  const languageFilter = searchParams?.get("language") || "";
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch topic details
+  useEffect(() => {
+    if (!token || !slug) return;
+    
+    learningApi.getTopicBySlug(token, slug)
+      .then(setTopic)
+      .catch((err) => {
+        console.error("Failed to fetch topic", err);
+        setError("Topic not found");
+      });
+  }, [token, slug]);
 
   const fetchContent = useCallback(async (pageNum: number, isLoadMore = false) => {
-    if (!token) return;
+    if (!token || !slug) return;
     if (isLoadMore) setLoadingMore(true);
     else setLoading(true);
 
     try {
-      // For the main feed, we exclude featured content as it's shown in the Featured section
-      // However, if we're searching or filtering, we don't exclude featured.
-      const isFiltering = !!searchQuery || !!typeFilter;
-      
-      const res = await learningApi.getFeed(token, {
-        type: typeFilter,
-        search: searchQuery,
+      const res = await learningApi.getTopicContent(token, slug, {
+        subtopic: subtopicSlug,
+        content_type: typeFilter,
         language: languageFilter,
         page: pageNum,
-        is_featured: isFiltering ? undefined : false, // Undefined means all, false means only non-featured
       });
       
       if (isLoadMore) {
         setData(prev => {
-          // Filter out duplicates if any
           const existingIds = new Set(prev.map(p => p.id));
           const newItems = res.items.filter(i => !existingIds.has(i.id));
           return [...prev, ...newItems];
@@ -73,24 +81,50 @@ export default function LearnPage() {
       
       setHasMore(res.items.length === (res.page_size || 20));
       setPage(pageNum);
+      setError(null);
     } catch (err) {
       console.error("Failed to fetch learning content", err);
+      // We don't set error here if it's just an empty page, only if fetch fails entirely
+      if (!isLoadMore) {
+        setData([]);
+      }
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [token, typeFilter, searchQuery, languageFilter]);
+  }, [token, slug, subtopicSlug, typeFilter, languageFilter]);
 
-  // Refetch when filters or search changes
+  // Refetch when filters change
   useEffect(() => {
     fetchContent(1, false);
   }, [fetchContent]);
+
+  const updateFilters = (key: string, value: string) => {
+    const current = new URLSearchParams(searchParams?.toString() || "");
+    if (value) {
+      current.set(key, value);
+    } else {
+      current.delete(key);
+    }
+    // Reset page on filter change
+    current.delete("page");
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
   if (!token) {
     return <div className="text-center py-10">Please log in to view learning modules.</div>;
   }
 
-  const isSearchingOrFiltering = !!searchQuery || !!typeFilter;
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center p-4">
+        <h1 className="text-2xl font-bold text-ink">{error}</h1>
+        <Link href="/learn" className="mt-4 text-berry hover:underline">
+          Return to Learn Home
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex max-w-[1400px] gap-8 px-4 py-8 md:px-8">
@@ -110,54 +144,69 @@ export default function LearnPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 min-w-0">
-        <LearnHeader onOpenMobileNav={() => setMobileNavOpen(true)} />
+        <LearnHeader 
+          onOpenMobileNav={() => setMobileNavOpen(true)} 
+          title={topic ? `${topic.icon || ""} ${topic.name}` : "Loading..."}
+          description={topic?.description || ""}
+        />
         
-        {!isSearchingOrFiltering && (
-          <>
-            <FeaturedLearning />
-            <QuickLearn />
-            <RecommendedContent />
-            <LatestContent />
-            
-            <div className="mt-12 mb-6">
-              <h2 className="font-display text-2xl font-bold text-ink">More Learning</h2>
-              <p className="text-ink/60 mt-1">Explore all available content</p>
-            </div>
-          </>
-        )}
+        {/* Back link for mobile */}
+        <Link 
+          href="/learn" 
+          className="mb-6 flex w-fit items-center gap-2 rounded-lg py-2 text-sm font-medium text-slate-500 hover:text-ink lg:hidden"
+        >
+          <ArrowLeft size={16} /> Back to Learn Home
+        </Link>
 
-        {/* Filters Area (Shown primarily when filtering/searching) */}
-        {isSearchingOrFiltering && (
-          <div className="mb-8 space-y-4">
-            <h2 className="font-display text-2xl font-bold text-ink">
-              {searchQuery ? `Search Results for "${searchQuery}"` : "Filtered Content"}
-            </h2>
-            
+        {topic && topic.subtopics.length > 0 && (
+          <div className="mb-6">
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink/40">Subtopics</h3>
             <div className="flex flex-wrap gap-2">
-              {TYPES.map(type => {
-                const isActive = (type.id === "" && !typeFilter) || typeFilter === type.id;
-                // We'd use Next.js Link here in a real app, but for simplicity we simulate it
-                const href = type.id 
-                  ? `/learn?type=${type.id}${searchQuery ? `&search=${searchQuery}` : ""}${languageFilter ? `&language=${languageFilter}` : ""}`
-                  : `/learn${searchQuery ? `?search=${searchQuery}` : ""}${languageFilter ? `&language=${languageFilter}` : ""}`;
-                  
-                return (
-                  <a
-                    key={type.id}
-                    href={href}
-                    className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                      isActive
-                        ? "bg-ink text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                    }`}
-                  >
-                    {type.label}
-                  </a>
-                );
-              })}
+              <button
+                onClick={() => updateFilters("subtopic", "")}
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                  !subtopicSlug
+                    ? "bg-berry/10 text-berry"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                All {topic.name}
+              </button>
+              {topic.subtopics.map(sub => (
+                <button
+                  key={sub.id}
+                  onClick={() => updateFilters("subtopic", sub.slug)}
+                  className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                    subtopicSlug === sub.slug
+                      ? "bg-berry/10 text-berry"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  {sub.name}
+                </button>
+              ))}
             </div>
           </div>
         )}
+
+        {/* Filters Area */}
+        <div className="mb-8 space-y-4 border-t border-slate-100 pt-6">
+          <div className="flex flex-wrap gap-2">
+            {TYPES.map(type => (
+              <button
+                key={type.id}
+                onClick={() => updateFilters("type", type.id)}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                  typeFilter === type.id || (type.id === "" && !typeFilter)
+                    ? "bg-ink text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Feed Area */}
         {loading ? (
@@ -167,14 +216,16 @@ export default function LearnPage() {
         ) : data.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center">
             <p className="text-lg font-semibold text-slate-700">No learning content found.</p>
-            <p className="mt-1 text-sm text-slate-500">Try another topic or search term.</p>
-            {isSearchingOrFiltering && (
-              <a
-                href="/learn"
+            <p className="mt-1 text-sm text-slate-500">Try a different subtopic or filter.</p>
+            {(subtopicSlug || typeFilter || languageFilter) && (
+              <button
+                onClick={() => {
+                  router.push(`/learn/topics/${slug}`);
+                }}
                 className="mt-4 text-sm font-semibold text-berry hover:underline"
               >
                 Clear all filters
-              </a>
+              </button>
             )}
           </div>
         ) : (
