@@ -92,6 +92,15 @@ export const authApi = {
       method: "POST",
       body: { email },
     }),
+
+  updateProfile: async (token: string, data: { name?: string; preferred_language?: string }) => {
+    const res = await request<Record<string, unknown>>("/auth/me", {
+      method: "PATCH",
+      body: data,
+      token,
+    });
+    return { user: res as unknown as User };
+  },
 };
 
 interface ApiChatResponse {
@@ -838,7 +847,60 @@ export interface LearningContent {
   created_at: string;
   updated_at: string;
   published_at?: string;
+  is_short_form?: boolean;
 }
+
+export interface LearningModuleItem {
+  id: string;
+  module_id: string;
+  content_id: string;
+  display_order: int;
+  is_required: boolean;
+  content: LearningContent;
+}
+
+export interface LearningModule {
+  id: string;
+  path_id: string;
+  title: string;
+  description?: string;
+  display_order: number;
+  items: LearningModuleItem[];
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  thumbnail_url?: string;
+  topic_id: string;
+  language: string;
+  audience: Audience;
+  status: ContentStatus;
+  display_order: number;
+  is_featured: boolean;
+  modules: LearningModule[];
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+}
+
+export interface LearningPathListResponse {
+  items: LearningPath[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LearningPathProgressResponse {
+  path_id: string;
+  completed_content: number;
+  total_content: number;
+  progress_percent: number;
+  module_progress: Record<string, { completed: number; total: number }>;
+}
+
 
 export interface LearningProgress {
   user_id: string;
@@ -898,6 +960,7 @@ export const learningApi = {
       audience?: string;
       language?: string;
       is_featured?: boolean;
+      is_short_form?: boolean;
     }
   ) => {
     const qs = new URLSearchParams();
@@ -910,6 +973,7 @@ export const learningApi = {
     if (params?.audience) qs.set("audience", params.audience);
     if (params?.language) qs.set("language", params.language);
     if (params?.is_featured !== undefined) qs.set("is_featured", String(params.is_featured));
+    if (params?.is_short_form !== undefined) qs.set("is_short_form", String(params.is_short_form));
     return request<LearningContentListResponse>(`/learning?${qs.toString()}`, { token });
   },
   getContent: (token: string, id: string) =>
@@ -948,6 +1012,23 @@ export const learningApi = {
     if (params?.page) qs.set("page", String(params.page));
     return request<LearningContentListResponse>(`/learning/topics/${slug}/content?${qs.toString()}`, { token });
   },
+
+  // --- Learning Paths API (Phase 5) ---
+  getPaths: (
+    token: string,
+    params?: { topic_slug?: string; language?: string; audience?: string; page?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.topic_slug) qs.set("topic_slug", params.topic_slug);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.audience) qs.set("audience", params.audience);
+    if (params?.page) qs.set("page", String(params.page));
+    return request<LearningPathListResponse>(`/learning/paths?${qs.toString()}`, { token });
+  },
+  getPath: (token: string, slug: string) =>
+    request<LearningPath>(`/learning/paths/${slug}`, { token }),
+  getPathProgress: (token: string, id: string) =>
+    request<LearningPathProgressResponse>(`/learning/paths/${id}/progress`, { token }),
 
   // --- Admin ---
   admin: {

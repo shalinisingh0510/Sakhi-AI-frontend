@@ -15,6 +15,7 @@ import { LearnRightRail } from "@/components/learning/LearnRightRail";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
+import { LearningPaths } from "@/components/learning/sections/LearningPaths";
 
 const TYPES = [
   { id: "", label: "All Content" },
@@ -24,7 +25,7 @@ const TYPES = [
 ];
 
 export default function TopicPage() {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -150,13 +151,14 @@ export default function TopicPage() {
           description={topic?.description || ""}
         />
         
-        {/* Back link for mobile */}
-        <Link 
-          href="/learn" 
-          className="mb-6 flex w-fit items-center gap-2 rounded-lg py-2 text-sm font-medium text-slate-500 hover:text-ink lg:hidden"
-        >
-          <ArrowLeft size={16} /> Back to Learn Home
-        </Link>
+        {/* Breadcrumbs */}
+        <div className="mb-6 flex items-center gap-2 text-sm font-medium text-slate-500">
+          <Link href="/learn" className="hover:text-ink transition-colors">
+            Learn
+          </Link>
+          <span>/</span>
+          <span className="text-ink">{topic?.name || "..."}</span>
+        </div>
 
         {topic && topic.subtopics.length > 0 && (
           <div className="mb-6">
@@ -189,8 +191,11 @@ export default function TopicPage() {
           </div>
         )}
 
-        {/* Filters Area */}
-        <div className="mb-8 space-y-4 border-t border-slate-100 pt-6">
+        {/* Learning Paths specific to this topic */}
+        <LearningPaths topicSlug={slug} />
+
+        {/* Language filter & Topic Subtopics */}
+        <div className="mb-8 space-y-6 border-t border-slate-100 pt-6">
           <div className="flex flex-wrap gap-2">
             {TYPES.map(type => (
               <button
@@ -214,9 +219,13 @@ export default function TopicPage() {
             <Loader2 className="h-8 w-8 animate-spin text-berry/50" />
           </div>
         ) : data.length === 0 ? (
-          <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center">
+          <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center px-4">
             <p className="text-lg font-semibold text-slate-700">No learning content found.</p>
-            <p className="mt-1 text-sm text-slate-500">Try a different subtopic or filter.</p>
+            <p className="mt-1 text-sm text-slate-500">
+              {(languageFilter || user?.language) !== "en" 
+                ? "There might not be content available in your selected language yet. Try switching to English." 
+                : "Try a different subtopic or filter."}
+            </p>
             {(subtopicSlug || typeFilter || languageFilter) && (
               <button
                 onClick={() => {
