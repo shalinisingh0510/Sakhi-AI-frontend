@@ -146,15 +146,18 @@ export const learnApi = {
       token,
     }),
 
-  // New Progress Center Endpoints
+  // Progress Center Endpoints — typed generically to avoid forward-reference issues
+  // Actual shape: { completed_lessons, videos_watched, articles_read, continue_learning, streak, badges }
   getLearningSummary: (token: string) =>
-    request<unknown>("/learning/progress/summary", { token }),
+    request<Record<string, unknown>>("/learning/progress/summary", { token }),
 
+  // Actual shape: { items: LearningHistoryItem[], total, page, page_size }
   getLearningHistory: (token: string) =>
-    request<unknown>("/learning/history", { token }),
+    request<{ items: Record<string, unknown>[]; total: number; page: number; page_size: number }>("/learning/history", { token }),
 
+  // Actual shape: { items: LearningContent[], total, page, page_size }
   getLearningBookmarks: (token: string) =>
-    request<unknown>("/learning/bookmarks", { token }),
+    request<{ items: Record<string, unknown>[]; total: number; page: number; page_size: number }>("/learning/bookmarks", { token }),
 
   toggleBookmark: (contentId: string, token: string) =>
     request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
@@ -768,16 +771,43 @@ export const longitudinalApi = {
 
 // --- Learning API (Phase 3 + 4) ---
 
-export type ContentType = "VIDEO" | "ARTICLE" | "POST";
-export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL";
-export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+export type ContentType = "VIDEO" | "ARTICLE" | "POST" | "TUTORIAL";
+export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL" | "INSTAGRAM";
+export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "NEEDS_REVIEW";
+export type Audience = "ALL" | "TEEN" | "ADULT";
 
 export interface ContentBlock {
-  type: "heading" | "paragraph" | "image" | "video" | "important_box";
+  type: "heading" | "paragraph" | "image" | "video" | "important_box" | "list" | "callout";
   text?: string;
   url?: string;
   media_file_id?: string;
   caption?: string;
+}
+
+export interface Subtopic {
+  id: string;
+  topic_id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface Topic {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  display_order: number;
+  is_active: boolean;
+  subtopics: Subtopic[];
+}
+
+export interface TopicsListResponse {
+  items: Topic[];
+  total: number;
 }
 
 export interface LearningContent {
@@ -799,6 +829,12 @@ export interface LearningContent {
   status: ContentStatus;
   duration_minutes: number;
   author_id: string;
+  // Phase 1: Topic taxonomy
+  topic_id?: string;
+  subtopic_id?: string;
+  audience: Audience;
+  featured_rank?: number;
+  translation_group_id?: string;
   created_at: string;
   updated_at: string;
   published_at?: string;
@@ -820,6 +856,8 @@ export interface LearningSummary {
   videos_watched: number;
   articles_read: number;
   continue_learning?: LearningContent;
+  streak?: { current: number; longest: number };
+  badges?: { key: string; earned_at: string }[];
 }
 
 export interface LearningContentListResponse {
@@ -850,13 +888,28 @@ export const learningApi = {
   // --- Public ---
   getFeed: (
     token: string,
-    params?: { category?: string; type?: string; search?: string; page?: number }
+    params?: {
+      category?: string;
+      type?: string;
+      search?: string;
+      page?: number;
+      topic_id?: string;
+      subtopic_id?: string;
+      audience?: string;
+      language?: string;
+      is_featured?: boolean;
+    }
   ) => {
     const qs = new URLSearchParams();
     if (params?.page) qs.set("page", String(params.page));
     if (params?.category) qs.set("category", params.category);
     if (params?.type) qs.set("content_type", params.type);
     if (params?.search) qs.set("search", params.search);
+    if (params?.topic_id) qs.set("topic_id", params.topic_id);
+    if (params?.subtopic_id) qs.set("subtopic_id", params.subtopic_id);
+    if (params?.audience) qs.set("audience", params.audience);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.is_featured !== undefined) qs.set("is_featured", String(params.is_featured));
     return request<LearningContentListResponse>(`/learning?${qs.toString()}`, { token });
   },
   getContent: (token: string, id: string) =>
@@ -877,6 +930,24 @@ export const learningApi = {
     }),
   getSummary: (token: string) =>
     request<LearningSummary>(`/learning/progress/summary`, { token }),
+
+  // --- Topic API (Phase 1) ---
+  getTopics: (token: string) =>
+    request<TopicsListResponse>(`/learning/topics`, { token }),
+  getTopicBySlug: (token: string, slug: string) =>
+    request<Topic>(`/learning/topics/${slug}`, { token }),
+  getTopicContent: (
+    token: string,
+    slug: string,
+    params?: { subtopic?: string; content_type?: string; language?: string; page?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.subtopic) qs.set("subtopic", params.subtopic);
+    if (params?.content_type) qs.set("content_type", params.content_type);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.page) qs.set("page", String(params.page));
+    return request<LearningContentListResponse>(`/learning/topics/${slug}/content?${qs.toString()}`, { token });
+  },
 
   // --- Admin ---
   admin: {
