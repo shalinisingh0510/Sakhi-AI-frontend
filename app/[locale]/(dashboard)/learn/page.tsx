@@ -11,10 +11,12 @@ import { LearnMobileDrawer } from "@/components/learning/sidebar/LearnMobileDraw
 import { LearnHeader } from "@/components/learning/LearnHeader";
 import { LearnRightRail } from "@/components/learning/LearnRightRail";
 
+import { ForTeens } from "@/components/learning/sections/ForTeens";
 import { FeaturedLearning } from "@/components/learning/sections/FeaturedLearning";
 import { RecommendedContent } from "@/components/learning/sections/RecommendedContent";
 import { QuickLearn } from "@/components/learning/sections/QuickLearn";
 import { LatestContent } from "@/components/learning/sections/LatestContent";
+import { LearningPaths } from "@/components/learning/sections/LearningPaths";
 
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
@@ -28,7 +30,7 @@ const TYPES = [
 ];
 
 export default function LearnPage() {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const searchParams = useSearchParams();
   
   const [data, setData] = useState<LearningContent[]>([]);
@@ -114,6 +116,8 @@ export default function LearnPage() {
         
         {!isSearchingOrFiltering && (
           <>
+            <ForTeens />
+            <LearningPaths />
             <FeaturedLearning />
             <QuickLearn />
             <RecommendedContent />
@@ -165,9 +169,15 @@ export default function LearnPage() {
             <Loader2 className="h-8 w-8 animate-spin text-berry/50" />
           </div>
         ) : data.length === 0 ? (
-          <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center">
-            <p className="text-lg font-semibold text-slate-700">No learning content found.</p>
-            <p className="mt-1 text-sm text-slate-500">Try another topic or search term.</p>
+          <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center px-4">
+            <p className="text-lg font-semibold text-slate-700">
+              No learning content found.
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
+              {(languageFilter || user?.language) !== "en" 
+                ? "There might not be content available in your selected language yet. Try switching to English." 
+                : "Try another topic or search term."}
+            </p>
             {isSearchingOrFiltering && (
               <a
                 href="/learn"

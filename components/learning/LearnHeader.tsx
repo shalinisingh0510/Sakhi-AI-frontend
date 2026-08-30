@@ -1,7 +1,10 @@
 "use client";
 
-import { Menu, Search, Globe } from "lucide-react";
+import { Menu, Search, Globe, Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { authApi } from "@/lib/api";
+import { useAuthStore } from "@/lib/auth-store";
 
 interface LearnHeaderProps {
   onOpenMobileNav: () => void;
@@ -13,28 +16,74 @@ export function LearnHeader({ onOpenMobileNav, title = "Learn 🌸", description
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentLang = searchParams?.get("language") || "en";
+  const { user, token, updateUser } = useAuthStore();
+  
+  // For Language Selector
+  const [isUpdatingLang, setIsUpdatingLang] = useState(false);
+  const currentLangCode = searchParams?.get("language") || user?.language || "en";
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // We would typically navigate to search page or update local state
-    // For now, this mimics the existing search functionality on the learn page
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    if (e.target.value) {
-      params.set("search", e.target.value);
-    } else {
-      params.delete("search");
-    }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  // For Search Debouncing
+  const initialSearch = searchParams?.get("search") || "";
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+
+  // Map our UI ISO codes to backend full strings if needed by auth update
+  const langMapToFull: Record<string, string> = {
+    en: "english",
+    hi: "hindi",
+    mr: "marathi",
   };
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    if (e.target.value === "en") {
-      params.delete("language");
-    } else {
-      params.set("language", e.target.value);
+  useEffect(() => {
+    setSearchTerm(searchParams?.get("search") || "");
+  }, [searchParams]);
+
+  // Debounced search effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchTerm !== (searchParams?.get("search") || "")) {
+        const params = new URLSearchParams(searchParams?.toString() || "");
+        if (searchTerm) {
+          params.set("search", searchTerm);
+        } else {
+          params.delete("search");
+        }
+        params.delete("page"); // Reset pagination on new search
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, pathname, router, searchParams]);
+
+  const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLang = e.target.value as "en" | "hi" | "mr";
+    
+    // Update local state temporarily to feel responsive
+    setIsUpdatingLang(true);
+
+    try {
+      // 1. Update user profile backend
+      if (token) {
+        const fullLangName = langMapToFull[newLang] || "english";
+        await authApi.updateProfile(token, { preferred_language: fullLangName });
+      }
+
+      // 2. Update local store
+      updateUser({ language: newLang });
+
+      // 3. Update URL if we are overriding or just refresh the data
+      // For a clean URL, we typically delete the language param if it's matching user preference,
+      // but explicitly setting it ensures the query re-runs immediately.
+      const params = new URLSearchParams(searchParams?.toString() || "");
+      params.delete("language"); // Let the backend use the newly saved default
+      params.delete("page");
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      
+    } catch (error) {
+      console.error("Failed to update language preference", error);
+    } finally {
+      setIsUpdatingLang(false);
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -64,25 +113,30 @@ export function LearnHeader({ onOpenMobileNav, title = "Learn 🌸", description
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search topics..."
-            defaultValue={searchParams?.get("search") || ""}
-            onChange={handleSearch}
+            placeholder="Search topics, symptoms..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition-colors focus:border-berry/50 focus:ring-1 focus:ring-berry/50"
           />
         </div>
         
         <div className="relative">
           <select
-            value={currentLang}
+            value={currentLangCode}
             onChange={handleLanguageChange}
-            className="h-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-8 text-sm font-medium outline-none transition-colors focus:border-berry/50 focus:ring-1 focus:ring-berry/50"
+            disabled={isUpdatingLang}
+            className="h-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-8 text-sm font-medium outline-none transition-colors focus:border-berry/50 focus:ring-1 focus:ring-berry/50 disabled:opacity-50"
             aria-label="Select language"
           >
             <option value="en">English</option>
             <option value="hi">हिन्दी</option>
             <option value="mr">मराठी</option>
           </select>
-          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          {isUpdatingLang ? (
+            <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-berry" />
+          ) : (
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          )}
         </div>
       </div>
     </div>

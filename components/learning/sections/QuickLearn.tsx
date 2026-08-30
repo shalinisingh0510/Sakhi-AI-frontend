@@ -5,7 +5,7 @@ import Link from "next/link";
 import { learningApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Zap } from "lucide-react";
-import { LearningPostCard } from "../feed/LearningPostCard";
+import { QuickLearnCard } from "../feed/QuickLearnCard";
 
 export function QuickLearn() {
   const { token } = useAuthStore();
@@ -16,7 +16,7 @@ export function QuickLearn() {
     if (!token) return;
     
     // Fetch quick, easily digestible posts for this section
-    learningApi.getFeed(token, { type: "POST" })
+    learningApi.getFeed(token, { is_short_form: true })
       .then((res) => {
         if (res.items) {
           setItems(res.items.slice(0, 6)); // Take up to 6 items
@@ -54,7 +54,7 @@ export function QuickLearn() {
           <h2 className="font-display text-xl font-bold text-ink">Quick Learn</h2>
         </div>
         <Link 
-          href="/learn?type=POST" 
+          href="/learn/quick" 
           className="text-sm font-semibold text-berry transition-colors hover:text-berry/80"
         >
           See All
@@ -64,8 +64,8 @@ export function QuickLearn() {
       {/* Horizontally scrollable container */}
       <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scrollbar-hide">
         {items.map(item => (
-          <div key={item.id} className="w-[280px] shrink-0 snap-start">
-            <LearningPostCard content={item} href={`/learn/${item.id}`} />
+          <div key={item.id} className="w-[180px] sm:w-[220px] shrink-0 snap-start">
+            <QuickLearnCard content={item} href={`/learn/${item.id}`} />
           </div>
         ))}
       </div>
