@@ -1,24 +1,27 @@
 "use client";
 
-
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { learningApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { Loader2, Search } from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+import { LearnSidebar } from "@/components/learning/sidebar/LearnSidebar";
+import { LearnMobileDrawer } from "@/components/learning/sidebar/LearnMobileDrawer";
+import { LearnHeader } from "@/components/learning/LearnHeader";
+import { LearnRightRail } from "@/components/learning/LearnRightRail";
+
+import { ForTeens } from "@/components/learning/sections/ForTeens";
+import { FeaturedLearning } from "@/components/learning/sections/FeaturedLearning";
+import { RecommendedContent } from "@/components/learning/sections/RecommendedContent";
+import { QuickLearn } from "@/components/learning/sections/QuickLearn";
+import { LatestContent } from "@/components/learning/sections/LatestContent";
+import { LearningPaths } from "@/components/learning/sections/LearningPaths";
+
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
-import { LearningProgressCard } from "@/components/learning/LearningProgressCard";
-
-const CATEGORIES = [
-  { id: "", label: "All Topics" },
-  { id: "menstrual-health", label: "Periods" },
-  { id: "mental-wellbeing", label: "Mental Health" },
-  { id: "nutrition-health", label: "Nutrition" },
-  { id: "puberty-basics", label: "Puberty" },
-  { id: "personal-hygiene", label: "Hygiene" },
-  { id: "safety-consent", label: "Safety" }
-];
+import { AdSlot } from "@/components/monetization/AdSlot";
 
 const TYPES = [
   { id: "", label: "All" },
@@ -28,19 +31,19 @@ const TYPES = [
 ];
 
 export default function LearnPage() {
-
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
+  const searchParams = useSearchParams();
   
   const [data, setData] = useState<LearningContent[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   
-  const [search, setSearch] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); // Debounced
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  const searchQuery = searchParams?.get("search") || "";
+  const typeFilter = searchParams?.get("type") || "";
+  const languageFilter = searchParams?.get("language") || "";
 
   const fetchContent = useCallback(async (pageNum: number, isLoadMore = false) => {
     if (!token) return;
@@ -48,21 +51,29 @@ export default function LearnPage() {
     else setLoading(true);
 
     try {
+      // For the main feed, we exclude featured content as it's shown in the Featured section
+      // However, if we're searching or filtering, we don't exclude featured.
+      const isFiltering = !!searchQuery || !!typeFilter;
+      
       const res = await learningApi.getFeed(token, {
-        category: categoryFilter,
         type: typeFilter,
         search: searchQuery,
-        page: pageNum
+        language: languageFilter,
+        page: pageNum,
+        is_featured: isFiltering ? undefined : false, // Undefined means all, false means only non-featured
       });
       
       if (isLoadMore) {
-        setData(prev => [...prev, ...res.items]);
+        setData(prev => {
+          // Filter out duplicates if any
+          const existingIds = new Set(prev.map(p => p.id));
+          const newItems = res.items.filter(i => !existingIds.has(i.id));
+          return [...prev, ...newItems];
+        });
       } else {
         setData(res.items);
       }
       
-      // If we got fewer items than a standard page size (e.g. 20), we don't have more.
-      // Or we can rely on total from backend if returned.
       setHasMore(res.items.length === (res.page_size || 20));
       setPage(pageNum);
     } catch (err) {
@@ -71,15 +82,7 @@ export default function LearnPage() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [token, categoryFilter, typeFilter, searchQuery]);
-
-  // Handle Search Debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchQuery(search);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [search]);
+  }, [token, typeFilter, searchQuery, languageFilter]);
 
   // Refetch when filters or search changes
   useEffect(() => {
@@ -90,124 +93,158 @@ export default function LearnPage() {
     return <div className="text-center py-10">Please log in to view learning modules.</div>;
   }
 
+  const isSearchingOrFiltering = !!searchQuery || !!typeFilter;
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
+    <div className="mx-auto flex max-w-[1400px] gap-8 px-4 py-8 md:px-8">
       
-      {/* Header Area */}
-      <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
-            Learn <span className="text-berry">🌸</span>
-          </h1>
-          <p className="mt-2 text-ink/70">
-            Learn something new about your health today.
-          </p>
-        </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search topics..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition-colors focus:border-berry/50 focus:ring-1 focus:ring-berry/50"
-          />
+      {/* Left Sidebar (Desktop) */}
+      <div className="hidden w-64 shrink-0 lg:block">
+        <div className="sticky top-24">
+          <LearnSidebar />
         </div>
       </div>
       
-      <LearningProgressCard />
+      {/* Mobile Drawer */}
+      <LearnMobileDrawer 
+        isOpen={mobileNavOpen} 
+        onClose={() => setMobileNavOpen(false)} 
+      />
 
-      {/* Filters Area */}
-      <div className="mb-8 space-y-4">
-        {/* Type Filters */}
-        <div className="flex flex-wrap gap-2">
-          {TYPES.map(type => (
-            <button
-              key={type.id}
-              onClick={() => setTypeFilter(type.id)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                typeFilter === type.id
-                  ? "bg-ink text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              {type.label}
-            </button>
-          ))}
-        </div>
+      {/* Main Content Area */}
+      <div className="flex-1 min-w-0">
+        <LearnHeader onOpenMobileNav={() => setMobileNavOpen(true)} />
         
-        {/* Category Filters - Scrollable Row on Mobile */}
-        <div className="flex w-full gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setCategoryFilter(cat.id)}
-              className={`shrink-0 rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
-                categoryFilter === cat.id
-                  ? "border-berry bg-berry/10 text-berry"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Feed Area */}
-      {loading ? (
-        <div className="flex h-64 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-berry/50" />
-        </div>
-      ) : data.length === 0 ? (
-        <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center">
-          <p className="text-lg font-semibold text-slate-700">No learning content found.</p>
-          <p className="mt-1 text-sm text-slate-500">Try another topic or search term.</p>
-          {(search || typeFilter || categoryFilter) && (
-            <button
-              onClick={() => {
-                setSearch("");
-                setTypeFilter("");
-                setCategoryFilter("");
-              }}
-              className="mt-4 text-sm font-semibold text-berry hover:underline"
-            >
-              Clear all filters
-            </button>
-          )}
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((item) => {
-              const href = `/learn/${item.id}`;
-              switch (item.content_type) {
-                case "VIDEO":
-                  return <LearningVideoCard key={item.id} content={item} href={href} />;
-                case "ARTICLE":
-                  return <LearningArticleCard key={item.id} content={item} href={href} />;
-                case "POST":
-                  return <LearningPostCard key={item.id} content={item} href={href} />;
-                default:
-                  return null;
-              }
-            })}
-          </div>
-
-          {hasMore && (
-            <div className="mt-12 flex justify-center">
-              <button
-                onClick={() => fetchContent(page + 1, true)}
-                disabled={loadingMore}
-                className="flex items-center gap-2 rounded-xl bg-slate-100 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-slate-200 disabled:opacity-50"
-              >
-                {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
-                Load More
-              </button>
+        {!isSearchingOrFiltering && (
+          <>
+            <ForTeens />
+            <LearningPaths />
+            <FeaturedLearning />
+            <QuickLearn />
+            <RecommendedContent />
+            <LatestContent />
+            
+            <div className="mt-12 mb-6">
+              <h2 className="font-display text-2xl font-bold text-ink">More Learning</h2>
+              <p className="text-ink/60 mt-1">Explore all available content</p>
             </div>
-          )}
-        </>
-      )}
+          </>
+        )}
+
+        {/* Filters Area (Shown primarily when filtering/searching) */}
+        {isSearchingOrFiltering && (
+          <div className="mb-8 space-y-4">
+            <h2 className="font-display text-2xl font-bold text-ink">
+              {searchQuery ? `Search Results for "${searchQuery}"` : "Filtered Content"}
+            </h2>
+            
+            <div className="flex flex-wrap gap-2">
+              {TYPES.map(type => {
+                const isActive = (type.id === "" && !typeFilter) || typeFilter === type.id;
+                // We'd use Next.js Link here in a real app, but for simplicity we simulate it
+                const href = type.id 
+                  ? `/learn?type=${type.id}${searchQuery ? `&search=${searchQuery}` : ""}${languageFilter ? `&language=${languageFilter}` : ""}`
+                  : `/learn${searchQuery ? `?search=${searchQuery}` : ""}${languageFilter ? `&language=${languageFilter}` : ""}`;
+                  
+                return (
+                  <a
+                    key={type.id}
+                    href={href}
+                    className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                      isActive
+                        ? "bg-ink text-white"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {type.label}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Feed Area */}
+        {loading ? (
+          <div className="flex h-64 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-berry/50" />
+          </div>
+        ) : data.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-center px-4">
+            <p className="text-lg font-semibold text-slate-700">
+              No learning content found.
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
+              {(languageFilter || user?.language) !== "en" 
+                ? "There might not be content available in your selected language yet. Try switching to English." 
+                : "Try another topic or search term."}
+            </p>
+            {isSearchingOrFiltering && (
+              <a
+                href="/learn"
+                className="mt-4 text-sm font-semibold text-berry hover:underline"
+              >
+                Clear all filters
+              </a>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+              {data.map((item, index) => {
+                const href = `/learn/${item.id}`;
+                let card = null;
+                switch (item.content_type) {
+                  case "VIDEO":
+                  case "TUTORIAL":
+                    card = <LearningVideoCard key={item.id} content={item} href={href} />;
+                    break;
+                  case "ARTICLE":
+                    card = <LearningArticleCard key={item.id} content={item} href={href} />;
+                    break;
+                  case "POST":
+                    card = <LearningPostCard key={item.id} content={item} href={href} />;
+                    break;
+                  default:
+                    return null;
+                }
+                
+                // Inject an AdSlot after every 5 items
+                if ((index + 1) % 5 === 0) {
+                  return (
+                    <div key={`wrapper-${item.id}`} className="contents">
+                      {card}
+                      <div className="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-3">
+                        <AdSlot placementId="learn-feed-in-feed" className="w-full my-4" />
+                      </div>
+                    </div>
+                  );
+                }
+                return card;
+              })}
+            </div>
+
+            {hasMore && (
+              <div className="mt-12 flex justify-center">
+                <button
+                  onClick={() => fetchContent(page + 1, true)}
+                  disabled={loadingMore}
+                  className="flex items-center gap-2 rounded-xl bg-slate-100 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-slate-200 disabled:opacity-50"
+                >
+                  {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Load More
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      
+      {/* Right Rail (Desktop) */}
+      <div className="hidden w-80 shrink-0 xl:block">
+        <LearnRightRail />
+      </div>
+      
     </div>
   );
 }
