@@ -93,10 +93,10 @@ export function QuickLearnCard({ content, href }: QuickLearnCardProps) {
           <h3 className="line-clamp-2 text-lg font-bold leading-tight text-white">
             {content.title}
           </h3>
-          {content.status === "PUBLISHED" && (
-            <div className="mt-2 flex items-center gap-1 text-xs text-white/70">
+          {content.medical_review_status === "MEDICALLY_REVIEWED" && (
+            <div className="mt-2 flex items-center gap-1 text-xs text-emerald-300 font-medium">
               <CheckCircle size={12} />
-              <span>Verified Content</span>
+              <span>Medically Reviewed</span>
             </div>
           )}
         </div>

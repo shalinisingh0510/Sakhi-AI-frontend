@@ -2,6 +2,7 @@ import Link from "next/link";
 import { type LearningContent } from "@/lib/api";
 import { PlayCircle } from "lucide-react";
 import { BookmarkButton } from "@/components/learning/BookmarkButton";
+import { MedicalReviewBadge } from "@/components/learning/MedicalReviewBadge";
 
 export function LearningVideoCard({ content, href }: { content: LearningContent; href: string }) {
   return (
@@ -38,6 +39,7 @@ export function LearningVideoCard({ content, href }: { content: LearningContent;
         <div className="flex flex-1 flex-col p-4">
           <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-500 uppercase tracking-wider">
             <span className="text-berry/80">{content.category.replace("-", " ")}</span>
+            <MedicalReviewBadge status={content.medical_review_status} />
           </div>
           <h3 className="line-clamp-2 text-lg font-bold text-ink leading-tight group-hover:text-berry transition-colors">
             {content.title}

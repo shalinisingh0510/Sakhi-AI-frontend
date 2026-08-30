@@ -14,6 +14,10 @@ import { LearningVideoPlayer } from "@/components/learning/LearningVideoPlayer";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
+import { SponsorBadge } from "@/components/monetization/SponsorBadge";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { AffiliateProductCard } from "@/components/monetization/AffiliateProductCard";
+import { monetizationApi, type AffiliateProduct } from "@/lib/api";
 
 export default function ContentDetailPage() {
   const params = useParams();
@@ -28,6 +32,7 @@ export default function ContentDetailPage() {
   const [progress, setProgress] = useState<LearningProgress | null>(null);
 
   const [relatedItems, setRelatedItems] = useState<LearningContent[]>([]);
+  const [affiliateProducts, setAffiliateProducts] = useState<AffiliateProduct[]>([]);
 
   const fetchContent = useCallback(async () => {
     if (!token || !id) return;
@@ -50,6 +55,14 @@ export default function ContentDetailPage() {
         setRelatedItems(r.items);
       } catch {
         // Silently fail related
+      }
+      
+      // Fetch affiliate products
+      try {
+        const aff = await monetizationApi.getAffiliateProducts(token);
+        setAffiliateProducts(aff);
+      } catch {
+        // Silently fail
       }
     } catch {
       setError("This content is not available.");
@@ -143,6 +156,9 @@ export default function ContentDetailPage() {
               ⭐ Featured
             </span>
           )}
+          {content.sponsor && (
+            <SponsorBadge sponsor={content.sponsor} className="ml-2" />
+          )}
         </div>
         <header className="mb-8">
         {content.thumbnail_url && (
@@ -185,6 +201,22 @@ export default function ContentDetailPage() {
         </div>
       )}
 
+      {/* Medical Review Block */}
+      {content.medical_review_status === "MEDICALLY_REVIEWED" && (
+        <div className="mb-8 mt-6 flex items-start gap-4 rounded-2xl bg-emerald-50 p-4 border border-emerald-100">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+            <span className="text-xl">👩‍⚕️</span>
+          </div>
+          <div>
+            <h4 className="font-semibold text-emerald-900">Medically Reviewed</h4>
+            <p className="text-sm text-emerald-800 mt-1">
+              This content has been reviewed by medical professionals for accuracy.
+              {content.medical_reviewed_at && ` Last reviewed on ${new Date(content.medical_reviewed_at).toLocaleDateString()}.`}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Tags */}
       {content.tags.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-2">
@@ -218,6 +250,23 @@ export default function ContentDetailPage() {
             "Mark as Complete"
           )}
         </Button>
+      )}
+
+      {/* Embedded Ad */}
+      <div className="mt-10 mb-6">
+        <AdSlot placementId="article-bottom" className="w-full" />
+      </div>
+
+      {/* Affiliate Products */}
+      {affiliateProducts.length > 0 && (
+        <div className="mt-8 mb-6 border-t border-slate-200 dark:border-neutral-800 pt-8">
+          <h3 className="mb-4 font-display text-xl font-semibold text-ink">Recommended Products</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {affiliateProducts.slice(0, 2).map((product) => (
+              <AffiliateProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Related Learning */}

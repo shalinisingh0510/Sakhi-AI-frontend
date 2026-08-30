@@ -21,6 +21,7 @@ import { LearningPaths } from "@/components/learning/sections/LearningPaths";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
+import { AdSlot } from "@/components/monetization/AdSlot";
 
 const TYPES = [
   { id: "", label: "All" },
@@ -190,19 +191,36 @@ export default function LearnPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-              {data.map((item) => {
+              {data.map((item, index) => {
                 const href = `/learn/${item.id}`;
+                let card = null;
                 switch (item.content_type) {
                   case "VIDEO":
                   case "TUTORIAL":
-                    return <LearningVideoCard key={item.id} content={item} href={href} />;
+                    card = <LearningVideoCard key={item.id} content={item} href={href} />;
+                    break;
                   case "ARTICLE":
-                    return <LearningArticleCard key={item.id} content={item} href={href} />;
+                    card = <LearningArticleCard key={item.id} content={item} href={href} />;
+                    break;
                   case "POST":
-                    return <LearningPostCard key={item.id} content={item} href={href} />;
+                    card = <LearningPostCard key={item.id} content={item} href={href} />;
+                    break;
                   default:
                     return null;
                 }
+                
+                // Inject an AdSlot after every 5 items
+                if ((index + 1) % 5 === 0) {
+                  return (
+                    <div key={`wrapper-${item.id}`} className="contents">
+                      {card}
+                      <div className="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-3">
+                        <AdSlot placementId="learn-feed-in-feed" className="w-full my-4" />
+                      </div>
+                    </div>
+                  );
+                }
+                return card;
               })}
             </div>
 
