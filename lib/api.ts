@@ -1,13 +1,14 @@
 import type { User } from "./auth-store";
 import { ApiError } from "./api-config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.sakhi.ai";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   token?: string;
 }
+
 
 export interface AuthResponse {
   user: User;
@@ -58,34 +59,24 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
-    const errorMsg =
-      typeof error.detail === "string"
-        ? error.detail
-        : Array.isArray(error.detail) && error.detail[0]?.msg
-        ? error.detail[0].msg
-        : error.message ?? `Request failed (${res.status})`;
-    throw new ApiError(errorMsg, res.status);
+    throw new ApiError(error.message ?? `Request failed (${res.status})`, res.status);
   }
 
   return res.json() as Promise<T>;
 }
 
 export const authApi = {
-  login: async (email: string, password: string) => {
-    const res = await request<Record<string, unknown>>("/auth/login", {
+  login: (email: string, password: string) =>
+    request<AuthResponse>("/auth/login", {
       method: "POST",
       body: { email, password },
-    });
-    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
-  },
+    }),
 
-  register: async (name: string, email: string, password: string) => {
-    const res = await request<Record<string, unknown>>("/auth/register", {
+  register: (name: string, email: string, password: string) =>
+    request<AuthResponse>("/auth/register", {
       method: "POST",
       body: { name, email, password },
-    });
-    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
-  },
+    }),
 
   forgotPassword: (email: string) =>
     request<{ message: string }>("/auth/forgot-password", {
@@ -94,51 +85,84 @@ export const authApi = {
     }),
 };
 
-interface ApiChatResponse {
-  success: boolean;
-  data: {
-    conversation_id: string;
-    conversationId: string;
-    message: {
-      id: string;
-      role: "assistant" | "user";
-      content: string;
-      created_at: string;
-    };
-  };
+export interface Citation {
+  id?: string;
+  source: string;
+  text?: string;
+  url?: string;
 }
 
-export const chatApi = {
-  sendMessage: async (
-    content: string,
-    sessionId: string | null,
-    token: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _mode: "text" | "voice" = "text",
-    language: string = "english"
-  ): Promise<ChatResponse> => {
-    const res = await request<ApiChatResponse>("/chat/message", {
+export interface ApiMessage {
+  id: string;
+  conversation_id: string;
+  role: "user" | "assistant";
+  content: string;
+  citations?: Citation[];
+  created_at: string;
+}
+
+export interface ConversationSummary {
+  id: string;
+  user_id: string;
+  title: string;
+  preferred_language: string;
+  message_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApiConversationDetail {
+  conversation: ConversationSummary;
+  messages: ApiMessage[];
+}
+
+export const conversationApi = {
+  getConversations: (token: string, offset: number = 0, limit: number = 20) =>
+    request<ConversationSummary[]>(`/conversations?offset=${offset}&limit=${limit}`, { token }),
+
+  getConversation: (conversationId: string, token: string) =>
+    request<ApiConversationDetail>(`/conversations/${conversationId}`, { token }),
+
+  createConversation: (initialMessage: string, token: string, mode: "text" | "voice" = "text", language: string = "english") =>
+    request<ApiConversationDetail>("/conversations", {
       method: "POST",
-      body: {
-        message: content,
-        conversationId: sessionId || undefined,
-        language,
-      },
+      body: { initial_message: initialMessage, preferred_language: language, mode },
       token,
-    });
+    }),
+
+  sendMessage: (conversationId: string, message: string, token: string, mode: "text" | "voice" = "text") =>
+    request<ApiConversationDetail>(`/conversations/${conversationId}/messages`, {
+      method: "POST",
+      body: { message, mode },
+      token,
+    }),
+};
+
+export const chatApi = {
+  // Legacy chatApi mapped to conversationApi
+  sendMessage: async (content: string, sessionId: string | null, token: string, mode: "text" | "voice" = "text", language: string = "english") => {
+    let res: ApiConversationDetail;
+    if (!sessionId) {
+      res = await conversationApi.createConversation(content, token, mode, language);
+    } else {
+      res = await conversationApi.sendMessage(sessionId, content, token, mode);
+    }
+    const messages = res.messages || [];
+    const lastMsg = messages[messages.length - 1];
     return {
-      reply: res.data.message.content,
-      sessionId: res.data.conversationId || res.data.conversation_id,
-    };
+      reply: lastMsg ? lastMsg.content : "",
+      sessionId: res.conversation.id
+    } as ChatResponse;
   },
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const learnApi = {
   getModules: (token: string) =>
-    request<{ modules: LearnModule[] }>("/learn/modules", { token }),
+    request<{ modules: any[] }>("/learn/modules", { token }),
 
   getModule: (slug: string, token: string) =>
-    request<{ module: LearnModule }>(`/learn/modules/${slug}`, { token }),
+    request<{ module: any }>(`/learn/modules/${slug}`, { token }),
 
   completeLesson: (moduleId: string, lessonId: string, token: string) =>
     request<{ progress: number }>(`/learn/modules/${moduleId}/lessons/${lessonId}/complete`, {
@@ -146,7 +170,6 @@ export const learnApi = {
       token,
     }),
 
-  // New Progress Center Endpoints
   getLearningSummary: (token: string) =>
     request<unknown>("/learning/progress/summary", { token }),
 
@@ -163,10 +186,68 @@ export const learnApi = {
     }),
 };
 
+export type ContentType = "ARTICLE" | "VIDEO" | "INFOGRAPHIC" | "POST" | string;
+export type SourceType = "YOUTUBE" | "INTERNAL_UPLOAD" | "EXTERNAL_LINK" | "PRIVATE_VIDEO" | string;
+export type ContentBlock = { type: string; content?: string; url?: string; [key: string]: any };
+export type LearningContentCreateInput = any;
+export type LearningContent = { tags: string[]; body?: ContentBlock[]; [key: string]: any };
+export type LearningContentListResponse = any;
+export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | string;
+export type LearningSummary = any;
+export type LearningProgress = any;
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const learningApi = {
+  getSummary: (token: string) => request<any>("/learning/summary", { token }),
+  getFeed: (token: string, params?: any) => {
+    const qs = params ? "?" + new URLSearchParams(params as any).toString() : "";
+    return request<any>(`/learning/feed${qs}`, { token });
+  },
+  getContent: (token: string, id: string) => request<any>(`/learning/items/${id}`, { token }),
+  getProgress: (token: string, id: string) => request<any>(`/learning/progress/${id}`, { token }),
+  getRelated: (token: string, id: string) => request<any>(`/learning/items/${id}/related`, { token }),
+  updateProgress: (token: string, id: string, payload: any) =>
+    request<any>(`/learning/progress/${id}`, { method: "PUT", body: payload, token }),
+  
+  admin: {
+    list: (token: string, params?: any) => {
+      const qs = params ? "?" + new URLSearchParams(params as any).toString() : "";
+      return request<any>(`/learning/admin/items${qs}`, { token });
+    },
+    get: (token: string, id: string) => request<any>(`/learning/admin/items/${id}`, { token }),
+    create: (token: string, payload: any) => request<any>("/learning/admin/items", { method: "POST", body: payload, token }),
+    update: (token: string, id: string, payload: any) => request<any>(`/learning/admin/items/${id}`, { method: "PUT", body: payload, token }),
+    delete: (token: string, id: string) => request<any>(`/learning/admin/items/${id}`, { method: "DELETE", token }),
+    publish: (token: string, id: string) => request<any>(`/learning/admin/items/${id}/publish`, { method: "POST", token }),
+    archive: (token: string, id: string) => request<any>(`/learning/admin/items/${id}/archive`, { method: "POST", token }),
+  }
+};
+
+export const mediaApi = {
+  generatePresignedUrl: (token: string, filename: string, content_type: string, file_size?: number) =>
+    request<any>("/media/upload-url", {
+      method: "POST",
+      body: { filename, content_type, file_size },
+      token
+    }),
+};
+
 export const progressApi = {
   getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
   getAnalytics: (token: string) => request<Record<string, unknown>>("/analytics/user", { token }),
+  getLearningHistory: (token: string) =>
+    request<unknown>("/learning/history", { token }),
+
+  getLearningBookmarks: (token: string) =>
+    request<unknown>("/learning/bookmarks", { token }),
+
+  toggleBookmark: (contentId: string, token: string) =>
+    request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
+      method: "POST",
+      token,
+    }),
 };
+
 
 export interface CurrentCycleResponse {
   current_cycle_day?: number;
@@ -344,7 +425,7 @@ export const wellnessApi = {
 
   listSymptoms: (token: string, limit: number = 50, offset: number = 0) =>
     request<SymptomLogResponse[]>(`/wellness/symptoms?limit=${limit}&offset=${offset}`, { token }),
-
+    
   deleteSymptom: (token: string, logId: string) =>
     request<void>(`/wellness/symptoms/${logId}`, {
       method: "DELETE",
@@ -766,168 +847,3 @@ export const longitudinalApi = {
     request<LongitudinalPatternsResponse>(`/wellness/patterns?time_range=${timeRange}`, { token }),
 };
 
-// --- Learning API (Phase 3 + 4) ---
-
-export type ContentType = "VIDEO" | "ARTICLE" | "POST";
-export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL";
-export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
-
-export interface ContentBlock {
-  type: "heading" | "paragraph" | "image" | "video" | "important_box";
-  text?: string;
-  url?: string;
-  media_file_id?: string;
-  caption?: string;
-}
-
-export interface LearningContent {
-  id: string;
-  title: string;
-  description?: string;
-  content_type: ContentType;
-  source_type: SourceType;
-  media_url?: string;
-  media_file_id?: string;
-  thumbnail_file_id?: string;
-  thumbnail_url?: string;
-  media_file_url?: string;
-  body?: ContentBlock[];
-  category: string;
-  tags: string[];
-  language: string;
-  is_featured: boolean;
-  status: ContentStatus;
-  duration_minutes: number;
-  author_id: string;
-  created_at: string;
-  updated_at: string;
-  published_at?: string;
-}
-
-export interface LearningProgress {
-  user_id: string;
-  content_id: string;
-  completed: boolean;
-  watch_time_seconds: number;
-  progress_percent: number;
-  last_accessed_at: string;
-  completed_at?: string;
-}
-
-export interface LearningSummary {
-  completed_lessons: number;
-  learning_minutes: number;
-  videos_watched: number;
-  articles_read: number;
-  continue_learning?: LearningContent;
-}
-
-export interface LearningContentListResponse {
-  items: LearningContent[];
-  total: number;
-  page: number;
-  page_size: number;
-}
-
-export interface LearningContentCreateInput {
-  title: string;
-  description?: string;
-  content_type: ContentType;
-  source_type: SourceType;
-  media_url?: string;
-  media_file_id?: string;
-  thumbnail_file_id?: string;
-  body?: ContentBlock[];
-  category: string;
-  tags?: string[];
-  language?: string;
-  is_featured?: boolean;
-  status?: ContentStatus;
-  duration_minutes?: number;
-}
-
-export const learningApi = {
-  // --- Public ---
-  getFeed: (
-    token: string,
-    params?: { category?: string; type?: string; search?: string; page?: number }
-  ) => {
-    const qs = new URLSearchParams();
-    if (params?.page) qs.set("page", String(params.page));
-    if (params?.category) qs.set("category", params.category);
-    if (params?.type) qs.set("content_type", params.type);
-    if (params?.search) qs.set("search", params.search);
-    return request<LearningContentListResponse>(`/learning?${qs.toString()}`, { token });
-  },
-  getContent: (token: string, id: string) =>
-    request<LearningContent>(`/learning/${id}`, { token }),
-  getRelated: (token: string, id: string) =>
-    request<LearningContentListResponse>(`/learning/${id}/related`, { token }),
-  getProgress: (token: string, id: string) =>
-    request<LearningProgress>(`/learning/${id}/progress`, { token }),
-  updateProgress: (
-    token: string,
-    id: string,
-    data: { completed: boolean; watch_time_seconds?: number; progress_percent?: number }
-  ) =>
-    request<LearningProgress>(`/learning/${id}/progress`, {
-      method: "POST",
-      body: data,
-      token,
-    }),
-  getSummary: (token: string) =>
-    request<LearningSummary>(`/learning/progress/summary`, { token }),
-
-  // --- Admin ---
-  admin: {
-    list: (
-      token: string,
-      params?: { status?: string; content_type?: string; category?: string; search?: string; page?: number }
-    ) => {
-      const qs = new URLSearchParams();
-      if (params?.page) qs.set("page", String(params.page));
-      if (params?.status) qs.set("status", params.status);
-      if (params?.content_type) qs.set("content_type", params.content_type);
-      if (params?.category) qs.set("category", params.category);
-      if (params?.search) qs.set("search", params.search);
-      return request<LearningContentListResponse>(`/admin/learning?${qs.toString()}`, { token });
-    },
-    get: (token: string, id: string) =>
-      request<LearningContent>(`/admin/learning/${id}`, { token }),
-    create: (token: string, data: LearningContentCreateInput) =>
-      request<LearningContent>(`/admin/learning`, { method: "POST", body: data, token }),
-    update: (token: string, id: string, data: Partial<LearningContentCreateInput>) =>
-      request<LearningContent>(`/admin/learning/${id}`, { method: "PATCH", body: data, token }),
-    publish: (token: string, id: string) =>
-      request<LearningContent>(`/admin/learning/${id}/publish`, { method: "POST", token }),
-    archive: (token: string, id: string) =>
-      request<LearningContent>(`/admin/learning/${id}/archive`, { method: "POST", token }),
-    delete: (token: string, id: string) =>
-      request<void>(`/admin/learning/${id}`, { method: "DELETE", token }),
-  },
-};
-
-// --- Media API (Phase 6) ---
-
-export interface MediaUploadResponse {
-  upload_url: string;
-  storage_key: string;
-  media: {
-    id: string;
-    filename: string;
-    content_type: string;
-    size_bytes: number;
-    created_at: string;
-  };
-}
-
-export const mediaApi = {
-  generatePresignedUrl: (token: string, filename: string, content_type: string, size_bytes: number) =>
-    request<MediaUploadResponse>("/media/presigned-url", {
-      method: "POST",
-      body: { filename, content_type, size_bytes },
-      token,
-    }),
-  getMediaUrl: (token: string, id: string) =>
-    request<{ url: string }>(`/media/${id}/url`, { token }),
-};

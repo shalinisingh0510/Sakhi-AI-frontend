@@ -2,11 +2,14 @@
 
 import { create } from "zustand";
 
+import { type Citation } from "@/lib/api";
+
 export interface Message {
   id: string;
-  role: "user" | "sakhi";
+  role: "user" | "assistant" | "sakhi";
   content: string;
-  timestamp: Date;
+  citations?: Citation[];
+  created_at: string;
 }
 
 interface ChatState {
@@ -14,10 +17,11 @@ interface ChatState {
   isTyping: boolean;
   sessionId: string | null;
   // Actions
-  addMessage: (msg: Omit<Message, "id" | "timestamp">) => void;
+  addMessage: (msg: Omit<Message, "id" | "created_at">) => void;
+  setMessages: (messages: Message[]) => void;
   setTyping: (typing: boolean) => void;
   clearChat: () => void;
-  setSessionId: (id: string) => void;
+  setSessionId: (id: string | null) => void;
 }
 
 export const useChatStore = create<ChatState>()((set) => ({
@@ -32,10 +36,12 @@ export const useChatStore = create<ChatState>()((set) => ({
         {
           ...msg,
           id: crypto.randomUUID(),
-          timestamp: new Date(),
+          created_at: new Date().toISOString(),
         },
       ],
     })),
+
+  setMessages: (messages) => set({ messages }),
 
   setTyping: (typing) => set({ isTyping: typing }),
 
