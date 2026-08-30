@@ -83,6 +83,15 @@ export const authApi = {
       method: "POST",
       body: { email },
     }),
+
+  updateProfile: async (token: string, data: { name?: string; preferred_language?: string }) => {
+    const res = await request<Record<string, unknown>>("/auth/me", {
+      method: "PATCH",
+      body: data,
+      token,
+    });
+    return { user: res as unknown as User };
+  },
 };
 
 export interface Citation {
@@ -170,14 +179,21 @@ export const learnApi = {
       token,
     }),
 
+<<<<<<< HEAD
+=======
+  // Progress Center Endpoints — typed generically to avoid forward-reference issues
+  // Actual shape: { completed_lessons, videos_watched, articles_read, continue_learning, streak, badges }
+>>>>>>> 84ba8267cf0208f36cbea1162846f9f43df00ea6
   getLearningSummary: (token: string) =>
-    request<unknown>("/learning/progress/summary", { token }),
+    request<Record<string, unknown>>("/learning/progress/summary", { token }),
 
+  // Actual shape: { items: LearningHistoryItem[], total, page, page_size }
   getLearningHistory: (token: string) =>
-    request<unknown>("/learning/history", { token }),
+    request<{ items: Record<string, unknown>[]; total: number; page: number; page_size: number }>("/learning/history", { token }),
 
+  // Actual shape: { items: LearningContent[], total, page, page_size }
   getLearningBookmarks: (token: string) =>
-    request<unknown>("/learning/bookmarks", { token }),
+    request<{ items: Record<string, unknown>[]; total: number; page: number; page_size: number }>("/learning/bookmarks", { token }),
 
   toggleBookmark: (contentId: string, token: string) =>
     request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
@@ -847,3 +863,386 @@ export const longitudinalApi = {
     request<LongitudinalPatternsResponse>(`/wellness/patterns?time_range=${timeRange}`, { token }),
 };
 
+<<<<<<< HEAD
+=======
+// --- Learning API (Phase 3 + 4) ---
+
+export type ContentType = "VIDEO" | "ARTICLE" | "POST" | "TUTORIAL";
+export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL" | "INSTAGRAM";
+export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "NEEDS_REVIEW";
+export type Audience = "ALL" | "TEEN" | "ADULT";
+
+export interface ContentBlock {
+  type: "heading" | "paragraph" | "image" | "video" | "important_box" | "list" | "callout";
+  text?: string;
+  url?: string;
+  media_file_id?: string;
+  caption?: string;
+}
+
+export interface Subtopic {
+  id: string;
+  topic_id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface Topic {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  display_order: number;
+  is_active: boolean;
+  subtopics: Subtopic[];
+}
+
+export interface TopicsListResponse {
+  items: Topic[];
+  total: number;
+}
+
+export interface LearningContent {
+  id: string;
+  title: string;
+  description?: string;
+  content_type: ContentType;
+  source_type: SourceType;
+  media_url?: string;
+  media_file_id?: string;
+  thumbnail_file_id?: string;
+  thumbnail_url?: string;
+  media_file_url?: string;
+  body?: ContentBlock[];
+  category: string;
+  tags: string[];
+  language: string;
+  is_featured: boolean;
+  status: ContentStatus;
+  duration_minutes: number;
+  author_id: string;
+  // Phase 1: Topic taxonomy
+  topic_id?: string;
+  subtopic_id?: string;
+  audience: Audience;
+  featured_rank?: number;
+  translation_group_id?: string;
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+  is_short_form?: boolean;
+  // Phase 8: Medical Trust
+  medical_review_status?: string;
+  medical_reviewer_id?: string;
+  medical_reviewed_at?: string;
+  // Phase 10: Sponsorship
+  sponsor_id?: string;
+  sponsor?: Sponsor;
+}
+
+export interface Sponsor {
+  id: string;
+  name: string;
+  logo_url?: string;
+  website?: string;
+  description?: string;
+  status: string;
+}
+
+export interface AffiliateProduct {
+  id: string;
+  partner_id: string;
+  name: string;
+  description?: string;
+  image_url?: string;
+  url: string;
+  disclosure_text?: string;
+  status: string;
+}
+
+export interface AdPlacementConfig {
+  id: string;
+  placement: string;
+  provider: string;
+  is_enabled: boolean;
+  audience_policy: string;
+  config_json?: Record<string, unknown>;
+}
+
+export interface AdConfigPublicResponse {
+  ads_enabled: boolean;
+  provider: string;
+  publisher_id?: string;
+  network_id?: string;
+  placements: Record<string, AdPlacementConfig>;
+}
+
+export const monetizationApi = {
+  getAdConfig: (token?: string) =>
+    request<AdConfigPublicResponse>("/monetization/ad-config", { token }),
+
+  getSponsors: (token?: string) =>
+    request<Sponsor[]>("/monetization/sponsors", { token }),
+
+  getAffiliateProducts: (token?: string) =>
+    request<AffiliateProduct[]>("/monetization/affiliate-products", { token }),
+}
+
+export interface RecommendationResponse {
+  content: LearningContent;
+  reason: string;
+  score: number;
+}
+
+export interface RecommendationListResponse {
+  items: RecommendationResponse[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LearningModuleItem {
+  id: string;
+  module_id: string;
+  content_id: string;
+  display_order: int;
+  is_required: boolean;
+  content: LearningContent;
+}
+
+export interface LearningModule {
+  id: string;
+  path_id: string;
+  title: string;
+  description?: string;
+  display_order: number;
+  items: LearningModuleItem[];
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  thumbnail_url?: string;
+  topic_id: string;
+  language: string;
+  audience: Audience;
+  status: ContentStatus;
+  display_order: number;
+  is_featured: boolean;
+  modules: LearningModule[];
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+}
+
+export interface LearningPathListResponse {
+  items: LearningPath[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LearningPathProgressResponse {
+  path_id: string;
+  completed_content: number;
+  total_content: number;
+  progress_percent: number;
+  module_progress: Record<string, { completed: number; total: number }>;
+}
+
+
+export interface LearningProgress {
+  user_id: string;
+  content_id: string;
+  completed: boolean;
+  watch_time_seconds: number;
+  progress_percent: number;
+  last_accessed_at: string;
+  completed_at?: string;
+}
+
+export interface LearningSummary {
+  completed_lessons: number;
+  learning_minutes: number;
+  videos_watched: number;
+  articles_read: number;
+  continue_learning?: LearningContent;
+  streak?: { current: number; longest: number };
+  badges?: { key: string; earned_at: string }[];
+}
+
+export interface LearningContentListResponse {
+  items: LearningContent[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LearningContentCreateInput {
+  title: string;
+  description?: string;
+  content_type: ContentType;
+  source_type: SourceType;
+  media_url?: string;
+  media_file_id?: string;
+  thumbnail_file_id?: string;
+  body?: ContentBlock[];
+  category: string;
+  tags?: string[];
+  language?: string;
+  is_featured?: boolean;
+  status?: ContentStatus;
+  duration_minutes?: number;
+}
+
+export const learningApi = {
+  // --- Public ---
+  getFeed: (
+    token: string,
+    params?: {
+      category?: string;
+      type?: string;
+      search?: string;
+      page?: number;
+      topic_id?: string;
+      subtopic_id?: string;
+      audience?: string;
+      language?: string;
+      is_featured?: boolean;
+      is_short_form?: boolean;
+    }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.page) qs.set("page", String(params.page));
+    if (params?.category) qs.set("category", params.category);
+    if (params?.type) qs.set("content_type", params.type);
+    if (params?.search) qs.set("search", params.search);
+    if (params?.topic_id) qs.set("topic_id", params.topic_id);
+    if (params?.subtopic_id) qs.set("subtopic_id", params.subtopic_id);
+    if (params?.audience) qs.set("audience", params.audience);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.is_featured !== undefined) qs.set("is_featured", String(params.is_featured));
+    if (params?.is_short_form !== undefined) qs.set("is_short_form", String(params.is_short_form));
+    return request<LearningContentListResponse>(`/learning?${qs.toString()}`, { token });
+  },
+  getContent: (token: string, id: string) =>
+    request<LearningContent>(`/learning/${id}`, { token }),
+  getRelated: (token: string, id: string) =>
+    request<LearningContentListResponse>(`/learning/${id}/related`, { token }),
+  getProgress: (token: string, id: string) =>
+    request<LearningProgress>(`/learning/${id}/progress`, { token }),
+  updateProgress: (
+    token: string,
+    id: string,
+    data: { completed: boolean; watch_time_seconds?: number; progress_percent?: number }
+  ) =>
+    request<LearningProgress>(`/learning/${id}/progress`, {
+      method: "POST",
+      body: data,
+      token,
+    }),
+  getSummary: (token: string) =>
+    request<LearningSummary>(`/learning/progress/summary`, { token }),
+    
+  getRecommendations: (token: string, limit?: number, includeCompleted?: boolean) => {
+    const qs = new URLSearchParams();
+    if (limit) qs.set("limit", String(limit));
+    if (includeCompleted !== undefined) qs.set("include_completed", String(includeCompleted));
+    return request<RecommendationListResponse>(`/learning/recommendations?${qs.toString()}`, { token });
+  },
+
+  // --- Topic API (Phase 1) ---
+  getTopics: (token: string) =>
+    request<TopicsListResponse>(`/learning/topics`, { token }),
+  getTopicBySlug: (token: string, slug: string) =>
+    request<Topic>(`/learning/topics/${slug}`, { token }),
+  getTopicContent: (
+    token: string,
+    slug: string,
+    params?: { subtopic?: string; content_type?: string; language?: string; page?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.subtopic) qs.set("subtopic", params.subtopic);
+    if (params?.content_type) qs.set("content_type", params.content_type);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.page) qs.set("page", String(params.page));
+    return request<LearningContentListResponse>(`/learning/topics/${slug}/content?${qs.toString()}`, { token });
+  },
+
+  // --- Learning Paths API (Phase 5) ---
+  getPaths: (
+    token: string,
+    params?: { topic_slug?: string; language?: string; audience?: string; page?: number }
+  ) => {
+    const qs = new URLSearchParams();
+    if (params?.topic_slug) qs.set("topic_slug", params.topic_slug);
+    if (params?.language) qs.set("language", params.language);
+    if (params?.audience) qs.set("audience", params.audience);
+    if (params?.page) qs.set("page", String(params.page));
+    return request<LearningPathListResponse>(`/learning/paths?${qs.toString()}`, { token });
+  },
+  getPath: (token: string, slug: string) =>
+    request<LearningPath>(`/learning/paths/${slug}`, { token }),
+  getPathProgress: (token: string, id: string) =>
+    request<LearningPathProgressResponse>(`/learning/paths/${id}/progress`, { token }),
+
+  // --- Admin ---
+  admin: {
+    list: (
+      token: string,
+      params?: { status?: string; content_type?: string; category?: string; search?: string; page?: number }
+    ) => {
+      const qs = new URLSearchParams();
+      if (params?.page) qs.set("page", String(params.page));
+      if (params?.status) qs.set("status", params.status);
+      if (params?.content_type) qs.set("content_type", params.content_type);
+      if (params?.category) qs.set("category", params.category);
+      if (params?.search) qs.set("search", params.search);
+      return request<LearningContentListResponse>(`/admin/learning?${qs.toString()}`, { token });
+    },
+    get: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}`, { token }),
+    create: (token: string, data: LearningContentCreateInput) =>
+      request<LearningContent>(`/admin/learning`, { method: "POST", body: data, token }),
+    update: (token: string, id: string, data: Partial<LearningContentCreateInput>) =>
+      request<LearningContent>(`/admin/learning/${id}`, { method: "PATCH", body: data, token }),
+    publish: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}/publish`, { method: "POST", token }),
+    archive: (token: string, id: string) =>
+      request<LearningContent>(`/admin/learning/${id}/archive`, { method: "POST", token }),
+    delete: (token: string, id: string) =>
+      request<void>(`/admin/learning/${id}`, { method: "DELETE", token }),
+  },
+};
+
+// --- Media API (Phase 6) ---
+
+export interface MediaUploadResponse {
+  upload_url: string;
+  storage_key: string;
+  media: {
+    id: string;
+    filename: string;
+    content_type: string;
+    size_bytes: number;
+    created_at: string;
+  };
+}
+
+export const mediaApi = {
+  generatePresignedUrl: (token: string, filename: string, content_type: string, size_bytes: number) =>
+    request<MediaUploadResponse>("/media/presigned-url", {
+      method: "POST",
+      body: { filename, content_type, size_bytes },
+      token,
+    }),
+  getMediaUrl: (token: string, id: string) =>
+    request<{ url: string }>(`/media/${id}/url`, { token }),
+};
+>>>>>>> 84ba8267cf0208f36cbea1162846f9f43df00ea6

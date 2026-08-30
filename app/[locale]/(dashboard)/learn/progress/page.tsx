@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { learnApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { Loader2, Flame, Trophy, PlayCircle, BookOpen, Bookmark, Clock, ArrowRight } from "lucide-react";
+import { Loader2, Flame, Trophy, PlayCircle, BookOpen, Bookmark, Clock, ArrowRight, Map, CheckCircle, Hash, Star } from "lucide-react";
 import Link from "next/link";
 import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard";
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
@@ -15,6 +15,10 @@ interface LearningStats {
   articles_read: number;
   learning_minutes: number;
   completed_lessons: number;
+  paths_started: number;
+  paths_completed: number;
+  topics_explored: string[];
+  favorite_format?: string;
   streak?: { current: number; longest: number };
   continue_learning?: { id: string; title: string; category: string; content_type: string; thumbnail_url?: string };
   badges?: { key: string; earned_at: string }[];
@@ -89,28 +93,82 @@ export default function ProgressCenterPage() {
       </header>
 
       {/* OVERVIEW STATS */}
-      <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card padding="sm" className="text-center">
+      <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <Card padding="sm" className="text-center bg-white">
           <p className="text-2xl mb-1 text-berry flex justify-center"><PlayCircle /></p>
           <p className="font-display text-2xl font-bold text-ink">{stats.videos_watched}</p>
-          <p className="text-xs text-ink/60">Videos Watched</p>
+          <p className="text-xs text-ink/60">Videos</p>
         </Card>
-        <Card padding="sm" className="text-center">
+        <Card padding="sm" className="text-center bg-white">
           <p className="text-2xl mb-1 text-berry flex justify-center"><BookOpen /></p>
           <p className="font-display text-2xl font-bold text-ink">{stats.articles_read}</p>
-          <p className="text-xs text-ink/60">Articles Read</p>
+          <p className="text-xs text-ink/60">Articles</p>
         </Card>
-        <Card padding="sm" className="text-center">
+        <Card padding="sm" className="text-center bg-white">
           <p className="text-2xl mb-1 text-berry flex justify-center"><Clock /></p>
           <p className="font-display text-2xl font-bold text-ink">{stats.learning_minutes}</p>
-          <p className="text-xs text-ink/60">Learning Minutes</p>
+          <p className="text-xs text-ink/60">Minutes</p>
         </Card>
-        <Card padding="sm" className="text-center">
+        <Card padding="sm" className="text-center bg-white">
           <p className="text-2xl mb-1 text-berry flex justify-center"><Trophy /></p>
           <p className="font-display text-2xl font-bold text-ink">{stats.completed_lessons}</p>
-          <p className="text-xs text-ink/60">Completed Lessons</p>
+          <p className="text-xs text-ink/60">Lessons</p>
+        </Card>
+        <Card padding="sm" className="text-center bg-white">
+          <p className="text-2xl mb-1 text-berry flex justify-center"><Map /></p>
+          <p className="font-display text-2xl font-bold text-ink">{stats.paths_started}</p>
+          <p className="text-xs text-ink/60">Paths Started</p>
+        </Card>
+        <Card padding="sm" className="text-center bg-white">
+          <p className="text-2xl mb-1 text-berry flex justify-center"><CheckCircle /></p>
+          <p className="font-display text-2xl font-bold text-ink">{stats.paths_completed}</p>
+          <p className="text-xs text-ink/60">Paths Done</p>
         </Card>
       </div>
+
+      {/* TOPICS & FORMATS INSIGHTS */}
+      {(stats.topics_explored?.length > 0 || stats.favorite_format) && (
+        <section className="mb-10">
+          <h2 className="mb-4 text-lg font-bold text-ink">Learning Insights</h2>
+          <div className="flex flex-col md:flex-row gap-4">
+            {stats.topics_explored?.length > 0 && (
+              <Card padding="md" className="flex-1 bg-white border-none shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <Hash className="text-berry" size={18} />
+                  <h3 className="font-bold text-ink">Topics Explored</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {stats.topics_explored.map((topic, i) => (
+                    <span key={i} className="px-3 py-1 bg-berry/10 text-berry text-xs font-semibold rounded-full border border-berry/20">
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            )}
+            
+            {stats.favorite_format && (
+              <Card padding="md" className="flex-1 bg-white border-none shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <Star className="text-berry" size={18} />
+                  <h3 className="font-bold text-ink">Favorite Format</h3>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center">
+                      {stats.favorite_format === "VIDEO" ? <PlayCircle size={20} /> : <BookOpen size={20} />}
+                    </div>
+                    <div>
+                      <p className="font-bold text-ink capitalize">{stats.favorite_format.toLowerCase()}s</p>
+                      <p className="text-xs text-ink/60">You seem to prefer this format</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* CONTINUE LEARNING */}
       {stats.continue_learning && (
