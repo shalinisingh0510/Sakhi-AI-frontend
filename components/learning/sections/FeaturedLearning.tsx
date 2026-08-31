@@ -99,7 +99,7 @@ export function FeaturedLearning() {
                 )}
               </div>
             </div>
-            <BookmarkButton contentId={featured.id} size="sm" />
+            <BookmarkButton contentId={featured.id} />
           </div>
           
           <Link href={`/learn/${featured.id}`}>
