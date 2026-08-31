@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -p 3003",
         "build": "next build",
-        "start": "next start",
+        "start": "next start -p 3003",
         "lint": "eslint app",
         "typecheck": "tsc --noEmit --incremental false",
         "test": "vitest run --configLoader native",
@@ -19,6 +19,7 @@
         "react-dom": "^19.0.0",
         "react-markdown": "^10.1.0",
         "remark-gfm": "^4.0.1",
+        "sonner": "^2.0.8",
         "zustand": "^5.0.14"
     },
     "devDependencies": {

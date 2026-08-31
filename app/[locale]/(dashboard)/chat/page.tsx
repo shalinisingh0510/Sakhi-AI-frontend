@@ -4,8 +4,9 @@ import { FormEvent, useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { useChatStore } from "@/lib/chat-store";
-import { conversationApi, type ConversationSummary } from "@/lib/api";
+import { conversationApi, chatApi, type ConversationSummary } from "@/lib/api";
 import { useVoice } from "@/lib/use-voice";
+import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { Button } from "@/components/ui/Button";
 
 import { UserMessage } from "@/components/chat/UserMessage";
@@ -18,10 +19,34 @@ export default function ChatPage() {
   
   const { user, token } = useAuthStore();
   const { messages, isTyping, sessionId, addMessage, setMessages, setTyping, clearChat, setSessionId } = useChatStore();
-  const { isListening, isSupported, startListening, stopListening, transcript } = useVoice();
-
+  // We keep useVoice for TTS, but use useAudioRecorder for STT
+  const { speak } = useVoice();
+  
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"text" | "voice">("text");
+  
+  const handleRecordingComplete = async (audioBlob: Blob) => {
+    if (!token) return;
+    try {
+      const languageMap: Record<string, string> = { english: "en", hindi: "hi", marathi: "mr" };
+      const langCode = user?.language ? languageMap[user.language.toLowerCase()] : "en";
+      
+      const res = await chatApi.transcribeVoice(audioBlob, token, langCode);
+      if (res.text) {
+        setInput((prev) => prev ? prev + " " + res.text : res.text);
+        setInputMode("voice");
+      }
+    } catch (err) {
+      console.error("Transcription failed", err);
+      alert("Transcription failed. Please try again.");
+    }
+  };
+  
+  const { state: recordingState, startRecording, stopRecording, cancelRecording } = useAudioRecorder({
+    maxDurationSeconds: 60,
+    onRecordingComplete: handleRecordingComplete,
+    onError: (err) => alert(err),
+  });
   
   // Conversations sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -65,26 +90,7 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Voice transcript
-  useEffect(() => {
-    if (transcript) {
-      setInput(transcript);
-      setInputMode("voice");
-    }
-  }, [transcript]);
 
-  // Text to speech
-  const speak = (text: string) => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      if (user?.language) {
-        if (user.language.toLowerCase() === "hindi") utterance.lang = "hi-IN";
-        else if (user.language.toLowerCase() === "marathi") utterance.lang = "mr-IN";
-        else utterance.lang = "en-US";
-      }
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   async function sendMessage(content: string, overrideMode?: "text" | "voice") {
     const trimmed = content.trim();
@@ -270,13 +276,13 @@ export default function ChatPage() {
                   rows={Math.min(Math.max(input.split("\n").length, 1), 5)}
                   className="w-full resize-none rounded-3xl border border-peach/70 bg-white px-5 py-3.5 pr-12 text-sm text-ink placeholder:text-ink/40 focus:border-berry/50 focus:outline-none focus:ring-2 focus:ring-berry/20 shadow-sm"
                 />
-                {isSupported && (
+                {true && (
                   <button
                     type="button"
-                    onClick={isListening ? stopListening : startListening}
-                    disabled={isTyping}
+                    onClick={recordingState === "RECORDING" ? stopRecording : startRecording}
+                    disabled={isTyping || recordingState === "PROCESSING"}
                     className={`absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full transition-all ${
-                      isListening
+                      recordingState === "RECORDING"
                         ? "bg-berry text-white animate-pulse"
                         : "bg-peach/20 text-berry hover:bg-peach/50"
                     }`}
@@ -287,17 +293,17 @@ export default function ChatPage() {
               </div>
               <Button
                 type="submit"
-                disabled={!input.trim() || isTyping}
+                disabled={!input.trim() || isTyping || recordingState === "PROCESSING"}
                 className="rounded-full h-12 w-12 p-0 shrink-0 bg-berry hover:bg-berry-dark text-white shadow-md transition-transform active:scale-95 flex items-center justify-center"
                 aria-label={tA11y("sendMessage")}
               >
                 <SendIcon className="h-5 w-5" aria-hidden="true" />
               </Button>
             </form>
-            {isListening && (
+            {(recordingState === "RECORDING" || recordingState === "PROCESSING") && (
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-2 text-xs font-medium text-berry bg-white/90 px-3 py-1 rounded-full shadow-sm border border-peach/50">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-berry" />
-                {t("listening")}
+                {recordingState === "RECORDING" ? t("listening") : "Processing audio..."}
               </div>
             )}
             <p className="mt-2 text-center text-[10px] sm:text-xs text-ink/40">

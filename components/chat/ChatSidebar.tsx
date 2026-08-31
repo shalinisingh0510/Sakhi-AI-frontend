@@ -33,7 +33,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNewChat, isOp
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-peach/60 p-4">
-            <h2 className="font-display text-lg font-bold text-ink">{t("chatHistory", { fallback: "History" })}</h2>
+            <h2 className="font-display text-lg font-bold text-ink">{t("chatHistory")}</h2>
             <Button variant="ghost" className="md:hidden h-10 w-10 p-2 flex items-center justify-center" onClick={onClose}>
               <CloseIcon className="h-5 w-5 text-ink/60" />
             </Button>
@@ -48,7 +48,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNewChat, isOp
               className="w-full justify-start gap-2 rounded-full bg-peach/20 text-ink hover:bg-peach/40 border-none shadow-none"
             >
               <PlusIcon className="h-4 w-4 text-berry" />
-              {t("newChat", { fallback: "New Chat" })}
+              {t("newChat")}
             </Button>
           </div>
 
@@ -56,7 +56,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNewChat, isOp
           <div className="flex-1 overflow-y-auto px-2 pb-4">
             {conversations.length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-ink/50">
-                {t("noHistory", { fallback: "No previous chats found." })}
+                {t("noHistory")}
               </div>
             ) : (
               <div className="space-y-1">
