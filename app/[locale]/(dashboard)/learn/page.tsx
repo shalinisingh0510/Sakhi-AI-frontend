@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { learningApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -30,7 +30,7 @@ const TYPES = [
   { id: "POST", label: "Posts" }
 ];
 
-export default function LearnPage() {
+function LearnPageContent() {
   const { token, user } = useAuthStore();
   const searchParams = useSearchParams();
   
@@ -246,5 +246,17 @@ export default function LearnPage() {
       </div>
       
     </div>
+  );
+}
+
+export default function LearnPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-berry" />
+      </div>
+    }>
+      <LearnPageContent />
+    </Suspense>
   );
 }

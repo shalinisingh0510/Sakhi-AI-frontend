@@ -38,7 +38,7 @@ export function ContinueLearning() {
   }
 
   // Define full type internally if it's missing from exports
-  type Content = NonNullable<LearningSummaryFull["continue_learning"]>;
+  type Content = NonNullable<LearningSummary["continue_learning"]>;
   const content: Content | undefined = summary?.continue_learning;
 
   if (!content) return null;
