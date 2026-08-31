@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
@@ -5,7 +6,6 @@ import { type LearningContent, learningApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { PlayCircle, Bookmark, FileText, Image as ImageIcon, CheckCircle } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 interface QuickLearnCardProps {
   content: LearningContent;
@@ -22,9 +22,9 @@ export function QuickLearnCard({ content, href }: QuickLearnCardProps) {
     try {
       const res = await learningApi.toggleBookmark(content.id, token);
       setIsSaved(res.saved);
-      toast.success(res.saved ? "Saved to Bookmarks" : "Removed from Bookmarks");
+      alert(res.saved ? "Saved to Bookmarks" : "Removed from Bookmarks");
     } catch {
-      toast.error("Failed to update bookmark");
+      alert("Failed to update bookmark");
     }
   };
 

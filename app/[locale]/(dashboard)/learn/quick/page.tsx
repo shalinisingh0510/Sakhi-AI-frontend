@@ -70,7 +70,7 @@ export default function QuickLearnPage() {
           </div>
           <div>
             <h1 className="font-display text-3xl font-bold text-ink">Quick Learn</h1>
-            <p className="mt-1 text-slate-500">Fast, visual health education for when you're short on time.</p>
+            <p className="mt-1 text-slate-500">Fast, visual health education for when you&apos;re short on time.</p>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
-import { learningApi, type LearningContent, type Topic, type Subtopic } from "@/lib/api";
+import { learningApi, type LearningContent, type Topic } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
 import { LearnSidebar } from "@/components/learning/sidebar/LearnSidebar";

@@ -29,7 +29,7 @@ export function AdSlot({ placementId, className = "", format = "auto", responsiv
         }
         testAd.remove();
       }, 100);
-    } catch (e) {
+    } catch {
       setAdBlocked(true);
     }
   }, []);

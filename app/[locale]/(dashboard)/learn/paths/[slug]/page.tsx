@@ -1,15 +1,15 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { learningApi, type LearningPath, type LearningPathProgressResponse } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { Loader2, ArrowLeft, BookOpen, Clock, CheckCircle2, Circle, ChevronRight } from "lucide-react";
+import { Loader2, BookOpen, Clock, CheckCircle2, Circle, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { LearnHeader } from "@/components/learning/LearnHeader";
 
 export default function LearningPathPage() {
-  const { token, user } = useAuthStore();
+  const { token } = useAuthStore();
   const params = useParams();
   const router = useRouter();
   
@@ -159,7 +159,7 @@ export default function LearningPathPage() {
         <div className="space-y-4">
           {path.modules.map((mod, index) => {
             const modProgress = progress?.module_progress?.[mod.id];
-            const modCompleted = modProgress?.completed === modProgress?.total && modProgress?.total > 0;
+            const modCompleted = modProgress?.completed === modProgress?.total && (modProgress?.total ?? 0) > 0;
             
             return (
               <div key={mod.id} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

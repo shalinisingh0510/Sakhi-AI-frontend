@@ -43,6 +43,8 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   image: "Image",
   video: "Video Embed",
   important_box: "Important Box",
+  list: "List",
+  callout: "Callout",
 };
 
 function BlockEditor({
@@ -308,6 +310,7 @@ export default function EditContentPage() {
                     duration_minutes: durationMinutes,
                     is_featured: isFeatured,
                     status: "DRAFT",
+                    audience: "ALL",
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                   }}
@@ -335,6 +338,7 @@ export default function EditContentPage() {
                     duration_minutes: durationMinutes,
                     is_featured: isFeatured,
                     status: "DRAFT",
+                    audience: "ALL",
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                   }}

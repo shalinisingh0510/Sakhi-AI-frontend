@@ -1063,6 +1063,12 @@ export const learningApi = {
   getSummary: (token: string) =>
     request<LearningSummary>(`/learning/progress/summary`, { token }),
     
+  toggleBookmark: (contentId: string, token: string) =>
+    request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
+      method: "POST",
+      token,
+    }),
+
   getRecommendations: (token: string, limit?: number, includeCompleted?: boolean) => {
     const qs = new URLSearchParams();
     if (limit) qs.set("limit", String(limit));

@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { learningApi, type LearningSummaryFull } from "@/lib/api";
+import { learningApi, type LearningSummary } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { PlayCircle, FileText, ArrowRight } from "lucide-react";
 
 export function ContinueLearning() {
   const { token } = useAuthStore();
-  const [summary, setSummary] = useState<LearningSummaryFull | null>(null);
+  const [summary, setSummary] = useState<LearningSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function ContinueLearning() {
     // We cast to our known type since the API type in lib/api.ts uses Record<string, unknown>
     // to avoid forward-reference issues.
     learningApi.getSummary(token)
-      .then((res) => setSummary(res as unknown as LearningSummaryFull))
+      .then((res) => setSummary(res as unknown as LearningSummary))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [token]);
