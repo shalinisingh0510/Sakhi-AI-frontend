@@ -2,7 +2,7 @@
 
 import { Menu, Search, Globe, Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { authApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 

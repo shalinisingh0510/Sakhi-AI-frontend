@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { learningApi, type LearningPath } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { BookOpen } from "lucide-react";

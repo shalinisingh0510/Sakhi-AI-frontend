@@ -22,7 +22,7 @@ export function LearningProgressCard() {
   useEffect(() => {
     if (!token) return;
     learnApi.getLearningSummary(token)
-      .then((res) => setStats(res as LearningStats))
+      .then((res) => setStats(res as unknown as LearningStats))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [token]);

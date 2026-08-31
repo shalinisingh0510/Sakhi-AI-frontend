@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { learningApi, type LearningContent } from "@/lib/api";
@@ -180,12 +180,12 @@ export default function LearnPage() {
                 : "Try another topic or search term."}
             </p>
             {isSearchingOrFiltering && (
-              <a
+              <Link
                 href="/learn"
                 className="mt-4 text-sm font-semibold text-berry hover:underline"
               >
                 Clear all filters
-              </a>
+              </Link>
             )}
           </div>
         ) : (

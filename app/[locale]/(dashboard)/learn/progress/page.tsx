@@ -49,9 +49,9 @@ export default function ProgressCenterPage() {
       learnApi.getLearningHistory(token),
       learnApi.getLearningBookmarks(token),
     ]).then(([summaryRes, historyRes, bookmarksRes]) => {
-      if (summaryRes.status === "fulfilled") setStats(summaryRes.value as LearningStats);
-      if (historyRes.status === "fulfilled") setHistory((historyRes.value as { items: HistoryItem[] }).items || []);
-      if (bookmarksRes.status === "fulfilled") setBookmarks((bookmarksRes.value as { items: LearningContent[] }).items || []);
+      if (summaryRes.status === "fulfilled") setStats(summaryRes.value as unknown as LearningStats);
+      if (historyRes.status === "fulfilled") setHistory((historyRes.value as unknown as { items: HistoryItem[] }).items || []);
+      if (bookmarksRes.status === "fulfilled") setBookmarks((bookmarksRes.value as unknown as { items: LearningContent[] }).items || []);
     }).finally(() => {
       setLoading(false);
     });

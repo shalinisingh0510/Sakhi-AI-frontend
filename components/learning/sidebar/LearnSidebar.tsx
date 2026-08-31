@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { learningApi, type Topic } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { ChevronDown, ChevronRight, BookOpen, Bookmark, BarChart2, Home } from "lucide-react";
+import { ChevronDown, ChevronRight, Bookmark, BarChart2, Home } from "lucide-react";
 
 interface LearnSidebarProps {
   className?: string;
@@ -37,7 +37,11 @@ export function LearnSidebar({ className = "" }: LearnSidebarProps) {
   const toggleTopic = (slug: string) => {
     setExpandedTopics((prev) => {
       const next = new Set(prev);
-      next.has(slug) ? next.delete(slug) : next.add(slug);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        next.add(slug);
+      }
       return next;
     });
   };
