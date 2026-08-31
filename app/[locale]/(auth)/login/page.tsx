@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -15,8 +15,15 @@ import { useAuthStore } from "@/lib/auth-store";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, setLoading, isLoading } = useAuthStore();
+  const { login, setLoading, isLoading, isAuthenticated, user } = useAuthStore();
   const t = useTranslations("Auth.login");
+
+  // Client-side redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(user?.onboardingComplete ? "/dashboard" : "/onboarding");
+    }
+  }, [isAuthenticated, router, user]);
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
@@ -70,9 +77,9 @@ export default function LoginPage() {
         return;
       }
 
-      const { user, token } = await authApi.login(form.email, form.password);
-      const normalized = normalizeUser(user, form.email);
-      login(normalized, token);
+      const res = await authApi.login(form.email, form.password);
+      const normalized = normalizeUser(res.user, form.email);
+      login(normalized, res.access_token);
       router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
     } catch {
       setErrors({ general: t("errors.general") });

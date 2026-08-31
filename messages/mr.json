@@ -375,21 +375,23 @@
     "stopListening": "Stop listening",
     "startVoiceInput": "Start voice input",
     "listening": "Listening...",
+    "copy": "Copy text",
     "disclaimer": "Sakhi AI is for education only. Always consult a doctor for medical advice.",
-    "quickPrompts": [
-      "What is the menstrual cycle?",
-      "Why do I get cramps?",
-      "How to practice good hygiene?",
-      "What is puberty?",
-      "Tips for mental wellbeing",
-      "What are iron-rich foods?"
-    ],
+    "quickPrompts": {
+      "symptoms": "What is the menstrual cycle?",
+      "irregular": "Why do I get cramps?",
+      "nutrition": "How to practice good hygiene?",
+      "pain": "What is puberty?"
+    },
     "demoReplies": {
       "default": "That's a great question! I'm here to help you understand your body and health. Let me explain in a simple and clear way. Remember, there are no wrong questions - you're doing great by asking. 💛",
       "cramp": "Menstrual cramps happen because the uterus contracts to shed its lining. This is completely normal! You can try a warm compress, gentle stretching, or staying hydrated. If the pain is very severe, it's always a good idea to speak with a doctor. 🌸",
       "cycle": "The menstrual cycle is the monthly process your body goes through to prepare for a possible pregnancy. It usually lasts 21-35 days. Each phase - menstrual, follicular, ovulation, and luteal - plays an important role. It's your body's natural rhythm! 💪",
       "hygiene": "Good hygiene during your period is simple: change your pad or tampon every 4-6 hours, wash the external area with mild soap and water, and wear clean, breathable underwear. Most importantly, be gentle with yourself - your body is working hard! 🌿"
-    }
+    },
+    "chatHistory": "चॅट इतिहास",
+    "newChat": "नवीन चॅट",
+    "noHistory": "कोणतेही मागील चॅट सापडले नाहीत."
   },
   "Learn": {
     "title": "Learn with Sakhi 📖",
@@ -1436,5 +1438,8 @@
     "errors": {
       "notAuthenticated": "पोषण ट्रॅक करण्यासाठी लॉग इन करा"
     }
+  },
+  "A11y": {
+    "sendMessage": "संदेश पाठवा"
   }
 }

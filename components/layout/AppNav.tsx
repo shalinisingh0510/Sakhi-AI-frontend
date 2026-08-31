@@ -29,6 +29,14 @@ export function AppNav() {
     setMenuOpen(false);
   }, [pathname]);
 
+  // Client-side auth guard fallback
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, router]);
+
   useEffect(() => {
     if (!menuOpen) return;
 
