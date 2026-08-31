@@ -1,7 +1,7 @@
 import type { User } from "./auth-store";
 import { ApiError } from "./api-config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.sakhi.ai";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -9,9 +9,11 @@ interface RequestOptions {
   token?: string;
 }
 
+
 export interface AuthResponse {
   user: User;
-  token: string;
+  access_token: string;
+  refresh_token?: string;
 }
 
 export interface ChatResponse {
@@ -58,34 +60,24 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
-    const errorMsg =
-      typeof error.detail === "string"
-        ? error.detail
-        : Array.isArray(error.detail) && error.detail[0]?.msg
-        ? error.detail[0].msg
-        : error.message ?? `Request failed (${res.status})`;
-    throw new ApiError(errorMsg, res.status);
+    throw new ApiError(error.message ?? `Request failed (${res.status})`, res.status);
   }
 
   return res.json() as Promise<T>;
 }
 
 export const authApi = {
-  login: async (email: string, password: string) => {
-    const res = await request<Record<string, unknown>>("/auth/login", {
+  login: (email: string, password: string) =>
+    request<AuthResponse>("/auth/login", {
       method: "POST",
       body: { email, password },
-    });
-    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
-  },
+    }),
 
-  register: async (name: string, email: string, password: string) => {
-    const res = await request<Record<string, unknown>>("/auth/register", {
+  register: (name: string, email: string, password: string) =>
+    request<AuthResponse>("/auth/register", {
       method: "POST",
       body: { name, email, password },
-    });
-    return { user: res.user as User, token: res.access_token as string } as AuthResponse;
-  },
+    }),
 
   forgotPassword: (email: string) =>
     request<{ message: string }>("/auth/forgot-password", {
@@ -103,51 +95,96 @@ export const authApi = {
   },
 };
 
-interface ApiChatResponse {
-  success: boolean;
-  data: {
-    conversation_id: string;
-    conversationId: string;
-    message: {
-      id: string;
-      role: "assistant" | "user";
-      content: string;
-      created_at: string;
-    };
-  };
+export interface Citation {
+  id?: string;
+  source: string;
+  text?: string;
+  url?: string;
 }
 
-export const chatApi = {
-  sendMessage: async (
-    content: string,
-    sessionId: string | null,
-    token: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _mode: "text" | "voice" = "text",
-    language: string = "english"
-  ): Promise<ChatResponse> => {
-    const res = await request<ApiChatResponse>("/chat/message", {
+export interface ApiMessage {
+  id: string;
+  conversation_id: string;
+  role: "user" | "assistant";
+  content: string;
+  citations?: Citation[];
+  created_at: string;
+}
+
+export interface ConversationSummary {
+  id: string;
+  user_id: string;
+  title: string;
+  preferred_language: string;
+  message_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApiConversationDetail {
+  conversation: ConversationSummary;
+  messages: ApiMessage[];
+}
+
+export const conversationApi = {
+  getConversations: (token: string, offset: number = 0, limit: number = 20) =>
+    request<ConversationSummary[]>(`/conversations?offset=${offset}&limit=${limit}`, { token }),
+
+  getConversation: (conversationId: string, token: string) =>
+    request<ApiConversationDetail>(`/conversations/${conversationId}`, { token }),
+
+  createConversation: (initialMessage: string, token: string, mode: "text" | "voice" = "text", language: string = "english") =>
+    request<ApiConversationDetail>("/conversations", {
       method: "POST",
-      body: {
-        message: content,
-        conversationId: sessionId || undefined,
-        language,
-      },
+      body: { initial_message: initialMessage, mode, preferred_language: language },
+      token,
+    }),
+
+  sendMessage: (conversationId: string, message: string, token: string, mode: "text" | "voice" = "text") =>
+    request<ApiConversationDetail>(`/conversations/${conversationId}/messages`, {
+      method: "POST",
+      body: { message, mode },
+      token,
+    }),
+};
+
+export const chatApi = {
+  // Legacy chatApi mapped to conversationApi
+  sendMessage: async (content: string, sessionId: string | null, token: string, mode: "text" | "voice" = "text", language: string = "english") => {
+    let res: ApiConversationDetail;
+    if (!sessionId) {
+      res = await conversationApi.createConversation(content, token, mode, language);
+    } else {
+      res = await conversationApi.sendMessage(sessionId, content, token, mode);
+    }
+    const messages = res.messages || [];
+    const lastMsg = messages[messages.length - 1];
+    return {
+      reply: lastMsg ? lastMsg.content : "",
+      sessionId: res.conversation.id
+    } as ChatResponse;
+  },
+  transcribeVoice: async (audioBlob: Blob, token: string, language?: string) => {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.webm");
+    if (language) {
+      formData.append("language", language);
+    }
+    return request<{ text: string; language: string }>("/chat/voice/transcribe", {
+      method: "POST",
+      body: formData, // the fetch wrapper should correctly NOT set Content-Type if body is FormData
       token,
     });
-    return {
-      reply: res.data.message.content,
-      sessionId: res.data.conversationId || res.data.conversation_id,
-    };
   },
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const learnApi = {
   getModules: (token: string) =>
-    request<{ modules: LearnModule[] }>("/learn/modules", { token }),
+    request<{ modules: any[] }>("/learn/modules", { token }),
 
   getModule: (slug: string, token: string) =>
-    request<{ module: LearnModule }>(`/learn/modules/${slug}`, { token }),
+    request<{ module: any }>(`/learn/modules/${slug}`, { token }),
 
   completeLesson: (moduleId: string, lessonId: string, token: string) =>
     request<{ progress: number }>(`/learn/modules/${moduleId}/lessons/${lessonId}/complete`, {
@@ -174,11 +211,22 @@ export const learnApi = {
       token,
     }),
 };
-
 export const progressApi = {
   getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
   getAnalytics: (token: string) => request<Record<string, unknown>>("/analytics/user", { token }),
+  getLearningHistory: (token: string) =>
+    request<unknown>("/learning/history", { token }),
+
+  getLearningBookmarks: (token: string) =>
+    request<unknown>("/learning/bookmarks", { token }),
+
+  toggleBookmark: (contentId: string, token: string) =>
+    request<{ saved: boolean }>(`/learning/${contentId}/bookmark`, {
+      method: "POST",
+      token,
+    }),
 };
+
 
 export interface CurrentCycleResponse {
   current_cycle_day?: number;
@@ -356,7 +404,7 @@ export const wellnessApi = {
 
   listSymptoms: (token: string, limit: number = 50, offset: number = 0) =>
     request<SymptomLogResponse[]>(`/wellness/symptoms?limit=${limit}&offset=${offset}`, { token }),
-
+    
   deleteSymptom: (token: string, logId: string) =>
     request<void>(`/wellness/symptoms/${logId}`, {
       method: "DELETE",
@@ -922,7 +970,7 @@ export interface LearningModuleItem {
   id: string;
   module_id: string;
   content_id: string;
-  display_order: int;
+  display_order: number;
   is_required: boolean;
   content: LearningContent;
 }

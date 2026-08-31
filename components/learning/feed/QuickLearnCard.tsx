@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { type LearningContent, learningApi } from "@/lib/api";
+import { type LearningContent, learningApi, learnApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { PlayCircle, Bookmark, FileText, Image as ImageIcon, CheckCircle } from "lucide-react";
 import { useState } from "react";
@@ -20,7 +20,7 @@ export function QuickLearnCard({ content, href }: QuickLearnCardProps) {
     e.preventDefault();
     if (!token) return;
     try {
-      const res = await learningApi.toggleBookmark(content.id, token);
+      const res = await learnApi.toggleBookmark(content.id, token);
       setIsSaved(res.saved);
       alert(res.saved ? "Saved to Bookmarks" : "Removed from Bookmarks");
     } catch {

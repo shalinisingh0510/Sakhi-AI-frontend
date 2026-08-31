@@ -92,3 +92,29 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Sync essential auth state to cookies for middleware
+if (typeof window !== "undefined") {
+  useAuthStore.subscribe((state) => {
+    // Self-heal: If authenticated but missing token (corrupted state), force logout
+    if (state.isAuthenticated && !state.token) {
+      console.warn("Corrupted auth state detected (missing token). Auto-logging out.");
+      useAuthStore.getState().logout();
+      return;
+    }
+    
+    const minimalState = {
+      state: {
+        isAuthenticated: state.isAuthenticated,
+        user: { onboardingComplete: state.user?.onboardingComplete ?? false }
+      }
+    };
+    document.cookie = `sakhi-auth=${encodeURIComponent(JSON.stringify(minimalState))}; path=/; max-age=31536000; SameSite=Lax`;
+  });
+  
+  // Run once on load to heal any existing corrupted state immediately
+  const initialState = useAuthStore.getState();
+  if (initialState.isAuthenticated && !initialState.token) {
+    initialState.logout();
+  }
+}
