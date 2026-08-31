@@ -35,7 +35,7 @@ export function AdSlot({ placementId, className = "", format = "auto", responsiv
   }, []);
 
   // Teen protection (Phase 9)
-  const isTeen = user?.ageGroup === "TEEN";
+  const isTeen = user?.ageGroup === "10-13" || user?.ageGroup === "14-18";
 
   if (!isClient) return null;
 

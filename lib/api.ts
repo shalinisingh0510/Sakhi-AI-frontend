@@ -1,7 +1,7 @@
 import type { User } from "./auth-store";
 import { ApiError } from "./api-config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -12,7 +12,8 @@ interface RequestOptions {
 
 export interface AuthResponse {
   user: User;
-  token: string;
+  access_token: string;
+  refresh_token?: string;
 }
 
 export interface ChatResponse {
@@ -135,7 +136,7 @@ export const conversationApi = {
   createConversation: (initialMessage: string, token: string, mode: "text" | "voice" = "text", language: string = "english") =>
     request<ApiConversationDetail>("/conversations", {
       method: "POST",
-      body: { initial_message: initialMessage, preferred_language: language, mode },
+      body: { initial_message: initialMessage, mode, preferred_language: language },
       token,
     }),
 
@@ -163,6 +164,18 @@ export const chatApi = {
       sessionId: res.conversation.id
     } as ChatResponse;
   },
+  transcribeVoice: async (audioBlob: Blob, token: string, language?: string) => {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.webm");
+    if (language) {
+      formData.append("language", language);
+    }
+    return request<{ text: string; language: string }>("/chat/voice/transcribe", {
+      method: "POST",
+      body: formData, // the fetch wrapper should correctly NOT set Content-Type if body is FormData
+      token,
+    });
+  },
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -179,11 +192,8 @@ export const learnApi = {
       token,
     }),
 
-<<<<<<< HEAD
-=======
   // Progress Center Endpoints — typed generically to avoid forward-reference issues
   // Actual shape: { completed_lessons, videos_watched, articles_read, continue_learning, streak, badges }
->>>>>>> 84ba8267cf0208f36cbea1162846f9f43df00ea6
   getLearningSummary: (token: string) =>
     request<Record<string, unknown>>("/learning/progress/summary", { token }),
 
@@ -201,53 +211,6 @@ export const learnApi = {
       token,
     }),
 };
-
-export type ContentType = "ARTICLE" | "VIDEO" | "INFOGRAPHIC" | "POST" | string;
-export type SourceType = "YOUTUBE" | "INTERNAL_UPLOAD" | "EXTERNAL_LINK" | "PRIVATE_VIDEO" | string;
-export type ContentBlock = { type: string; content?: string; url?: string; [key: string]: any };
-export type LearningContentCreateInput = any;
-export type LearningContent = { tags: string[]; body?: ContentBlock[]; [key: string]: any };
-export type LearningContentListResponse = any;
-export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | string;
-export type LearningSummary = any;
-export type LearningProgress = any;
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export const learningApi = {
-  getSummary: (token: string) => request<any>("/learning/summary", { token }),
-  getFeed: (token: string, params?: any) => {
-    const qs = params ? "?" + new URLSearchParams(params as any).toString() : "";
-    return request<any>(`/learning/feed${qs}`, { token });
-  },
-  getContent: (token: string, id: string) => request<any>(`/learning/items/${id}`, { token }),
-  getProgress: (token: string, id: string) => request<any>(`/learning/progress/${id}`, { token }),
-  getRelated: (token: string, id: string) => request<any>(`/learning/items/${id}/related`, { token }),
-  updateProgress: (token: string, id: string, payload: any) =>
-    request<any>(`/learning/progress/${id}`, { method: "PUT", body: payload, token }),
-  
-  admin: {
-    list: (token: string, params?: any) => {
-      const qs = params ? "?" + new URLSearchParams(params as any).toString() : "";
-      return request<any>(`/learning/admin/items${qs}`, { token });
-    },
-    get: (token: string, id: string) => request<any>(`/learning/admin/items/${id}`, { token }),
-    create: (token: string, payload: any) => request<any>("/learning/admin/items", { method: "POST", body: payload, token }),
-    update: (token: string, id: string, payload: any) => request<any>(`/learning/admin/items/${id}`, { method: "PUT", body: payload, token }),
-    delete: (token: string, id: string) => request<any>(`/learning/admin/items/${id}`, { method: "DELETE", token }),
-    publish: (token: string, id: string) => request<any>(`/learning/admin/items/${id}/publish`, { method: "POST", token }),
-    archive: (token: string, id: string) => request<any>(`/learning/admin/items/${id}/archive`, { method: "POST", token }),
-  }
-};
-
-export const mediaApi = {
-  generatePresignedUrl: (token: string, filename: string, content_type: string, file_size?: number) =>
-    request<any>("/media/upload-url", {
-      method: "POST",
-      body: { filename, content_type, file_size },
-      token
-    }),
-};
-
 export const progressApi = {
   getProgress: (token: string) => request<ProgressResponse>("/progress", { token }),
   getAnalytics: (token: string) => request<Record<string, unknown>>("/analytics/user", { token }),
@@ -863,8 +826,6 @@ export const longitudinalApi = {
     request<LongitudinalPatternsResponse>(`/wellness/patterns?time_range=${timeRange}`, { token }),
 };
 
-<<<<<<< HEAD
-=======
 // --- Learning API (Phase 3 + 4) ---
 
 export type ContentType = "VIDEO" | "ARTICLE" | "POST" | "TUTORIAL";
@@ -1009,7 +970,7 @@ export interface LearningModuleItem {
   id: string;
   module_id: string;
   content_id: string;
-  display_order: int;
+  display_order: number;
   is_required: boolean;
   content: LearningContent;
 }
@@ -1245,4 +1206,3 @@ export const mediaApi = {
   getMediaUrl: (token: string, id: string) =>
     request<{ url: string }>(`/media/${id}/url`, { token }),
 };
->>>>>>> 84ba8267cf0208f36cbea1162846f9f43df00ea6
