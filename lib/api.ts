@@ -830,12 +830,15 @@ export const longitudinalApi = {
 
 export type ContentType = "VIDEO" | "ARTICLE" | "POST" | "TUTORIAL";
 export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL" | "INSTAGRAM";
-export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "NEEDS_REVIEW";
+export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "NEEDS_REVIEW" | "RESEARCHED" | "FACT_CHECKED" | "READY_FOR_REVIEW" | "ADMIN_APPROVED";
 export type Audience = "ALL" | "TEEN" | "ADULT";
 
 export interface ContentBlock {
-  type: "heading" | "paragraph" | "image" | "video" | "important_box" | "list" | "callout";
+  type: "heading" | "paragraph" | "image" | "video" | "important_box" | "list" | "callout" | "text" | "bullet_list" | "numbered_list" | "warning" | "tip" | "myth_fact" | "faq" | "comparison";
   text?: string;
+  heading?: string;
+  content?: string;
+  order?: number;
   url?: string;
   media_file_id?: string;
   caption?: string;
@@ -1059,6 +1062,9 @@ export interface LearningContentCreateInput {
   language?: string;
   is_featured?: boolean;
   status?: ContentStatus;
+  topic_id?: string;
+  subtopic_id?: string;
+  audience?: string;
   duration_minutes?: number;
 }
 
@@ -1185,6 +1191,32 @@ export const learningApi = {
       request<LearningContent>(`/admin/learning/${id}/archive`, { method: "POST", token }),
     delete: (token: string, id: string) =>
       request<void>(`/admin/learning/${id}`, { method: "DELETE", token }),
+      
+    // Taxonomy Admin
+    createTopic: (token: string, data: any) =>
+      request<Topic>(`/admin/learning/topics`, { method: "POST", body: data, token }),
+    updateTopic: (token: string, id: string, data: any) =>
+      request<Topic>(`/admin/learning/topics/${id}`, { method: "PUT", body: data, token }),
+    createSubtopic: (token: string, topicId: string, data: any) =>
+      request<any>(`/admin/learning/topics/${topicId}/subtopics`, { method: "POST", body: data, token }),
+    updateSubtopic: (token: string, id: string, data: any) =>
+      request<any>(`/admin/learning/subtopics/${id}`, { method: "PUT", body: data, token }),
+      
+    // Research Ingestion Admin (Phase 2)
+    ingestResearch: (token: string, url: string) =>
+      request<any>(`/admin/research/ingest`, { method: "POST", body: { url }, token }),
+    listResearch: (token: string, skip: number = 0, limit: number = 50) =>
+      request<any[]>(`/admin/research?skip=${skip}&limit=${limit}`, { token }),
+    getResearch: (token: string, id: string) =>
+      request<any>(`/admin/research/${id}`, { token }),
+      
+    // Content Generation & Localization (Phase 3)
+    generateFromResearch: (token: string, sourceId: string) =>
+      request<any>(`/admin/research/${sourceId}/generate`, { method: "POST", token }),
+    localizeContent: (token: string, contentId: string, targetLanguage: string) =>
+      request<any>(`/admin/learning/${contentId}/localize`, { method: "POST", body: { target_language: targetLanguage }, token }),
+    validateContent: (token: string, contentId: string) =>
+      request<any>(`/admin/learning/${contentId}/validate`, { method: "POST", token }),
   },
 };
 

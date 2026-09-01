@@ -113,6 +113,20 @@ export default function ContentDetailPage() {
     return () => observer.disconnect();
   }, [content, completed, token, markingComplete, handleMarkComplete]);
 
+  // Phase 4: Dynamic SEO Metadata (Client-side)
+  useEffect(() => {
+    if (content) {
+      document.title = `${content.title} | Sakhi AI Learn`;
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.setAttribute('name', 'description');
+        document.head.appendChild(metaDescription);
+      }
+      metaDescription.setAttribute('content', content.description || "Learn with Sakhi AI");
+    }
+  }, [content]);
+
 
   if (loading) {
     return (
@@ -140,7 +154,28 @@ export default function ContentDetailPage() {
         <Link href="/learn" className="inline-flex items-center gap-1 text-sm text-berry hover:underline">
           ← Back to Learn
         </Link>
-        <BookmarkButton contentId={content.id} showLabel={true} />
+        <div className="flex items-center gap-4">
+          {relatedItems.length > 0 && content.translation_group_id && (
+            <select 
+              className="text-sm bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 outline-none text-ink cursor-pointer"
+              value={content.id}
+              onChange={(e) => {
+                const selected = e.target.value;
+                if (selected !== content.id) {
+                  window.location.href = `/learn/${selected}`;
+                }
+              }}
+            >
+              <option value={content.id}>{content.language === 'en' ? 'English' : content.language === 'hi' ? 'हिंदी' : content.language === 'mr' ? 'मराठी' : content.language}</option>
+              {relatedItems.filter(r => r.translation_group_id === content.translation_group_id).map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.language === 'en' ? 'English' : t.language === 'hi' ? 'हिंदी' : t.language === 'mr' ? 'मराठी' : t.language}
+                </option>
+              ))}
+            </select>
+          )}
+          <BookmarkButton contentId={content.id} showLabel={true} />
+        </div>
       </div>
 
       <div className="mb-6">

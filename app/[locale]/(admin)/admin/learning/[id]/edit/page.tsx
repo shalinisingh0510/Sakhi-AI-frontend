@@ -10,8 +10,9 @@ import {
   type ContentBlock,
   type LearningContentCreateInput,
 } from "@/lib/api";
-import { Loader2, Plus, Trash2, ChevronUp, ChevronDown, ArrowLeft, Eye, Edit2 } from "lucide-react";
+import { Loader2, Plus, Trash2, ChevronUp, ChevronDown, ArrowLeft, Eye, Edit2, CheckCircle, Languages, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { AdminMediaUploader } from "@/components/admin/AdminMediaUploader";
 import { LearningArticleRenderer, calculateReadingTime } from "@/components/learning/LearningArticleRenderer";
 import { LearningVideoPlayer } from "@/components/learning/LearningVideoPlayer";
@@ -45,6 +46,14 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   important_box: "Important Box",
   list: "List",
   callout: "Callout",
+  text: "Text",
+  bullet_list: "Bullet List",
+  numbered_list: "Numbered List",
+  warning: "Warning",
+  tip: "Tip",
+  myth_fact: "Myth vs Fact",
+  faq: "FAQ",
+  comparison: "Comparison",
 };
 
 function BlockEditor({
@@ -82,13 +91,67 @@ function BlockEditor({
           </button>
         </div>
       </div>
-      {(block.type === "heading" || block.type === "paragraph" || block.type === "important_box") && (
-        <textarea
-          rows={block.type === "paragraph" ? 4 : 2}
-          value={block.text || ""}
-          onChange={(e) => onChange({ ...block, text: e.target.value })}
-          className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 resize-none"
-        />
+      {(block.type === "heading" || block.type === "paragraph" || block.type === "important_box" || block.type === "text" || block.type === "callout" || block.type === "warning" || block.type === "tip") && (
+        <div className="space-y-2">
+          {block.heading !== undefined && (
+            <input
+              type="text"
+              placeholder="Optional block heading..."
+              value={block.heading || ""}
+              onChange={(e) => onChange({ ...block, heading: e.target.value })}
+              className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink font-semibold focus:outline-none focus:ring-2 focus:ring-berry/30"
+            />
+          )}
+          <textarea
+            rows={block.type === "paragraph" || block.type === "text" ? 4 : 2}
+            value={block.content !== undefined ? block.content : (block.text || "")}
+            onChange={(e) => {
+              if (block.content !== undefined) onChange({ ...block, content: e.target.value });
+              else onChange({ ...block, text: e.target.value });
+            }}
+            placeholder="Content text..."
+            className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 resize-none"
+          />
+        </div>
+      )}
+      {(block.type === "faq" || block.type === "myth_fact") && (
+        <div className="space-y-2">
+          <input
+            type="text"
+            placeholder={block.type === "faq" ? "Question..." : "Myth..."}
+            value={block.heading || ""}
+            onChange={(e) => onChange({ ...block, heading: e.target.value })}
+            className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink font-semibold focus:outline-none focus:ring-2 focus:ring-berry/30"
+          />
+          <textarea
+            rows={3}
+            value={block.content || ""}
+            onChange={(e) => onChange({ ...block, content: e.target.value })}
+            placeholder={block.type === "faq" ? "Answer..." : "Fact..."}
+            className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 resize-none"
+          />
+        </div>
+      )}
+      {(block.type === "bullet_list" || block.type === "numbered_list") && (
+        <div className="space-y-2">
+          <input
+            type="text"
+            placeholder="List heading (optional)..."
+            value={block.heading || ""}
+            onChange={(e) => onChange({ ...block, heading: e.target.value })}
+            className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink font-semibold focus:outline-none focus:ring-2 focus:ring-berry/30"
+          />
+          <textarea
+            rows={4}
+            value={block.content !== undefined ? block.content : (block.text || "")}
+            onChange={(e) => {
+              if (block.content !== undefined) onChange({ ...block, content: e.target.value });
+              else onChange({ ...block, text: e.target.value });
+            }}
+            placeholder="List items (use markdown lists)..."
+            className="w-full rounded-lg border border-peach/60 px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-berry/30 resize-none font-mono text-xs"
+          />
+        </div>
       )}
       {(block.type === "image" || block.type === "video") && (
         <>
@@ -136,13 +199,23 @@ export default function EditContentPage() {
   const [mediaUrl, setMediaUrl] = useState("");
   const [mediaFileId, setMediaFileId] = useState("");
   const [thumbnailFileId, setThumbnailFileId] = useState("");
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [topicId, setTopicId] = useState("");
+  const [subtopicId, setSubtopicId] = useState("");
+  const [audience, setAudience] = useState("ALL");
+  const [topicsList, setTopicsList] = useState<{ id: string; name: string; subtopics?: { id: string; name: string }[] }[]>([]);
+  const [category, setCategory] = useState("Generated"); // fallback
   const [tagsInput, setTagsInput] = useState("");
   const [language, setLanguage] = useState("en");
   const [durationMinutes, setDurationMinutes] = useState(0);
   const [isFeatured, setIsFeatured] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+
+  const [validating, setValidating] = useState(false);
+  const [localizingHi, setLocalizingHi] = useState(false);
+  const [localizingMr, setLocalizingMr] = useState(false);
+  const [validationResult, setValidationResult] = useState<{ is_valid: boolean; issues: string[] } | null>(null);
+  const [contentStatus, setContentStatus] = useState<string>("DRAFT");
 
   useEffect(() => {
     if (!token || !id) return;
@@ -157,12 +230,24 @@ export default function EditContentPage() {
         setMediaUrl(res.media_url || "");
         setMediaFileId(res.media_file_id || "");
         setThumbnailFileId(res.thumbnail_file_id || "");
-        setCategory(res.category);
+        setCategory(res.category || "Generated");
+        setTopicId(res.topic_id || "");
+        setSubtopicId(res.subtopic_id || "");
+        setAudience(res.audience || "ALL");
         setTagsInput((res.tags || []).join(", "));
         setLanguage(res.language);
         setDurationMinutes(res.duration_minutes);
         setIsFeatured(res.is_featured);
         setBlocks((res.body as ContentBlock[]) || []);
+        setContentStatus(res.status || "DRAFT");
+
+        // Fetch taxonomy
+        try {
+          const taxonomyRes = await learningApi.getTopics(token);
+          setTopicsList(taxonomyRes.items || []);
+        } catch {
+          console.error("Failed to load taxonomy");
+        }
       } catch {
         setErrors(["Failed to load content."]);
       } finally {
@@ -203,14 +288,37 @@ export default function EditContentPage() {
       media_file_id: sourceType === "PRIVATE_VIDEO" ? mediaFileId : undefined,
       thumbnail_file_id: thumbnailFileId || undefined,
       body: blocks.length > 0 ? blocks : undefined,
-      category,
+      category: category,
+      topic_id: topicId || undefined,
+      subtopic_id: subtopicId || undefined,
+      audience: audience,
       tags,
       language,
       duration_minutes: durationMinutes,
       is_featured: isFeatured,
+      status: contentStatus as "DRAFT" | "RESEARCHED" | "FACT_CHECKED" | "READY_FOR_REVIEW" | "NEEDS_REVIEW" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "ADMIN_APPROVED" | "PUBLISHED" | "ARCHIVED", // Include current status
     };
+
     if (publish !== undefined) {
-      payload.status = publish ? "PUBLISHED" : "DRAFT";
+      if (publish) {
+        // Pre-publish validation (Phase 4)
+        const validationErrs: string[] = [];
+        if (!title) validationErrs.push("Title is required.");
+        if (!description) validationErrs.push("Description is required.");
+        if (blocks.length === 0 && (contentType === "ARTICLE" || contentType === "POST")) validationErrs.push("Content body cannot be empty.");
+        if (!topicId) validationErrs.push("Topic is required to publish.");
+        if (!language) validationErrs.push("Language is required.");
+        if (contentStatus === "NEEDS_REVIEW") validationErrs.push("Cannot publish content that needs review.");
+        if (validationResult && !validationResult.is_valid) validationErrs.push("Cannot publish content with failed validation.");
+        
+        if (validationErrs.length > 0) {
+          setErrors(validationErrs);
+          return;
+        }
+        payload.status = "PUBLISHED";
+      } else {
+        payload.status = "DRAFT";
+      }
     }
 
     setSaving(true);
@@ -227,6 +335,40 @@ export default function EditContentPage() {
       }
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleValidate() {
+    if (!token) return;
+    setValidating(true);
+    try {
+      const res = await learningApi.admin.validateContent(token, id);
+      setValidationResult({ is_valid: res.is_valid, issues: res.issues });
+      setContentStatus(res.status);
+      if (res.is_valid) {
+        toast.success("Fact validation passed!");
+      } else {
+        toast.warning("Validation failed: Found issues.");
+      }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Validation failed.");
+    } finally {
+      setValidating(false);
+    }
+  }
+
+  async function handleLocalize(lang: string, setLocalizing: (v: boolean) => void) {
+    if (!token) return;
+    setLocalizing(true);
+    try {
+      const res = await learningApi.admin.localizeContent(token, id, lang);
+      toast.success(`Localized to ${lang} successfully!`);
+      // Could push to the new ID here, but let's just show toast for now
+      router.push(`/admin/learning/${res.content_id}/edit`);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Localization failed.");
+    } finally {
+      setLocalizing(false);
     }
   }
 
@@ -260,6 +402,27 @@ export default function EditContentPage() {
       {errors.length > 0 && (
         <div className="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm">
           {errors.map((e, i) => <p key={i} className="text-red-600">{e}</p>)}
+        </div>
+      )}
+
+      {contentStatus === "NEEDS_REVIEW" && (
+        <div className="mb-5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm">
+          <p className="font-semibold text-amber-800">⚠️ This content failed validation or requires manual review.</p>
+        </div>
+      )}
+
+      {validationResult && (
+        <div className={`mb-5 rounded-xl border px-4 py-3 text-sm ${validationResult.is_valid ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+          <p className={`font-semibold ${validationResult.is_valid ? 'text-green-800' : 'text-red-800'}`}>
+            Validation Result: {validationResult.is_valid ? "Passed" : "Failed"}
+          </p>
+          {validationResult.issues.length > 0 && (
+            <ul className="mt-2 list-inside list-disc text-red-700">
+              {validationResult.issues.map((issue, idx) => (
+                <li key={idx}>{issue}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
@@ -436,18 +599,63 @@ export default function EditContentPage() {
         )}
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-          <h3 className="text-sm font-semibold text-ink">Metadata</h3>
+          <h3 className="text-sm font-semibold text-ink">Metadata & Classification</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink">Category</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              <label className="mb-1.5 block text-sm font-medium text-ink">Topic</label>
+              <select value={topicId} onChange={(e) => {
+                setTopicId(e.target.value);
+                setSubtopicId(""); // reset subtopic on topic change
+              }} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
+                <option value="">Select Topic</option>
+                {topicsList.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink">Subtopic</label>
+              <select value={subtopicId} onChange={(e) => setSubtopicId(e.target.value)} disabled={!topicId} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30 disabled:bg-slate-100 disabled:opacity-50">
+                <option value="">Select Subtopic</option>
+                {topicId && topicsList.find(t => t.id === topicId)?.subtopics?.map((st: { id: string; name: string }) => (
+                  <option key={st.id} value={st.id}>{st.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink">Target Audience</label>
+              <select value={audience} onChange={(e) => setAudience(e.target.value)} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
+                <option value="ALL">All Ages (13+)</option>
+                <option value="TEEN">Teens Only (13-17)</option>
+                <option value="ADULT">Adults Only (18+)</option>
               </select>
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-ink">Language</label>
               <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
                 {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink">Workflow Status</label>
+              <select value={contentStatus} onChange={(e) => setContentStatus(e.target.value)} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
+                <option value="DRAFT">Draft</option>
+                <option value="RESEARCHED">Researched</option>
+                <option value="FACT_CHECKED">Fact Checked</option>
+                <option value="READY_FOR_REVIEW">Ready for Review</option>
+                <option value="NEEDS_REVIEW">Needs Review</option>
+                <option value="UNDER_REVIEW">Under Review</option>
+                <option value="MEDICALLY_REVIEWED">Medically Reviewed</option>
+                <option value="ADMIN_APPROVED">Admin Approved</option>
+                <option value="PUBLISHED" disabled>Published (Use Button)</option>
+                <option value="ARCHIVED">Archived</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink">Category (Legacy)</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-peach/70 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-berry/30">
+                <option value="Generated">Generated</option>
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
           </div>
@@ -477,6 +685,38 @@ export default function EditContentPage() {
           <button type="button" onClick={() => handleSave()} disabled={saving || !title} className="flex items-center gap-2 rounded-2xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save Changes
           </button>
+        </div>
+
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6 shadow-sm mt-6">
+          <h3 className="mb-4 text-sm font-semibold text-indigo-900 flex items-center gap-2">
+            <Sparkles className="h-4 w-4" /> AI Actions (Phase 3)
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handleValidate}
+              disabled={validating}
+              className="inline-flex items-center gap-2 rounded-xl bg-white border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+            >
+              {validating ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+              Fact Validate
+            </button>
+            <button
+              onClick={() => handleLocalize('hi', setLocalizingHi)}
+              disabled={localizingHi}
+              className="inline-flex items-center gap-2 rounded-xl bg-white border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+            >
+              {localizingHi ? <Loader2 className="h-4 w-4 animate-spin" /> : <Languages className="h-4 w-4" />}
+              Localize to Hindi
+            </button>
+            <button
+              onClick={() => handleLocalize('mr', setLocalizingMr)}
+              disabled={localizingMr}
+              className="inline-flex items-center gap-2 rounded-xl bg-white border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+            >
+              {localizingMr ? <Loader2 className="h-4 w-4 animate-spin" /> : <Languages className="h-4 w-4" />}
+              Localize to Marathi
+            </button>
+          </div>
         </div>
       </div>
       )}
