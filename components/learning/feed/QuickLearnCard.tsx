@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { type LearningContent, learningApi, learnApi } from "@/lib/api";
+import { type LearningContent, learnApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { PlayCircle, Bookmark, FileText, Image as ImageIcon, CheckCircle } from "lucide-react";
 import { useState } from "react";

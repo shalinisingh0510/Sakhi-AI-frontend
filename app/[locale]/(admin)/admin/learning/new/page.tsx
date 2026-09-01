@@ -45,6 +45,14 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   important_box: "Important Box",
   list: "List",
   callout: "Callout",
+  text: "Text",
+  bullet_list: "Bullet List",
+  numbered_list: "Numbered List",
+  warning: "Warning",
+  tip: "Tip",
+  myth_fact: "Myth vs Fact",
+  faq: "FAQ",
+  comparison: "Comparison",
 };
 
 function BlockEditor({

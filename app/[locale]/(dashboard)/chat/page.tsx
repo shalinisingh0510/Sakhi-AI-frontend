@@ -42,7 +42,7 @@ export default function ChatPage() {
     }
   };
   
-  const { state: recordingState, startRecording, stopRecording, cancelRecording } = useAudioRecorder({
+  const { state: recordingState, startRecording, stopRecording } = useAudioRecorder({
     maxDurationSeconds: 60,
     onRecordingComplete: handleRecordingComplete,
     onError: (err) => alert(err),

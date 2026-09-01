@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { learningApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Loader2 } from "lucide-react";
@@ -43,7 +44,8 @@ function LearnPageContent() {
   
   const searchQuery = searchParams?.get("search") || "";
   const typeFilter = searchParams?.get("type") || "";
-  const languageFilter = searchParams?.get("language") || "";
+  const locale = useLocale();
+  const languageFilter = searchParams?.get("language") || locale;
 
   const fetchContent = useCallback(async (pageNum: number, isLoadMore = false) => {
     if (!token) return;
