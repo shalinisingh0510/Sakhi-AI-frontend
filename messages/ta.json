@@ -556,7 +556,9 @@
       "14-18": "14–18 years",
       "18+": "18+ years",
       "caregiver": "Caregiver / Mother"
-    }
+    },
+    "ageGroupHint": "உங்களை சிறப்பாக விவரிக்கும் குழுவை தேர்ந்தெடுக்கவும்.",
+    "languageHint": "சகியில் உங்கள் விருப்பமான மொழியை தேர்ந்தெடுக்கவும்."
   },
   "Notifications": {
     "badge": "Notifications center",

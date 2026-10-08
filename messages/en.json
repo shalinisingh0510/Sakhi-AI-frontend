@@ -613,7 +613,9 @@
     "emailHint": "Email cannot be changed.",
     "saveChanges": "Save changes",
     "ageGroup": "Age group",
+    "ageGroupHint": "Choose the group that best describes you.",
     "language": "Language",
+    "languageHint": "Choose your preferred language for Sakhi.",
     "ageGroups": {
       "10-13": "10–13 years",
       "14-18": "14–18 years",

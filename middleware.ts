@@ -52,6 +52,16 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 
+  // Redirect authenticated but not-yet-onboarded users to onboarding
+  // from ANY protected route (not just /dashboard)
+  if (isAuthenticated && !onboardingComplete && isProtected) {
+    const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
+    // Avoid redirect loop: don't redirect if already heading to onboarding
+    if (!pathnameWithoutLocale.startsWith('/onboarding')) {
+      return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url));
+    }
+  }
+
   // Redirect authenticated users away from auth pages
   if (isAuthPage && isAuthenticated) {
     const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
@@ -59,12 +69,6 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url));
     }
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
-  }
-
-  // Redirect authenticated but non-onboarded users to onboarding
-  if (isAuthenticated && !onboardingComplete && pathnameWithoutLocale === "/dashboard") {
-    const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url));
   }
 
   return response;
