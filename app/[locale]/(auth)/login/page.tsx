@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { authApi } from "@/lib/api";
+import { authApi, healthApi } from "@/lib/api";
 import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
 
@@ -79,6 +79,16 @@ export default function LoginPage() {
 
       const res = await authApi.login(form.email, form.password);
       const normalized = normalizeUser(res.user, form.email);
+      
+      // Check if user has completed onboarding by checking for their health profile
+      try {
+        await healthApi.getProfile(res.access_token);
+        normalized.onboardingComplete = true;
+      } catch (err) {
+        // Profile doesn't exist, they need to onboard
+        normalized.onboardingComplete = false;
+      }
+      
       login(normalized, res.access_token);
       router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
     } catch {
