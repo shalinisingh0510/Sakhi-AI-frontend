@@ -20,11 +20,11 @@ export function BookmarkButton({ contentId, initialSaved = false, className = ""
   const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigating if wrapped in a Link
     if (!token || loading) return;
-    
-    // Optimistic UI
+
+    // Optimistic UI changes
     setIsSaved(!isSaved);
     setLoading(true);
-    
+
     try {
       const res = await learnApi.toggleBookmark(contentId, token);
       setIsSaved(res.saved);
@@ -42,9 +42,8 @@ export function BookmarkButton({ contentId, initialSaved = false, className = ""
       onClick={handleToggle}
       disabled={loading}
       aria-label={isSaved ? "Remove bookmark" : "Bookmark"}
-      className={`flex items-center gap-2 transition-colors ${
-        isSaved ? "text-berry" : "text-slate-400 hover:text-berry"
-      } ${className}`}
+      className={`flex items-center gap-2 transition-colors ${isSaved ? "text-berry" : "text-slate-400 hover:text-berry"
+        } ${className}`}
     >
       <Bookmark
         size={20}
