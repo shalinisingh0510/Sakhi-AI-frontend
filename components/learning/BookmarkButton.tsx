@@ -10,9 +10,16 @@ interface BookmarkButtonProps {
   initialSaved?: boolean;
   className?: string;
   showLabel?: boolean;
+  size?: number;
 }
 
-export function BookmarkButton({ contentId, initialSaved = false, className = "", showLabel = false }: BookmarkButtonProps) {
+export function BookmarkButton({ 
+  contentId, 
+  initialSaved = false, 
+  className = "", 
+  showLabel = false,
+  size = 18 
+}: BookmarkButtonProps) {
   const { token } = useAuthStore();
   const [isSaved, setIsSaved] = useState(initialSaved);
   const [loading, setLoading] = useState(false);
@@ -46,8 +53,8 @@ export function BookmarkButton({ contentId, initialSaved = false, className = ""
         } ${className}`}
     >
       <Bookmark
-        size={20}
-        className={isSaved ? "fill-berry" : "fill-transparent"}
+        size={size}
+        className={isSaved ? "fill-berry text-berry" : "fill-transparent"}
       />
       {showLabel && (
         <span className="text-sm font-medium">

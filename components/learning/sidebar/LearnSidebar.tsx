@@ -70,13 +70,13 @@ export function LearnSidebar({ className = "" }: LearnSidebarProps) {
             key={href}
             href={href}
             className={[
-              "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+              "flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm font-medium transition-all",
               active
-                ? "bg-berry/10 text-berry"
-                : "text-ink/70 hover:bg-slate-100 hover:text-ink",
+                ? "bg-[#FBF1F6] text-[#7B3E73] font-semibold border border-[#F5D8E8]/70 shadow-2xs"
+                : "text-slate-600 hover:bg-slate-100/80 hover:text-ink",
             ].join(" ")}
           >
-            <Icon size={16} />
+            <Icon size={16} className={active ? "text-berry" : "text-slate-400"} />
             {label}
           </Link>
         );
@@ -110,10 +110,10 @@ export function LearnSidebar({ className = "" }: LearnSidebarProps) {
                     <Link
                       href={`/learn/topics/${topic.slug}`}
                       className={[
-                        "flex flex-1 items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+                        "flex flex-1 items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all",
                         isActive
-                          ? "bg-berry/10 text-berry"
-                          : "text-ink/70 hover:bg-slate-100 hover:text-ink",
+                          ? "bg-[#FBF1F6] text-[#7B3E73] font-semibold border border-[#F5D8E8]/70 shadow-2xs"
+                          : "text-slate-600 hover:bg-slate-100/80 hover:text-ink",
                       ].join(" ")}
                     >
                       <span className="text-base" aria-hidden="true">
@@ -126,7 +126,7 @@ export function LearnSidebar({ className = "" }: LearnSidebarProps) {
                         onClick={() => toggleTopic(topic.slug)}
                         aria-expanded={isExpanded}
                         aria-label={`${isExpanded ? "Collapse" : "Expand"} ${topic.name} subtopics`}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-ink/40 hover:bg-slate-100 hover:text-ink"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100/80 hover:text-ink"
                       >
                         {isExpanded ? (
                           <ChevronDown size={14} />
@@ -149,10 +149,10 @@ export function LearnSidebar({ className = "" }: LearnSidebarProps) {
                             key={sub.id}
                             href={`/learn/topics/${topic.slug}?subtopic=${sub.slug}`}
                             className={[
-                              "block rounded-lg px-3 py-1.5 text-sm transition-colors",
+                              "block rounded-lg px-3 py-1.5 text-xs transition-all",
                               subActive
-                                ? "bg-berry/10 font-semibold text-berry"
-                                : "text-ink/60 hover:bg-slate-100 hover:text-ink",
+                                ? "bg-[#FBF1F6] font-semibold text-berry"
+                                : "text-slate-500 hover:bg-slate-100/80 hover:text-ink",
                             ].join(" ")}
                           >
                             {sub.name}

@@ -1115,10 +1115,13 @@ export const learningApi = {
       language?: string;
       is_featured?: boolean;
       is_short_form?: boolean;
+      limit?: number;
+      page_size?: number;
     }
   ) => {
     const qs = new URLSearchParams();
     if (params?.page) qs.set("page", String(params.page));
+    if (params?.limit || params?.page_size) qs.set("limit", String(params.limit || params.page_size));
     if (params?.category) qs.set("category", params.category);
     if (params?.type) qs.set("content_type", params.type);
     if (params?.search) qs.set("search", params.search);
