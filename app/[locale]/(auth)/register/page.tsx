@@ -1,27 +1,52 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Card } from "@/components/ui/Card";
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  Heart,
+  BookOpen,
+  CalendarHeart
+} from "lucide-react";
+
 import { authApi } from "@/lib/api";
 import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
+import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { login, setLoading, isLoading } = useAuthStore();
+  const { login, setLoading, isLoading, isAuthenticated } = useAuthStore();
   const t = useTranslations("Auth.register");
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    agreeTerms: true,
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [errors, setErrors] = useState<{
     name?: string;
@@ -34,7 +59,7 @@ export default function RegisterPage() {
   function validate() {
     const e: typeof errors = {};
     if (!form.name.trim()) e.name = t("errors.nameRequired");
-    if (!form.email) e.email = t("errors.emailRequired");
+    if (!form.email.trim()) e.email = t("errors.emailRequired");
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = t("errors.emailInvalid");
     if (!form.password) e.password = t("errors.passwordRequired");
     else if (form.password.length < 8) e.password = t("errors.passwordShort");
@@ -46,18 +71,22 @@ export default function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const validation = validate();
-    if (Object.keys(validation).length) return setErrors(validation);
+    if (Object.keys(validation).length) {
+      setErrors(validation);
+      return;
+    }
+    
     setErrors({});
     setLoading(true);
 
     try {
       if (isDemoMode()) {
-        await demoDelay(1200);
+        await demoDelay(1000);
         login(
           {
             id: "demo-1",
-            name: form.name,
-            email: form.email,
+            name: form.name.trim(),
+            email: form.email.trim(),
             ageGroup: "18+",
             language: "en",
             role: "user",
@@ -69,134 +98,342 @@ export default function RegisterPage() {
         return;
       }
 
-      const res = await authApi.register(form.name, form.email, form.password);
-      const normalized = normalizeUser(res.user, form.email);
+      const res = await authApi.register(form.name.trim(), form.email.trim(), form.password);
+      const normalized = normalizeUser(res.user, form.email.trim());
       login(normalized, res.access_token);
       router.push("/onboarding");
-    } catch {
-      setErrors({ general: t("errors.general") });
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : t("errors.general");
+      setErrors({ general: errorMsg });
       setLoading(false);
     }
   }
 
   const field = (key: keyof typeof form) => ({
-    value: form[key],
+    value: form[key] as string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value })),
   });
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-12">
+    <main className="relative min-h-screen overflow-hidden bg-[#FFFDF9] px-4 py-6 sm:px-6 lg:px-8">
+      {/* Ambient background glow orbs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-blush/60 blur-3xl" />
         <div className="absolute top-1/2 -right-24 h-80 w-80 rounded-full bg-lavender/50 blur-3xl" />
         <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-mint/40 blur-3xl" />
       </div>
 
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry shadow-soft">
-            <span className="text-2xl">🌸</span>
-          </div>
-          <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
-          <p className="mt-2 text-sm text-ink/60">
-            {t("description")}
-          </p>
+      <div className="mx-auto max-w-7xl">
+        {/* Top Header Logo */}
+        <div className="flex items-center justify-between pb-6">
+          <Link href="/" className="inline-flex items-center gap-2.5 group">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rose/20 via-blush to-berry/10 text-xl shadow-xs group-hover:scale-105 transition-transform" aria-hidden="true">
+              🌸
+            </span>
+            <div className="flex flex-col">
+              <span className="font-display text-lg font-bold tracking-tight text-berry">
+                Sakhi AI
+              </span>
+              <span className="text-[10px] font-medium tracking-wide text-slate-500">
+                Your Health. Your Voice. Your Sakhi.
+              </span>
+            </div>
+          </Link>
+
+          <Link
+            href="/"
+            className="text-xs font-semibold text-slate-500 hover:text-berry transition-colors"
+          >
+            ← Back to Home
+          </Link>
         </div>
 
-        <Card>
-          {errors.general && (
-            <div className="mb-4 rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600" role="alert">
-              {errors.general}
+        {/* Main Content Grid */}
+        <div className="mt-4 grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* Left Column: Value Proposition & Illustration */}
+          <section className="hidden lg:col-span-7 lg:block space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-peach/80 bg-white/80 px-4 py-1.5 text-xs font-semibold text-berry shadow-2xs backdrop-blur-sm">
+              <Sparkles className="h-3.5 w-3.5 text-rose" />
+              <span>JOIN 120,000+ GIRLS &amp; WOMEN ACROSS INDIA</span>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-            <Input
-              label={t("nameLabel")}
-              type="text"
-              placeholder={t("namePlaceholder")}
-              error={errors.name}
-              autoComplete="name"
-              leftIcon={<PersonIcon />}
-              {...field("name")}
-            />
+            <div className="overflow-hidden rounded-3xl border border-peach/80 bg-white/70 p-8 shadow-soft backdrop-blur-sm">
+              <h1 className="font-display text-4xl xl:text-5xl font-extrabold tracking-tight text-ink leading-[1.08]">
+                Your personal safe sanctuary for{" "}
+                <span className="text-berry">health &amp; clarity.</span>
+              </h1>
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-600 max-w-xl">
+                Create a free, private account to access symptom forecasting, cycle tracking, bookmarks, and confidential medical answers.
+              </p>
 
-            <Input
-              label={t("emailLabel")}
-              type="email"
-              placeholder={t("emailPlaceholder")}
-              error={errors.email}
-              autoComplete="email"
-              leftIcon={<EmailIcon />}
-              {...field("email")}
-            />
+              {/* 4 Feature Highlights Grid */}
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-peach/60 bg-white/80 p-4 shadow-2xs">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose/15 text-rose mb-2.5">
+                    <CalendarHeart className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xs font-bold text-slate-800">Smart Cycle Calendar</h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    Log periods, predict ovulation &amp; receive PMS care tips.
+                  </p>
+                </div>
 
-            <Input
-              label={t("passwordLabel")}
-              type="password"
-              placeholder={t("passwordPlaceholder")}
-              error={errors.password}
-              autoComplete="new-password"
-              hint={t("passwordHint")}
-              leftIcon={<LockIcon />}
-              {...field("password")}
-            />
+                <div className="rounded-2xl border border-peach/60 bg-white/80 p-4 shadow-2xs">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-100 text-purple-700 mb-2.5">
+                    <BookOpen className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xs font-bold text-slate-800">Save Guides &amp; Quizzes</h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    Bookmark bite-sized guides and track your learning badges.
+                  </p>
+                </div>
 
-            <Input
-              label={t("confirmPasswordLabel")}
-              type="password"
-              placeholder={t("confirmPasswordPlaceholder")}
-              error={errors.confirmPassword}
-              autoComplete="new-password"
-              leftIcon={<LockIcon />}
-              {...field("confirmPassword")}
-            />
+                <div className="rounded-2xl border border-peach/60 bg-white/80 p-4 shadow-2xs">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 mb-2.5">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xs font-bold text-slate-800">End-to-End Privacy</h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    Zero ads, zero data selling, and 100% anonymized logs.
+                  </p>
+                </div>
 
-            <Button type="submit" isLoading={isLoading} fullWidth size="lg" className="mt-2">
-              {t("createAccount")}
-            </Button>
-          </form>
+                <div className="rounded-2xl border border-peach/60 bg-white/80 p-4 shadow-2xs">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-800 mb-2.5">
+                    <Heart className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xs font-bold text-slate-800">Always Free for Girls</h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    Non-profit backed education accessible in 8+ dialects.
+                  </p>
+                </div>
+              </div>
 
-          <p className="mt-6 text-center text-sm text-ink/60">
-            {t("alreadyHaveAccount")}{" "}
-            <Link href="/login" className="font-semibold text-berry hover:underline">
-              {t("signIn")}
-            </Link>
-          </p>
-        </Card>
+              {/* Verified Doctors Banner */}
+              <div className="mt-6 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-50/60 p-3.5 text-xs text-emerald-900">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <span>
+                  All content is vetted by certified pediatricians and gynecologists following WHO and Indian health standards.
+                </span>
+              </div>
+            </div>
+          </section>
 
-        <p className="mt-6 text-center text-xs text-ink/40">
-          {t("privacyNotice")}
-        </p>
+          {/* Right Column: Register Form Card */}
+          <div className="w-full lg:col-span-5">
+            <div className="overflow-hidden rounded-3xl border border-peach/80 bg-white/95 p-6 sm:p-8 shadow-soft backdrop-blur-md">
+              {/* Tab Switcher */}
+              <div className="flex rounded-2xl bg-slate-100 p-1 border border-slate-200/60 mb-6">
+                <Link
+                  href="/login"
+                  className="w-1/2 py-2 text-center text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <div className="w-1/2 rounded-xl bg-white py-2 text-center text-xs font-bold text-berry shadow-2xs">
+                  Create Account
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+                  Join Sakhi AI today
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Begin your private, compassionate healthcare journey in seconds.
+                </p>
+              </div>
+
+              {/* 1. Google One-Click Registration */}
+              <GoogleAuthButton
+                mode="signup"
+                onError={(msg) => setErrors({ general: msg })}
+              />
+
+              {/* 2. Divider */}
+              <div className="relative my-6 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-slate-200/80" />
+                </div>
+                <span className="relative bg-white px-3 text-xs font-medium text-slate-400">
+                  or register with email
+                </span>
+              </div>
+
+              {/* Error Alert */}
+              {errors.general && (
+                <div className="mb-5 flex items-start gap-2.5 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose" role="alert">
+                  <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                  <span>{errors.general}</span>
+                </div>
+              )}
+
+              {/* 3. Form */}
+              <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+                {/* Full Name */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    {t("nameLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder={t("namePlaceholder")}
+                      autoComplete="name"
+                      {...field("name")}
+                      className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.name 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <User className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  </div>
+                  {errors.name && (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.name}</p>
+                  )}
+                </div>
+
+                {/* Email Address */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    {t("emailLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      placeholder={t("emailPlaceholder")}
+                      autoComplete="email"
+                      {...field("email")}
+                      className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.email 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <Mail className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Password with Show/Hide */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    {t("passwordLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder={t("passwordPlaceholder")}
+                      autoComplete="new-password"
+                      {...field("password")}
+                      className={`w-full rounded-2xl border py-2.5 pl-10 pr-11 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.password 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {errors.password ? (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.password}</p>
+                  ) : (
+                    <p className="mt-1 text-[10px] text-slate-400">{t("passwordHint")}</p>
+                  )}
+                </div>
+
+                {/* Confirm Password with Show/Hide */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    {t("confirmPasswordLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder={t("confirmPasswordPlaceholder")}
+                      autoComplete="new-password"
+                      {...field("confirmPassword")}
+                      className={`w-full rounded-2xl border py-2.5 pl-10 pr-11 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.confirmPassword 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.confirmPassword}</p>
+                  )}
+                </div>
+
+                {/* Agreement notice */}
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="agreeTerms"
+                    checked={form.agreeTerms}
+                    onChange={(e) => setForm((c) => ({ ...c, agreeTerms: e.target.checked }))}
+                    className="h-4 w-4 rounded-md border-slate-300 text-berry focus:ring-berry/20 cursor-pointer accent-berry"
+                  />
+                  <label htmlFor="agreeTerms" className="text-[11px] text-slate-600 cursor-pointer select-none">
+                    I agree to keep my health questions respectful and understand Sakhi is an educational companion.
+                  </label>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-berry py-3.5 px-4 text-xs sm:text-sm font-semibold text-white shadow-soft transition-all hover:bg-berry/90 active:scale-[0.99] disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <span>Creating your account...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>Create Free Account</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Bottom Switcher */}
+              <p className="mt-6 text-center text-xs text-slate-500">
+                {t("alreadyHaveAccount")}{" "}
+                <Link href="/login" className="font-bold text-berry hover:underline">
+                  {t("signIn")}
+                </Link>
+              </p>
+
+              <p className="mt-4 text-center text-[11px] text-slate-400">
+                {t("privacyNotice")}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
-  );
-}
-
-function PersonIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="5" />
-      <path d="M20 21a8 8 0 1 0-16 0" />
-    </svg>
-  );
-}
-
-function EmailIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="16" x="2" y="4" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
   );
 }

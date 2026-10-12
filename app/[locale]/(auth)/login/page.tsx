@@ -2,36 +2,53 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type FormEvent, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { type FormEvent, useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { 
+  Mail, 
+  Lock, 
+  Eye, 
+  EyeOff, 
+  ArrowRight, 
+  ShieldCheck, 
+  CheckCircle2, 
+  AlertCircle,
+  Heart
+} from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
 import { authApi, healthApi } from "@/lib/api";
 import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
+import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 
-export default function LoginPage() {
+function LoginInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams?.get("redirect");
+  
   const { login, setLoading, isLoading, isAuthenticated, user } = useAuthStore();
   const t = useTranslations("Auth.login");
 
-  // Client-side redirect if already authenticated
+  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push(user?.onboardingComplete ? "/dashboard" : "/onboarding");
+      if (redirectPath) {
+        router.push(redirectPath);
+      } else {
+        router.push(user?.onboardingComplete ? "/dashboard" : "/onboarding");
+      }
     }
-  }, [isAuthenticated, router, user]);
+  }, [isAuthenticated, router, user, redirectPath]);
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "", rememberMe: true });
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
   function validate() {
     const newErrors: typeof errors = {};
 
-    if (!form.email) {
+    if (!form.email.trim()) {
       newErrors.email = t("errors.emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = t("errors.emailInvalid");
@@ -60,7 +77,7 @@ export default function LoginPage() {
 
     try {
       if (isDemoMode()) {
-        await demoDelay(1200);
+        await demoDelay(1000);
         login(
           {
             id: "demo-1",
@@ -69,167 +86,312 @@ export default function LoginPage() {
             ageGroup: "18+",
             language: "en",
             role: "user",
-            onboardingComplete: false,
+            onboardingComplete: true,
           },
           "demo-token-123"
         );
-        router.push("/onboarding");
+        router.push(redirectPath || "/dashboard");
         return;
       }
 
       const res = await authApi.login(form.email, form.password);
       const normalized = normalizeUser(res.user, form.email);
       
-      // Check if user has completed onboarding by checking for their health profile
+      // Check onboarding state via health profile check
       try {
         await healthApi.getProfile(res.access_token);
         normalized.onboardingComplete = true;
-      } catch (err) {
-        // Profile doesn't exist, they need to onboard
+      } catch {
         normalized.onboardingComplete = false;
       }
       
       login(normalized, res.access_token);
-      router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
-    } catch {
-      setErrors({ general: t("errors.general") });
+      
+      if (redirectPath) {
+        router.push(redirectPath);
+      } else {
+        router.push(normalized.onboardingComplete ? "/dashboard" : "/onboarding");
+      }
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : t("errors.general");
+      setErrors({ general: errorMsg });
       setLoading(false);
     }
   }
 
-  const benefits = t.raw("benefits");
-
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+    <main className="relative min-h-screen overflow-hidden bg-[#FFFDF9] px-4 py-6 sm:px-6 lg:px-8">
+      {/* Ambient background glow orbs */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -left-20 top-8 h-80 w-80 rounded-full bg-blush/70 blur-3xl" />
         <div className="absolute right-0 top-20 h-72 w-72 rounded-full bg-lavender/50 blur-3xl" />
         <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-mint/40 blur-3xl" />
       </div>
 
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl flex-col justify-center gap-8 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] lg:items-center lg:gap-12">
-        <section className="space-y-6 text-center lg:text-left">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-berry shadow-soft lg:mx-0">
-            <span className="h-2 w-2 rounded-full bg-rose" />
-            {t("safeSpace")}
-          </div>
+      <div className="mx-auto max-w-7xl">
+        {/* Top Header Logo */}
+        <div className="flex items-center justify-between pb-6">
+          <Link href="/" className="inline-flex items-center gap-2.5 group">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rose/20 via-blush to-berry/10 text-xl shadow-xs group-hover:scale-105 transition-transform" aria-hidden="true">
+              🌸
+            </span>
+            <div className="flex flex-col">
+              <span className="font-display text-lg font-bold tracking-tight text-berry">
+                Sakhi AI
+              </span>
+              <span className="text-[10px] font-medium tracking-wide text-slate-500">
+                Your Health. Your Voice. Your Sakhi.
+              </span>
+            </div>
+          </Link>
 
-          <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 p-6 shadow-soft backdrop-blur-sm sm:p-8 lg:p-10">
-            <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-8">
-              <div className="flex-1">
-                <p className="font-display text-sm font-bold uppercase tracking-[0.28em] text-berry/80 sm:text-base">
-                  {t("gentleGuidance")}
-                </p>
-                <h1 className="mt-3 font-display text-5xl font-black leading-[0.95] tracking-tight text-ink sm:text-6xl lg:text-7xl">
-                  {t("welcome")} <span className="bg-gradient-to-r from-rose via-berry to-moss bg-clip-text text-transparent">{t("sakhiAi")}</span>
-                </h1>
-                <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/65 sm:text-base lg:mx-0 lg:text-lg">
-                  {t("description")}
-                </p>
+          <Link
+            href="/"
+            className="text-xs font-semibold text-slate-500 hover:text-berry transition-colors"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="mt-4 grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* Left Column: Visual Showcase */}
+          <section className="hidden lg:col-span-7 lg:block space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-peach/80 bg-white/80 px-4 py-1.5 text-xs font-semibold text-berry shadow-2xs backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-rose animate-pulse" />
+              <span>100% PRIVATE &amp; SAFE LEARNING SPACE</span>
+            </div>
+
+            <div className="overflow-hidden rounded-3xl border border-peach/80 bg-white/70 p-8 shadow-soft backdrop-blur-sm">
+              <h1 className="font-display text-4xl xl:text-5xl font-extrabold tracking-tight text-ink leading-[1.08]">
+                Understand your body with{" "}
+                <span className="text-berry">dignity &amp; warmth.</span>
+              </h1>
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-600 max-w-xl">
+                Accurate, stigma-free guidance for puberty, cycles, emotional wellness, and feminine health. Log in to track your cycles and continue your learning modules.
+              </p>
+
+              {/* Illustration Card */}
+              <div className="mt-8 relative aspect-[16/9] w-full rounded-2xl overflow-hidden bg-gradient-to-br from-blush/40 via-white to-lavender/30 border border-peach/60 shadow-inner flex items-center justify-center p-4">
+                <Image
+                  src="/login-girl-illustration.png"
+                  alt="Sakhi AI companion illustration"
+                  width={600}
+                  height={400}
+                  priority
+                  className="max-h-full w-auto object-contain drop-shadow-md"
+                />
               </div>
 
-              <div className="flex w-full justify-center lg:w-auto lg:flex-shrink-0">
-                <div className="relative aspect-square w-full max-w-[330px] rounded-[2.25rem] border border-white/90 bg-white/75 p-4 shadow-[0_24px_60px_rgba(123,62,115,0.16)] backdrop-blur-sm">
-                  <div className="absolute inset-3 rounded-[2rem] bg-gradient-to-br from-blush/40 via-white to-lavender/30" />
-                  <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[1.75rem] bg-white/55">
-                    <div className="absolute inset-x-8 top-8 h-16 rounded-full bg-rose/15 blur-2xl" />
-                    <div className="absolute inset-x-10 bottom-8 h-12 rounded-full bg-mint/20 blur-2xl" />
-                    <Image
-                      src="/login-girl-illustration.png"
-                      alt="Cute girl illustration"
-                      width={820}
-                      height={820}
-                      priority
-                      className="relative z-10 h-auto w-full scale-[1.03] object-contain"
-                    />
+              {/* Trust Badges */}
+              <div className="mt-6 grid grid-cols-3 gap-3 border-t border-peach/60 pt-6">
+                <div className="flex items-start gap-2.5">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">100% Anonymous</p>
+                    <p className="text-[11px] text-slate-500">Zero data sharing</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-rose mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Doctor-Vetted</p>
+                    <p className="text-[11px] text-slate-500">Gynecologist approved</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Heart className="h-4 w-4 shrink-0 text-berry mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">8+ Languages</p>
+                    <p className="text-[11px] text-slate-500">Multilingual voice</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            {benefits.map((item: string) => (
-              <div key={item} className="rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-sm font-medium text-ink/65 shadow-soft backdrop-blur-sm">
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="mx-auto w-full max-w-md lg:max-w-none">
-          <Card className="animate-fade-in border-white/70 bg-white/90 shadow-[0_20px_60px_rgba(123,62,115,0.12)] backdrop-blur-sm">
-            {errors.general && (
-              <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
-                {errors.general}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-              <Input
-                label={t("emailLabel")}
-                type="email"
-                placeholder={t("emailPlaceholder")}
-                value={form.email}
-                onChange={(e) => setForm((current) => ({ ...current, email: e.target.value }))}
-                error={errors.email}
-                autoComplete="email"
-                leftIcon={<EmailIcon />}
-              />
-
-              <Input
-                label={t("passwordLabel")}
-                type="password"
-                placeholder={t("passwordPlaceholder")}
-                value={form.password}
-                onChange={(e) => setForm((current) => ({ ...current, password: e.target.value }))}
-                error={errors.password}
-                autoComplete="current-password"
-                leftIcon={<LockIcon />}
-              />
-
-              <div className="flex justify-end">
-                <Link href="/forgot-password" className="text-xs text-berry hover:underline">
-                  {t("forgotPassword")}
+          {/* Right Column: Auth Card */}
+          <div className="w-full lg:col-span-5">
+            <div className="overflow-hidden rounded-3xl border border-peach/80 bg-white/95 p-6 sm:p-8 shadow-soft backdrop-blur-md">
+              {/* Tab Switcher */}
+              <div className="flex rounded-2xl bg-slate-100 p-1 border border-slate-200/60 mb-6">
+                <div className="w-1/2 rounded-xl bg-white py-2 text-center text-xs font-bold text-berry shadow-2xs">
+                  Sign In
+                </div>
+                <Link
+                  href="/register"
+                  className="w-1/2 py-2 text-center text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+                >
+                  Create Account
                 </Link>
               </div>
 
-              <Button type="submit" isLoading={isLoading} fullWidth size="lg" className="mt-2">
-                {t("signIn")}
-              </Button>
-            </form>
+              <div className="mb-6">
+                <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+                  Welcome back to Sakhi
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Please enter your credentials to access your health dashboard.
+                </p>
+              </div>
 
-            <p className="mt-6 text-center text-sm text-ink/60">
-              {t("newToSakhi")}{" "}
-              <Link href="/register" className="font-semibold text-berry hover:underline">
-                {t("createAccount")}
-              </Link>
-            </p>
-          </Card>
+              {/* 1. Google One-Click Login */}
+              <GoogleAuthButton
+                mode="signin"
+                onError={(msg) => setErrors({ general: msg })}
+              />
 
-          <p className="mt-6 text-center text-xs text-ink/40">
-            {t("privacyNotice")}
-          </p>
+              {/* 2. Elegant Divider */}
+              <div className="relative my-6 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-slate-200/80" />
+                </div>
+                <span className="relative bg-white px-3 text-xs font-medium text-slate-400">
+                  or continue with email
+                </span>
+              </div>
+
+              {/* Error banner */}
+              {errors.general && (
+                <div className="mb-5 flex items-start gap-2.5 rounded-2xl border border-rose/30 bg-rose/10 p-3.5 text-xs text-rose" role="alert">
+                  <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                  <span>{errors.general}</span>
+                </div>
+              )}
+
+              {/* 3. Form */}
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {/* Email Input */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    {t("emailLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      placeholder={t("emailPlaceholder")}
+                      value={form.email}
+                      onChange={(e) => setForm((c) => ({ ...c, email: e.target.value }))}
+                      autoComplete="email"
+                      className={`w-full rounded-2xl border py-3 pl-10 pr-4 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.email 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <Mail className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Password Input with Show/Hide toggle */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700">
+                      {t("passwordLabel")}
+                    </label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-[11px] font-semibold text-berry hover:underline"
+                    >
+                      {t("forgotPassword")}
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder={t("passwordPlaceholder")}
+                      value={form.password}
+                      onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
+                      autoComplete="current-password"
+                      className={`w-full rounded-2xl border py-3 pl-10 pr-11 text-xs font-medium text-ink outline-none transition-all placeholder:text-slate-400 ${
+                        errors.password 
+                          ? "border-rose bg-rose/5 focus:border-rose focus:ring-1 focus:ring-rose/20" 
+                          : "border-slate-200 bg-white hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
+                      }`}
+                    />
+                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-[11px] font-semibold text-rose">{errors.password}</p>
+                  )}
+                </div>
+
+                {/* Remember Me */}
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    checked={form.rememberMe}
+                    onChange={(e) => setForm((c) => ({ ...c, rememberMe: e.target.checked }))}
+                    className="h-4 w-4 rounded-md border-slate-300 text-berry focus:ring-berry/20 cursor-pointer accent-berry"
+                  />
+                  <label htmlFor="rememberMe" className="text-xs text-slate-600 cursor-pointer select-none">
+                    Remember me on this device
+                  </label>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-berry py-3.5 px-4 text-xs sm:text-sm font-semibold text-white shadow-soft transition-all hover:bg-berry/90 active:scale-[0.99] disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <span>Signing in...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>Sign In</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Bottom Switcher */}
+              <p className="mt-6 text-center text-xs text-slate-500">
+                {t("newToSakhi")}{" "}
+                <Link href="/register" className="font-bold text-berry hover:underline">
+                  {t("createAccount")}
+                </Link>
+              </p>
+
+              <p className="mt-4 text-center text-[11px] text-slate-400">
+                {t("privacyNotice")}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>
   );
 }
 
-function EmailIcon() {
+export default function LoginPage() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="16" x="2" y="4" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#FFFDF9]">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-berry/30 border-t-berry" />
+        </div>
+      }
+    >
+      <LoginInner />
+    </Suspense>
   );
 }

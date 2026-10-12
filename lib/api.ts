@@ -93,6 +93,12 @@ export const authApi = {
       body: { name, email, password },
     }),
 
+  loginWithGoogle: (data: { credential?: string; code?: string; email?: string; name?: string; picture?: string }) =>
+    request<AuthResponse>("/auth/google", {
+      method: "POST",
+      body: data,
+    }),
+
   forgotPassword: (email: string) =>
     request<{ message: string }>("/auth/forgot-password", {
       method: "POST",

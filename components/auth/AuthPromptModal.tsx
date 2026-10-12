@@ -13,6 +13,7 @@ import {
   UserCheck
 } from "lucide-react";
 import { useAuthModalStore, type AuthPromptReason } from "@/lib/auth-modal-store";
+import { GoogleAuthButton } from "./GoogleAuthButton";
 
 const MODAL_CONTENT: Record<AuthPromptReason, {
   badge: string;
@@ -161,13 +162,27 @@ export function AuthPromptModal() {
 
           {/* Action Buttons */}
           <div className="w-full space-y-2.5">
+            <GoogleAuthButton
+              onSuccess={closeAuthModal}
+              className="py-2.5 text-xs sm:text-sm font-semibold"
+            />
+
+            <div className="relative my-2 text-center">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-slate-200/60" />
+              </div>
+              <span className="relative bg-white px-2 text-[10px] uppercase font-bold text-slate-400">
+                or
+              </span>
+            </div>
+
             <Link
               href="/login"
               onClick={closeAuthModal}
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#3F1F36] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#522947] active:scale-[0.99]"
             >
               <UserCheck size={16} />
-              <span>Sign In to Your Account</span>
+              <span>Sign In with Email</span>
               <ArrowRight size={15} />
             </Link>
 
