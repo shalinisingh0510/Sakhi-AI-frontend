@@ -833,6 +833,38 @@ export type SourceType = "YOUTUBE" | "PRIVATE_VIDEO" | "INTERNAL" | "INSTAGRAM";
 export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNDER_REVIEW" | "MEDICALLY_REVIEWED" | "NEEDS_REVIEW" | "RESEARCHED" | "FACT_CHECKED" | "READY_FOR_REVIEW" | "ADMIN_APPROVED";
 export type Audience = "ALL" | "TEEN" | "ADULT";
 
+export interface ArticleSource {
+  name: string;
+  url?: string;
+}
+
+export interface ArticleSection {
+  heading: string;
+  content: string;
+}
+
+export interface ArticleFAQ {
+  question: string;
+  answer: string;
+}
+
+export interface ArticleMythFact {
+  myth: string;
+  fact: string;
+}
+
+export interface StructuredArticleBody {
+  tldr?: string;
+  introduction?: string;
+  sections?: ArticleSection[];
+  myths_vs_facts?: ArticleMythFact[];
+  faqs?: ArticleFAQ[];
+  key_takeaways?: string[];
+  medical_disclaimer?: string;
+  sources?: ArticleSource[];
+  keywords?: string[];
+}
+
 export interface ContentBlock {
   type: "heading" | "paragraph" | "image" | "video" | "important_box" | "list" | "callout" | "text" | "bullet_list" | "numbered_list" | "warning" | "tip" | "myth_fact" | "faq" | "comparison";
   text?: string;
@@ -881,7 +913,7 @@ export interface LearningContent {
   thumbnail_file_id?: string;
   thumbnail_url?: string;
   media_file_url?: string;
-  body?: ContentBlock[];
+  body?: ContentBlock[] | StructuredArticleBody;
   category: string;
   tags: string[];
   language: string;
