@@ -51,19 +51,22 @@ type FormErrors = Partial<{
   dob: string;
   activity_level: string;
   diet_type: string;
+  height: string;
+  weight: string;
   general: string;
 }>;
 
 interface Props {
   token: string;
   locale: string;
+  onComplete?: () => void;
 }
 
 // ---------------------------------------------------------------------------
 // Multi-step onboarding form
 // ---------------------------------------------------------------------------
 
-export function HealthOnboarding({ token, locale }: Props) {
+export function HealthOnboarding({ token, locale, onComplete }: Props) {
   const t = useTranslations("HealthProfile");
   const router = useRouter();
 
@@ -116,6 +119,18 @@ export function HealthOnboarding({ token, locale }: Props) {
             ? 1 : 0);
         if (age < 14) e.dob = t("errors.ageMinimum");
         if (dob > today) e.dob = t("errors.dobFuture");
+      }
+    }
+    if (heightCm) {
+      const h = parseFloat(heightCm);
+      if (isNaN(h) || h < 50 || h > 300) {
+        e.height = "Height must be between 50 and 300 cm.";
+      }
+    }
+    if (weightKg) {
+      const w = parseFloat(weightKg);
+      if (isNaN(w) || w < 10 || w > 500) {
+        e.weight = "Weight must be between 10 and 500 kg.";
       }
     }
     if (!activityLevel) e.activity_level = t("errors.activityRequired");
@@ -198,42 +213,66 @@ export function HealthOnboarding({ token, locale }: Props) {
           await healthApi.createProfile(profileData, token);
         } catch (err: unknown) {
           const createErr = err as Record<string, unknown>;
-          const msg = (createErr.message as string) || "";
-          if (createErr.status === 409 || msg.includes("409") || msg.includes("PATCH") || msg.includes("already exists")) {
+          const msg = (createErr?.message as string) || "";
+          if (
+            createErr?.status === 409 ||
+            msg.includes("409") ||
+            msg.includes("already exists") ||
+            msg.includes("Conflict")
+          ) {
             await healthApi.updateProfile(profileData, token);
           } else {
             throw createErr;
           }
         }
 
-        // Add self-reported conditions
-        let existingCodes: string[] = [];
+        // Add self-reported conditions (best effort, do not block completion)
         try {
-          const existing = await healthApi.getConditions(token);
-          existingCodes = existing.map((c) => c.condition_code);
-        } catch {
-          // ignore if we can't fetch existing
-        }
-
-        for (const code of selectedConditions) {
-          if (existingCodes.includes(code)) continue;
-
-          const opt = CONDITION_OPTIONS.find((c) => c.code === code);
-          if (opt) {
-            await healthApi.addCondition(
-              { condition_code: code, display_name: opt.label },
-              token
-            );
+          let existingCodes: string[] = [];
+          try {
+            const existing = await healthApi.getConditions(token);
+            existingCodes = existing.map((c) => c.condition_code);
+          } catch {
+            // ignore if conditions cannot be listed
           }
+
+          for (const code of selectedConditions) {
+            if (existingCodes.includes(code)) continue;
+
+            const opt = CONDITION_OPTIONS.find((c) => c.code === code);
+            if (opt) {
+              await healthApi
+                .addCondition(
+                  { condition_code: code, display_name: opt.label },
+                  token
+                )
+                .catch((err) => console.warn("Condition add warning:", err));
+            }
+          }
+        } catch (conditionErr) {
+          console.warn("Conditions save warning:", conditionErr);
         }
       }
-      router.push(`/${locale}/health`);
+
+      // Forward to Health Dashboard
+      if (onComplete) {
+        onComplete();
+      } else {
+        router.refresh();
+        window.location.href = `/${locale}/health`;
+      }
     } catch (err) {
       const error = err as Error;
       const msg = error.message || t("errors.general");
       
-      if (msg.includes("14")) {
+      if (msg.includes("14") || msg.toLowerCase().includes("age")) {
         setErrors({ dob: t("errors.ageMinimum") });
+        setStep(1);
+      } else if (msg.toLowerCase().includes("height")) {
+        setErrors({ height: msg });
+        setStep(1);
+      } else if (msg.toLowerCase().includes("weight")) {
+        setErrors({ weight: msg });
         setStep(1);
       } else {
         setErrors({ general: msg });
@@ -314,6 +353,7 @@ export function HealthOnboarding({ token, locale }: Props) {
               placeholder="e.g. 160"
               value={heightCm}
               onChange={(e) => setHeightCm(e.target.value)}
+              error={errors.height}
             />
 
             <Input
@@ -324,6 +364,7 @@ export function HealthOnboarding({ token, locale }: Props) {
               placeholder="e.g. 60"
               value={weightKg}
               onChange={(e) => setWeightKg(e.target.value)}
+              error={errors.weight}
             />
 
             <Select

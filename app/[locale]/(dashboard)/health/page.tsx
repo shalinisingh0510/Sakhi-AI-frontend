@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { wellnessApi, type WellnessDashboardResponse } from "@/lib/api";
@@ -16,19 +16,36 @@ interface Props {
 
 export default function HealthPage({ params }: Props) {
   const t = useTranslations("HealthProfile");
-  // useAuthStore is a Zustand persisted store — it hydrates from localStorage
-  // AFTER the first render, so token may be null on first pass.
-  // We use the store's built-in _hasHydrated sentinel (via onRehydrateStorage)
-  // by reading the store and tracking hydration ourselves.
   const token = useAuthStore((s) => s.token);
   const [dashboardData, setDashboardData] = useState<WellnessDashboardResponse | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [locale, setLocale] = useState("en");
 
-
   useEffect(() => {
     params.then((p) => setLocale(p.locale));
   }, [params]);
+
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const currentToken = useAuthStore.getState().token;
+      if (!currentToken) {
+        setLoadState("error");
+        return;
+      }
+      const data = await wellnessApi.getDashboard(currentToken);
+      setDashboardData(data);
+
+      if (data.profile.is_complete) {
+        setLoadState("has-profile");
+      } else {
+        setLoadState("no-profile");
+      }
+    } catch (err) {
+      const error = err as Error;
+      console.error("Dashboard failed to load", error);
+      setLoadState("error");
+    }
+  }, []);
 
   useEffect(() => {
     // Wait until token is available (Zustand persist hydrates asynchronously)
@@ -42,31 +59,27 @@ export default function HealthPage({ params }: Props) {
       return () => clearTimeout(timer);
     }
 
+    fetchDashboard();
+  }, [token, fetchDashboard]);
 
-    async function fetchDashboard() {
-      try {
-        const currentToken = useAuthStore.getState().token;
-        if (!currentToken) {
-          setLoadState("error");
-          return;
-        }
+  const handleOnboardingComplete = async () => {
+    setLoadState("loading");
+    try {
+      const currentToken = useAuthStore.getState().token || token;
+      if (currentToken) {
         const data = await wellnessApi.getDashboard(currentToken);
         setDashboardData(data);
-
         if (data.profile.is_complete) {
           setLoadState("has-profile");
-        } else {
-          setLoadState("no-profile");
+          return;
         }
-      } catch (err) {
-        const error = err as Error;
-        console.error("Dashboard failed to load", error);
-        setLoadState("error");
       }
+    } catch (err) {
+      console.error("Dashboard failed to load after onboarding", err);
     }
-
-    fetchDashboard();
-  }, [token]);
+    // Hard refresh fallback if data isn't immediately populated
+    window.location.href = `/${locale}/health`;
+  };
 
   return (
     <div className="min-h-screen bg-blush/10">
@@ -83,7 +96,7 @@ export default function HealthPage({ params }: Props) {
         )}
 
         {loadState === "no-profile" && token && (
-          <HealthOnboarding token={token} locale={locale} />
+          <HealthOnboarding token={token} locale={locale} onComplete={handleOnboardingComplete} />
         )}
 
         {loadState === "has-profile" && dashboardData && (

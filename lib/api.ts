@@ -59,8 +59,22 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   }
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
-    throw new ApiError(error.message ?? `Request failed (${res.status})`, res.status);
+    const errorData = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
+    let errorMsg = errorData.message;
+    if (typeof errorData.detail === "string") {
+      errorMsg = errorData.detail;
+    } else if (Array.isArray(errorData.detail) && errorData.detail.length > 0) {
+      errorMsg = errorData.detail
+        .map((d: unknown) => {
+          if (typeof d === "object" && d !== null) {
+            const item = d as Record<string, unknown>;
+            return typeof item.msg === "string" ? item.msg : JSON.stringify(d);
+          }
+          return String(d);
+        })
+        .join(", ");
+    }
+    throw new ApiError(errorMsg ?? `Request failed (${res.status})`, res.status);
   }
 
   return res.json() as Promise<T>;
