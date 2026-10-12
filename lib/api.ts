@@ -1173,13 +1173,14 @@ export const learningApi = {
   getTopicContent: (
     token: string,
     slug: string,
-    params?: { subtopic?: string; content_type?: string; language?: string; page?: number }
+    params?: { subtopic?: string; content_type?: string; language?: string; page?: number; limit?: number; page_size?: number }
   ) => {
     const qs = new URLSearchParams();
     if (params?.subtopic) qs.set("subtopic", params.subtopic);
     if (params?.content_type) qs.set("content_type", params.content_type);
     if (params?.language) qs.set("language", params.language);
     if (params?.page) qs.set("page", String(params.page));
+    if (params?.limit || params?.page_size) qs.set("limit", String(params.limit || params.page_size));
     return request<LearningContentListResponse>(`/learning/topics/${slug}/content?${qs.toString()}`, { token });
   },
 
