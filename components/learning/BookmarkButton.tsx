@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Bookmark } from "lucide-react";
 import { learnApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 
 interface BookmarkButtonProps {
   contentId: string;
@@ -21,12 +22,17 @@ export function BookmarkButton({
   size = 18 
 }: BookmarkButtonProps) {
   const { token } = useAuthStore();
+  const { openAuthModal } = useAuthModalStore();
   const [isSaved, setIsSaved] = useState(initialSaved);
   const [loading, setLoading] = useState(false);
 
   const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigating if wrapped in a Link
-    if (!token || loading) return;
+    if (!token) {
+      openAuthModal("bookmark");
+      return;
+    }
+    if (loading) return;
 
     // Optimistic UI changes
     setIsSaved(!isSaved);

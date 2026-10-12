@@ -1,8 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useState, useRef } from "react";
+import { FormEvent, useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { useChatStore } from "@/lib/chat-store";
 import { conversationApi, chatApi, type ConversationSummary } from "@/lib/api";
 import { useVoice } from "@/lib/use-voice";
@@ -13,7 +15,7 @@ import { UserMessage } from "@/components/chat/UserMessage";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 
-export default function ChatPage() {
+function ChatInner() {
   const t = useTranslations("Chat");
   const tA11y = useTranslations("A11y");
   
@@ -25,8 +27,22 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"text" | "voice">("text");
   
+  const searchParams = useSearchParams();
+  const [guestMsgCount, setGuestMsgCount] = useState(0);
+
+  // Pre-populate input if URL contains ?prompt=
+  useEffect(() => {
+    const promptParam = searchParams?.get("prompt");
+    if (promptParam) {
+      setInput(promptParam);
+    }
+  }, [searchParams]);
+
   const handleRecordingComplete = async (audioBlob: Blob) => {
-    if (!token) return;
+    if (!token) {
+      useAuthModalStore.getState().openAuthModal("chat");
+      return;
+    }
     try {
       const languageMap: Record<string, string> = { english: "en", hindi: "hi", marathi: "mr" };
       const langCode = user?.language ? languageMap[user.language.toLowerCase()] : "en";
@@ -90,8 +106,6 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-
-
   async function sendMessage(content: string, overrideMode?: "text" | "voice") {
     const trimmed = content.trim();
     if (!trimmed || isTyping) return;
@@ -104,9 +118,26 @@ export default function ChatPage() {
     addMessage({ role: "user", content: trimmed });
     setTyping(true);
 
+    // Guest mode handling
+    if (!token) {
+      const newCount = guestMsgCount + 1;
+      setGuestMsgCount(newCount);
+
+      setTimeout(() => {
+        addMessage({
+          role: "sakhi",
+          content: `नमस्ते प्यारी सखी! Thank you for sharing your question with me. During puberty, menstruation, and wellness milestones, bodily sensations like cramps, cycle changes, or emotional shifts are natural biological signals.\n\n💡 Gentle Relief: Rest comfortably, use a warm water compress to ease cramps, and stay well hydrated. You are never alone in this journey.\n\n🌸 *Guest Notice: To continue chatting freely, receive personalized cycle answers, and automatically save this conversation history, please sign in to your Sakhi account.*`,
+        });
+        setTyping(false);
+
+        if (newCount >= 2) {
+          useAuthModalStore.getState().openAuthModal("chat");
+        }
+      }, 700);
+      return;
+    }
+
     try {
-      if (!token) throw new Error("Please log in to chat with Sakhi.");
-      
       let detail: import("@/lib/api").ApiConversationDetail;
       if (!sessionId) {
         detail = await conversationApi.createConversation(
@@ -197,6 +228,24 @@ export default function ChatPage() {
         {/* Message Area */}
         <div className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
           <div className="mx-auto max-w-3xl space-y-6">
+            {!token && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-peach/80 bg-gradient-to-r from-blush/60 via-white to-peach/40 p-3.5 text-xs text-ink shadow-2xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-base" aria-hidden="true">🌸</span>
+                  <span>
+                    <strong>Guest Chat Mode:</strong> Ask quick questions! For chatting longer, saving conversation history, and accessing past chats, please sign in.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => useAuthModalStore.getState().openAuthModal("chat")}
+                  className="shrink-0 rounded-xl bg-berry px-3.5 py-1.5 font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
+                >
+                  Sign In to Save History
+                </button>
+              </div>
+            )}
+
             {messages.length === 0 && (
               <div className="flex flex-col items-center gap-6 py-12 text-center animate-in fade-in zoom-in duration-500">
                 <div className="h-24 w-24 rounded-full bg-gradient-to-br from-rose to-berry shadow-lg border-4 border-white flex items-center justify-center">
@@ -344,5 +393,19 @@ function MenuIcon({ className }: { className?: string }) {
       <line x1="3" y1="6" x2="21" y2="6" />
       <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[80vh] items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-berry/30 border-t-berry" />
+        </div>
+      }
+    >
+      <ChatInner />
+    </Suspense>
   );
 }

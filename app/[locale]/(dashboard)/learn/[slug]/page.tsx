@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { learningApi, type LearningContent, type LearningProgress } from "@/lib/api";
 import { Loader2, AlertCircle, BookOpen } from "lucide-react";
 import { LearningArticleRenderer, calculateReadingTime } from "@/components/learning/LearningArticleRenderer";
@@ -35,31 +36,33 @@ export default function ContentDetailPage() {
   const [affiliateProducts, setAffiliateProducts] = useState<AffiliateProduct[]>([]);
 
   const fetchContent = useCallback(async () => {
-    if (!token || !id) return;
+    if (!id) return;
     setLoading(true);
     try {
-      const c = await learningApi.getContent(token, id);
+      const c = await learningApi.getContent(token || "", id);
       setContent(c);
-      // Attempt to fetch progress (may 404 if not started)
-      try {
-        const progressData = await learningApi.getProgress(token, id);
-        setProgress(progressData);
-        setCompleted(progressData.completed);
-      } catch {
-        // No progress record yet
+      // Attempt to fetch progress if authenticated
+      if (token) {
+        try {
+          const progressData = await learningApi.getProgress(token, id);
+          setProgress(progressData);
+          setCompleted(progressData.completed);
+        } catch {
+          // No progress record yet
+        }
       }
       
       // Fetch related items
       try {
-        const r = await learningApi.getRelated(token, id);
+        const r = await learningApi.getRelated(token || "", id);
         setRelatedItems(r.items);
       } catch {
         // Silently fail related
       }
       
-      // Fetch affiliate products
+      // Fetch affiliate products if available
       try {
-        const aff = await monetizationApi.getAffiliateProducts(token);
+        const aff = await monetizationApi.getAffiliateProducts(token || "");
         setAffiliateProducts(aff);
       } catch {
         // Silently fail
@@ -76,7 +79,11 @@ export default function ContentDetailPage() {
   }, [fetchContent]);
 
   const handleMarkComplete = useCallback(async () => {
-    if (!token || !content) return;
+    if (!token) {
+      useAuthModalStore.getState().openAuthModal("progress");
+      return;
+    }
+    if (!content) return;
     setMarkingComplete(true);
     try {
       await learningApi.updateProgress(token, content.id, {
@@ -177,6 +184,24 @@ export default function ContentDetailPage() {
           <BookmarkButton contentId={content.id} showLabel={true} />
         </div>
       </div>
+
+      {!token && (
+        <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-peach/80 bg-blush/40 p-3.5 text-xs text-ink shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="text-base" aria-hidden="true">🌸</span>
+            <span>
+              <strong>Guest mode:</strong> Sign in to save bookmarks, sync history, and record your reading progress.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => useAuthModalStore.getState().openAuthModal("progress")}
+            className="shrink-0 font-bold text-berry hover:underline"
+          >
+            Sign In →
+          </button>
+        </div>
+      )}
 
       <div className="mb-6">
         <div className="mb-3 flex flex-wrap items-center gap-2">

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useTranslations } from "next-intl";
 
 export function AppNav() {
@@ -30,13 +32,16 @@ export function AppNav() {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Client-side auth guard fallback
+  // Client-side auth guard for private user pages only
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push("/login");
+      const privatePrefixes = ["/profile", "/settings", "/dashboard"];
+      if (privatePrefixes.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, pathname, router]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -79,10 +84,18 @@ export function AppNav() {
         <nav aria-label="App navigation" className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href + "/");
+            const isHealthTab = href === "/health";
+
             return (
               <Link
                 key={href}
                 href={href}
+                onClick={(e) => {
+                  if (isHealthTab && !isAuthenticated) {
+                    e.preventDefault();
+                    useAuthModalStore.getState().openAuthModal("health");
+                  }
+                }}
                 className={[
                   "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all",
                   active ? "bg-blush text-berry" : "text-ink/70 hover:bg-peach/40 hover:text-ink",
@@ -113,60 +126,73 @@ export function AppNav() {
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose" aria-hidden="true" />
           </Link>
 
-          <div className="relative" ref={menuRef}>
-            <button
-              ref={menuButtonRef}
-              type="button"
-              className="flex items-center gap-2 rounded-full border border-peach/60 bg-white px-3 py-2 text-sm font-medium text-ink hover:border-berry/30 transition-all"
-              aria-expanded={menuOpen}
-              aria-haspopup="menu"
-              aria-label={tA11y("profileMenu")}
-              onClick={() => setMenuOpen((open) => !open)}
+          {!isAuthenticated ? (
+            <Link
+              href="/login"
+              className="flex items-center gap-2 rounded-full border border-peach/80 bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-berry shadow-2xs hover:bg-blush/30 transition-all"
             >
-              <span
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-xs font-bold text-white"
-                aria-hidden="true"
-              >
-                {user?.name?.[0]?.toUpperCase() ?? "S"}
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-berry/10 text-xs font-bold text-berry">
+                <PersonIcon className="h-3.5 w-3.5" />
               </span>
-              <span className="hidden sm:block">{user?.name ?? t("profile")}</span>
-            </button>
-
-            {menuOpen && (
-              <div
-                role="menu"
-                className="absolute right-0 top-full z-50 mt-1 w-44 rounded-2xl border border-peach/60 bg-white p-1.5 shadow-soft"
+              <span>Sign In</span>
+            </Link>
+          ) : (
+            <div className="relative" ref={menuRef}>
+              <button
+                ref={menuButtonRef}
+                type="button"
+                className="flex items-center gap-2 rounded-full border border-peach/60 bg-white px-3 py-2 text-sm font-medium text-ink hover:border-berry/30 transition-all"
+                aria-expanded={menuOpen}
+                aria-haspopup="menu"
+                aria-label={tA11y("profileMenu")}
+                onClick={() => setMenuOpen((open) => !open)}
               >
-                <Link
-                  href="/profile"
-                  role="menuitem"
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
-                  onClick={() => setMenuOpen(false)}
+                <span
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-xs font-bold text-white"
+                  aria-hidden="true"
                 >
-                  <PersonIcon className="h-4 w-4" aria-hidden="true" /> {t("profile")}
-                </Link>
-                <Link
-                  href="/settings"
-                  role="menuitem"
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
-                  onClick={() => setMenuOpen(false)}
+                  {user?.name?.[0]?.toUpperCase() ?? "S"}
+                </span>
+                <span className="hidden sm:block">{user?.name ?? t("profile")}</span>
+              </button>
+
+              {menuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full z-50 mt-1 w-44 rounded-2xl border border-peach/60 bg-white p-1.5 shadow-soft"
                 >
-                  <SettingsIcon className="h-4 w-4" aria-hidden="true" /> {t("settings")}
-                </Link>
-                <hr className="my-1 border-peach/50" />
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={handleLogout}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
-                >
-                  <LogoutIcon className="h-4 w-4" aria-hidden="true" /> {t("signOut")}
-                </button>
-              </div>
-            )}
-          </div>
+                  <Link
+                    href="/profile"
+                    role="menuitem"
+                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <PersonIcon className="h-4 w-4" aria-hidden="true" /> {t("profile")}
+                  </Link>
+                  <Link
+                    href="/settings"
+                    role="menuitem"
+                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <SettingsIcon className="h-4 w-4" aria-hidden="true" /> {t("settings")}
+                  </Link>
+                  <hr className="my-1 border-peach/50" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
+                  >
+                    <LogoutIcon className="h-4 w-4" aria-hidden="true" /> {t("signOut")}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
+      <AuthPromptModal />
     </header>
   );
 }

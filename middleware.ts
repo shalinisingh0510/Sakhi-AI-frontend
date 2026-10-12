@@ -9,8 +9,8 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'as-needed'
 });
 
-// Routes that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/health", "/chat", "/learn", "/caregivers", "/profile", "/settings", "/progress", "/notifications", "/search", "/faq", "/help"];
+// Routes that strictly require authentication
+const PROTECTED_PATHS = ["/dashboard", "/profile", "/settings", "/progress", "/notifications"];
 // Routes only for unauthenticated users
 const AUTH_PATHS = ["/login", "/register", "/onboarding"];
 

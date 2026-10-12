@@ -6,6 +6,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { learningApi, type LearningContent } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { Loader2, ChevronDown, Sparkles } from "lucide-react";
 
 import { LearnSidebar } from "@/components/learning/sidebar/LearnSidebar";
@@ -46,12 +47,11 @@ function LearnPageContent() {
   const languageFilter = searchParams?.get("language") || locale;
 
   const fetchContent = useCallback(async (pageNum: number, isLoadMore = false) => {
-    if (!token) return;
     if (isLoadMore) setLoadingMore(true);
     else setLoading(true);
 
     try {
-      const res = await learningApi.getFeed(token, {
+      const res = await learningApi.getFeed(token || "", {
         type: typeFilter,
         search: searchQuery,
         language: languageFilter,
@@ -110,10 +110,6 @@ function LearnPageContent() {
     return items;
   }, [data, sortBy]);
 
-  if (!token) {
-    return <div className="text-center py-10">Please log in to view learning modules.</div>;
-  }
-
   const isSearchingOrFiltering = !!searchQuery || !!typeFilter;
 
   return (
@@ -144,6 +140,24 @@ function LearnPageContent() {
             {/* Guided Learning Paths */}
             <LearningPaths limit={2} />
           </>
+        )}
+
+        {!token && (
+          <div className="mt-4 mb-2 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-peach/80 bg-gradient-to-r from-blush/50 via-white to-peach/30 p-4 text-xs sm:text-sm text-ink shadow-2xs">
+            <div className="flex items-center gap-2.5">
+              <span className="text-lg" aria-hidden="true">🌸</span>
+              <span className="leading-snug">
+                <strong>Welcome to Sakhi AI!</strong> You are exploring in guest mode. For saving bookmarks, quiz scores, and learning progress, please sign in.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => useAuthModalStore.getState().openAuthModal("progress")}
+              className="shrink-0 rounded-xl bg-berry px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
+            >
+              Sign In to Save Progress
+            </button>
+          </div>
         )}
 
         {/* Curated Health Library Section Header (Matches Stitch Screenshot 5) */}

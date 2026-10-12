@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useAuthStore } from "@/lib/auth-store";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 
 export function MobileNav() {
   const pathname = usePathname();
   const t = useTranslations("Navigation");
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const TABS = [
     { href: "/dashboard",  label: t("home"),        icon: HomeIcon },
@@ -23,10 +26,18 @@ export function MobileNav() {
     >
       {TABS.map(({ href, label, icon: Icon }) => {
         const active = pathname === href || pathname.startsWith(href + "/");
+        const isHealthTab = href === "/health";
+
         return (
           <Link
             key={href}
             href={href}
+            onClick={(e) => {
+              if (isHealthTab && !isAuthenticated) {
+                e.preventDefault();
+                useAuthModalStore.getState().openAuthModal("health");
+              }
+            }}
             aria-current={active ? "page" : undefined}
             className="flex flex-col items-center gap-0.5 px-3 py-1"
           >
