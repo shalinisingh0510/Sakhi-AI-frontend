@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Microscope, Clock, CheckCircle2, Info, Sparkles, Heart } from "lucide-react";
+import { Microscope, CheckCircle2, Info, Sparkles } from "lucide-react";
 import { calculatorsApi, type IvfDueDateResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloTrimesterBar } from "./FloCalculatorWidgets";
 
 export function IvfDueDateCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -27,7 +28,7 @@ export function IvfDueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [transferType]);
+  }, [transferDate, transferType]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -111,7 +112,7 @@ export function IvfDueDateCalculator() {
             <p className="text-xs text-ink/65 mt-0.5">Select your embryo stage and transfer date.</p>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="transferDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 Date of Transfer or Retrieval
@@ -121,7 +122,7 @@ export function IvfDueDateCalculator() {
                 type="date"
                 value={transferDate}
                 onChange={(e) => setTransferDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
@@ -133,8 +134,8 @@ export function IvfDueDateCalculator() {
               <select
                 id="transferType"
                 value={transferType}
-                onChange={(e) => setTransferType(e.target.value as any)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-medium focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                onChange={(e) => setTransferType(e.target.value as "tr-1" | "tr-2" | "tr-3" | "tr-4")}
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
               >
                 <option value="tr-2">Day 5 Blastocyst Transfer (Most Common)</option>
                 <option value="tr-1">Day 3 Embryo Transfer (Cleavage Stage)</option>
@@ -174,7 +175,7 @@ export function IvfDueDateCalculator() {
                   <strong>{result.gestational_age_weeks} weeks {result.gestational_age_days} days</strong> pregnant.
                 </p>
 
-                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-4 text-xs">
+                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-6 text-xs">
                   <div>
                     <span className="text-ink/60 block">Theoretical LMP:</span>
                     <span className="font-semibold text-ink">{formatShortDate(result.theoretical_lmp)}</span>
@@ -185,6 +186,14 @@ export function IvfDueDateCalculator() {
                   </div>
                 </div>
               </div>
+
+              {/* Flo Trimester Bar */}
+              <FloTrimesterBar
+                currentWeek={result.gestational_age_weeks}
+                currentDay={result.gestational_age_days}
+                totalDaysRemaining={result.days_remaining}
+                dueDate={result.estimated_due_date}
+              />
 
               {/* ART & IVF Clinical Milestones */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-4">

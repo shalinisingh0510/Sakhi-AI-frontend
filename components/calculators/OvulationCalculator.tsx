@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Calendar, Heart, Info, Clock, AlertCircle } from "lucide-react";
+import { Sparkles, Calendar, Heart, Info, Clock } from "lucide-react";
 import { calculatorsApi, type OvulationResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloCycleCalendar } from "./FloCalculatorWidgets";
 
 export function OvulationCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -27,7 +28,7 @@ export function OvulationCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, []);
+  }, [cycleLength, lastPeriodDate]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -101,42 +102,27 @@ export function OvulationCalculator() {
               <label htmlFor="lastPeriodDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 First Day of Your Last Period
               </label>
-              <div className="relative">
-                <input
-                  id="lastPeriodDate"
-                  type="date"
-                  value={lastPeriodDate}
-                  onChange={(e) => setLastPeriodDate(e.target.value)}
-                  className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-medium focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
-                  required
-                />
-              </div>
+              <input
+                id="lastPeriodDate"
+                type="date"
+                value={lastPeriodDate}
+                onChange={(e) => setLastPeriodDate(e.target.value)}
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
+                required
+              />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="cycleLength" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Average Cycle Length
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {cycleLength} days
-                </span>
-              </div>
-              <input
-                id="cycleLength"
-                type="range"
-                min="20"
-                max="45"
-                value={cycleLength}
-                onChange={(e) => setCycleLength(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-              <div className="flex justify-between text-[11px] text-ink/40 mt-1">
-                <span>20 days (Short)</span>
-                <span>28 days (Typical)</span>
-                <span>45 days (Long)</span>
-              </div>
-            </div>
+            {/* Flo Stepper: Cycle Length */}
+            <FloStepper
+              id="cycleLength"
+              label="Average Cycle Length"
+              value={cycleLength}
+              min={20}
+              max={45}
+              unit="days"
+              onChange={(val) => setCycleLength(val)}
+              helperText="Count from Day 1 to next Day 1"
+            />
 
             <button
               type="submit"
@@ -187,8 +173,8 @@ export function OvulationCalculator() {
 
                 {/* Fertile Window Card */}
                 <div className="rounded-3xl bg-white p-6 border border-peach/70 shadow-sm space-y-1">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-moss flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 text-moss" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5 text-emerald-600" />
                     <span>6-Day Fertile Window</span>
                   </span>
                   <h3 className="font-display text-xl sm:text-2xl font-bold text-ink">
@@ -203,6 +189,14 @@ export function OvulationCalculator() {
                   </div>
                 </div>
               </div>
+
+              {/* Flo Visual Cycle Calendar */}
+              <FloCycleCalendar
+                lastPeriodDate={lastPeriodDate}
+                periodDuration={5}
+                cycleLength={cycleLength}
+                monthsToShow={2}
+              />
 
               {/* Fertility Probability Curve */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-4">

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ScanLine, Clock, CheckCircle2, Info, Sparkles, AlertCircle } from "lucide-react";
+import { ScanLine, CheckCircle2, Info, Sparkles } from "lucide-react";
 import { calculatorsApi, type UltrasoundDueDateResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloTrimesterBar } from "./FloCalculatorWidgets";
 
 export function UltrasoundDueDateCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -29,7 +30,7 @@ export function UltrasoundDueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [weeks, days]);
+  }, [ultrasoundDate, weeks, days, crlMm]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -83,7 +84,7 @@ export function UltrasoundDueDateCalculator() {
             <p className="text-xs text-ink/65 mt-0.5">Enter findings from your sonography report.</p>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="scanDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 Date Ultrasound Was Performed
@@ -93,30 +94,22 @@ export function UltrasoundDueDateCalculator() {
                 type="date"
                 value={ultrasoundDate}
                 onChange={(e) => setUltrasoundDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="scanWeeks" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Gestational Age at Scan (Weeks)
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {weeks} Weeks
-                </span>
-              </div>
-              <input
-                id="scanWeeks"
-                type="range"
-                min="1"
-                max="40"
-                value={weeks}
-                onChange={(e) => setWeeks(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-            </div>
+            {/* Flo Stepper: Gestational Age Weeks at Scan */}
+            <FloStepper
+              id="scanWeeks"
+              label="Gestational Age at Scan (Weeks)"
+              value={weeks}
+              min={1}
+              max={40}
+              unit="weeks"
+              onChange={(val) => setWeeks(val)}
+              helperText="Recorded on ultrasound sheet"
+            />
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
@@ -153,7 +146,7 @@ export function UltrasoundDueDateCalculator() {
                 placeholder="e.g. 32.5 mm"
                 value={crlMm ?? ""}
                 onChange={(e) => setCrlMm(e.target.value ? Number(e.target.value) : undefined)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
               />
             </div>
 
@@ -174,8 +167,8 @@ export function UltrasoundDueDateCalculator() {
             <div className="space-y-6">
               {/* Primary Highlight Card */}
               <div className="rounded-3xl bg-gradient-to-br from-mint/60 via-white to-lavender/40 p-6 sm:p-8 border border-peach/70 shadow-sm relative overflow-hidden">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-moss flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-moss" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
                   <span>Ultrasound Estimated Due Date (EDD)</span>
                 </span>
 
@@ -209,6 +202,14 @@ export function UltrasoundDueDateCalculator() {
                   </div>
                 </div>
               </div>
+
+              {/* Flo Trimester Bar */}
+              <FloTrimesterBar
+                currentWeek={result.current_gestational_age_weeks}
+                currentDay={result.current_gestational_age_days}
+                totalDaysRemaining={result.days_remaining}
+                dueDate={result.estimated_due_date}
+              />
 
               {/* ACOG Redating Guidelines Card */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-3">

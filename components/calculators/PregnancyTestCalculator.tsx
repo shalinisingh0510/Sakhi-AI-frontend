@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CheckCircle2, Calendar, Clock, AlertCircle, Info, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock, Info } from "lucide-react";
 import { calculatorsApi, type PregnancyTestResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper } from "./FloCalculatorWidgets";
 
 export function PregnancyTestCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -28,7 +29,7 @@ export function PregnancyTestCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [method]);
+  }, [method, inputDate, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -89,7 +90,7 @@ export function PregnancyTestCalculator() {
                   method === "last_period" ? "bg-berry text-white shadow-xs" : "text-ink/70 hover:text-ink"
                 }`}
               >
-                First Day of Last Period
+                Last Period (LMP)
               </button>
               <button
                 type="button"
@@ -98,12 +99,12 @@ export function PregnancyTestCalculator() {
                   method === "ovulation" ? "bg-berry text-white shadow-xs" : "text-ink/70 hover:text-ink"
                 }`}
               >
-                Ovulation / Intercourse Date
+                Ovulation Date
               </button>
             </div>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="inputDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 {method === "last_period" ? "First Day of Last Period" : "Date of Ovulation or Unprotected Sex"}
@@ -113,31 +114,22 @@ export function PregnancyTestCalculator() {
                 type="date"
                 value={inputDate}
                 onChange={(e) => setInputDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
             {method === "last_period" && (
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="cycleLen" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                    Average Cycle Length
-                  </label>
-                  <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                    {cycleLength} days
-                  </span>
-                </div>
-                <input
-                  id="cycleLen"
-                  type="range"
-                  min="20"
-                  max="45"
-                  value={cycleLength}
-                  onChange={(e) => setCycleLength(Number(e.target.value))}
-                  className="w-full accent-berry cursor-pointer"
-                />
-              </div>
+              <FloStepper
+                id="cycleLen"
+                label="Average Cycle Length"
+                value={cycleLength}
+                min={20}
+                max={45}
+                unit="days"
+                onChange={(val) => setCycleLength(val)}
+                helperText="Standard cycle is 28 days"
+              />
             )}
 
             <button
@@ -157,8 +149,8 @@ export function PregnancyTestCalculator() {
             <div className="space-y-6">
               {/* Primary Recommended Date Card */}
               <div className="rounded-3xl bg-gradient-to-br from-mint/50 via-white to-peach/30 p-6 sm:p-8 border border-peach/70 shadow-sm relative overflow-hidden">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-moss flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-moss" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   <span>Recommended Test Date (99%+ Accuracy)</span>
                 </span>
 
@@ -172,7 +164,7 @@ export function PregnancyTestCalculator() {
                     : "You are currently past your expected test date. A home pregnancy test today will be highly reliable."}
                 </p>
 
-                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-4 text-xs">
+                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-6 text-xs">
                   <div>
                     <span className="text-ink/60 block">Early Test Date:</span>
                     <span className="font-semibold text-ink">

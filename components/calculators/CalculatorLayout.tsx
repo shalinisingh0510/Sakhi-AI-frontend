@@ -13,7 +13,7 @@ import {
   HelpCircle,
   BookOpen,
 } from "lucide-react";
-import { LOCAL_CATALOG, type CalculatorMeta } from "@/lib/calculators-api";
+import { LOCAL_CATALOG } from "@/lib/calculators-api";
 
 interface CalculatorLayoutProps {
   currentSlug: string;

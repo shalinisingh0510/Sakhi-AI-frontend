@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Baby, Clock, Sparkles, CheckCircle2, Info, Calendar } from "lucide-react";
+import { Baby, CheckCircle2 } from "lucide-react";
 import { calculatorsApi, type WeeksToMonthsResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloTrimesterBar } from "./FloCalculatorWidgets";
 
 export function PregnancyWeeksToMonthsCalculator() {
   const [weeks, setWeeks] = useState(16);
@@ -92,34 +93,21 @@ export function PregnancyWeeksToMonthsCalculator() {
         <div className="lg:col-span-5 rounded-3xl bg-white p-6 sm:p-8 border border-peach/60 shadow-sm space-y-6">
           <div className="border-b border-peach/40 pb-4">
             <h2 className="font-display text-lg font-bold text-ink">Current Gestational Age</h2>
-            <p className="text-xs text-ink/65 mt-0.5">Select how many weeks and days pregnant you are.</p>
+            <p className="text-xs text-ink/65 mt-0.5">Use the stepper or slider to choose your exact week and days.</p>
           </div>
 
           <form onSubmit={handleCalculate} className="space-y-5">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="weeksSelect" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Pregnancy Weeks
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {weeks} Weeks
-                </span>
-              </div>
-              <input
-                id="weeksSelect"
-                type="range"
-                min="1"
-                max="42"
-                value={weeks}
-                onChange={(e) => setWeeks(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-              <div className="flex justify-between text-[11px] text-ink/40 mt-1">
-                <span>Week 1</span>
-                <span>Week 20 (Halfway)</span>
-                <span>Week 40</span>
-              </div>
-            </div>
+            {/* Flo Stepper: Pregnancy Weeks */}
+            <FloStepper
+              id="weeksSelect"
+              label="Pregnancy Weeks"
+              value={weeks}
+              min={1}
+              max={42}
+              unit="weeks"
+              onChange={(val) => setWeeks(val)}
+              helperText="From 1 to 42 weeks"
+            />
 
             <div>
               <label htmlFor="daysSelect" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
@@ -179,44 +167,18 @@ export function PregnancyWeeksToMonthsCalculator() {
                   </span>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="mt-5 space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-ink/75">Pregnancy Progress</span>
-                    <span className="font-bold text-berry">{result.percentage_completed}% Completed</span>
-                  </div>
-                  <div className="w-full bg-cream rounded-full h-3.5 overflow-hidden border border-peach/40">
-                    <div
-                      className="bg-gradient-to-r from-rose to-berry h-full rounded-full transition-all duration-500"
-                      style={{ width: `${result.percentage_completed}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[10px] text-ink/40">
-                    <span>Conception</span>
-                    <span>20w (Halfway)</span>
-                    <span>40w (Due Date)</span>
-                  </div>
-                </div>
-
                 <div className="mt-5 pt-4 border-t border-peach/50 flex items-center justify-between text-xs">
                   <span className="text-ink/70">Estimated Due Date:</span>
                   <span className="font-bold text-ink">{formatDateDisplay(result.estimated_due_date)}</span>
                 </div>
               </div>
 
-              {/* Baby Size Comparison */}
-              <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-moss flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-moss" />
-                  <span>Baby Size Comparison</span>
-                </span>
-                <p className="font-display text-xl font-bold text-ink">
-                  Your baby is the size of an {result.baby_size_comparison}!
-                </p>
-                <p className="text-xs text-ink/65">
-                  At {result.weeks} weeks, your baby is rapidly growing and developing crucial organs and sensory pathways.
-                </p>
-              </div>
+              {/* Flo Trimester Bar with Fruit Milestone */}
+              <FloTrimesterBar
+                currentWeek={result.weeks}
+                currentDay={result.days}
+                dueDate={result.estimated_due_date}
+              />
 
               {/* Fetal Milestones for this Month */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-4">

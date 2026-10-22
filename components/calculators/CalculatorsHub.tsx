@@ -16,10 +16,9 @@ import {
   HeartPulse,
   ArrowRight,
   ShieldCheck,
-  TrendingUp,
   SlidersHorizontal,
 } from "lucide-react";
-import { LOCAL_CATALOG, type CalculatorMeta } from "@/lib/calculators-api";
+import { LOCAL_CATALOG } from "@/lib/calculators-api";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Sparkles,

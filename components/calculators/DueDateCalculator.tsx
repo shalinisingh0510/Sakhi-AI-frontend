@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Clock, Calendar, Baby, CheckCircle2, Sparkles, Info, Heart } from "lucide-react";
+import { Clock, CheckCircle2, Sparkles, Info } from "lucide-react";
 import { calculatorsApi, type DueDateResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloTrimesterBar } from "./FloCalculatorWidgets";
 
 export function DueDateCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -28,7 +29,7 @@ export function DueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [method]);
+  }, [method, inputDate, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -106,7 +107,7 @@ export function DueDateCalculator() {
             </div>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="inputDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 {method === "last_period" ? "First Day of Last Period" : "Date of Conception / Ovulation"}
@@ -116,31 +117,22 @@ export function DueDateCalculator() {
                 type="date"
                 value={inputDate}
                 onChange={(e) => setInputDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
             {method === "last_period" && (
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="cycleLen" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                    Average Cycle Length
-                  </label>
-                  <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                    {cycleLength} days
-                  </span>
-                </div>
-                <input
-                  id="cycleLen"
-                  type="range"
-                  min="20"
-                  max="45"
-                  value={cycleLength}
-                  onChange={(e) => setCycleLength(Number(e.target.value))}
-                  className="w-full accent-berry cursor-pointer"
-                />
-              </div>
+              <FloStepper
+                id="cycleLen"
+                label="Average Cycle Length"
+                value={cycleLength}
+                min={20}
+                max={45}
+                unit="days"
+                onChange={(val) => setCycleLength(val)}
+                helperText="Standard cycle is 28 days"
+              />
             )}
 
             <button
@@ -172,25 +164,15 @@ export function DueDateCalculator() {
                 <p className="text-xs sm:text-sm text-ink/70 mt-1">
                   You are currently <strong>{result.gestational_age_weeks} weeks {result.gestational_age_days} days</strong> pregnant (Trimester {result.current_trimester}).
                 </p>
-
-                {/* Progress Bar */}
-                <div className="mt-5 space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-ink/65">Pregnancy Progress</span>
-                    <span className="font-bold text-berry">{result.percentage_progress}%</span>
-                  </div>
-                  <div className="w-full bg-cream rounded-full h-3 overflow-hidden border border-peach/40">
-                    <div
-                      className="bg-gradient-to-r from-rose to-berry h-full rounded-full transition-all duration-500"
-                      style={{ width: `${result.percentage_progress}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[10px] text-ink/50">
-                    <span>{result.days_remaining} days remaining until full term</span>
-                    <span>40 Weeks</span>
-                  </div>
-                </div>
               </div>
+
+              {/* Flo Trimester Bar & Fetal Growth Card */}
+              <FloTrimesterBar
+                currentWeek={result.gestational_age_weeks}
+                currentDay={result.gestational_age_days}
+                totalDaysRemaining={result.days_remaining}
+                dueDate={result.estimated_due_date}
+              />
 
               {/* Major Milestones Timeline */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-4">

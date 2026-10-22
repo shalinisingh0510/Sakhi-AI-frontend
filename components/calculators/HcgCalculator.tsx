@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Activity, Clock, TrendingUp, AlertTriangle, CheckCircle2, Info, ArrowUpRight } from "lucide-react";
+import { Activity, Clock, TrendingUp, CheckCircle2, Info, ArrowUpRight } from "lucide-react";
 import { calculatorsApi, type HcgResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloHcgDoublingGauge } from "./FloCalculatorWidgets";
 
 export function HcgCalculator() {
   const [firstLevel, setFirstLevel] = useState<number>(120);
@@ -29,7 +30,7 @@ export function HcgCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, []);
+  }, [firstLevel, secondLevel, timeBetween, timeUnit]);
 
   return (
     <CalculatorLayout
@@ -99,7 +100,7 @@ export function HcgCalculator() {
                 step="0.1"
                 value={firstLevel}
                 onChange={(e) => setFirstLevel(Number(e.target.value))}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
@@ -115,7 +116,7 @@ export function HcgCalculator() {
                 step="0.1"
                 value={secondLevel}
                 onChange={(e) => setSecondLevel(Number(e.target.value))}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
@@ -132,7 +133,7 @@ export function HcgCalculator() {
                   step="0.5"
                   value={timeBetween}
                   onChange={(e) => setTimeBetween(Number(e.target.value))}
-                  className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                  className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                   required
                 />
                 <div className="flex rounded-2xl border border-peach bg-cream/30 p-1 shrink-0">
@@ -233,6 +234,14 @@ export function HcgCalculator() {
                   </div>
                 </div>
               </div>
+
+              {/* Flo hCG Doubling Gauge */}
+              {result.doubling_time_hours !== null && (
+                <FloHcgDoublingGauge
+                  doublingTimeHours={result.doubling_time_hours}
+                  twoDayIncreasePercent={result.increase_48h_percent}
+                />
+              )}
 
               {/* Clinical Interpretation */}
               <div className="rounded-3xl bg-white p-6 border border-peach/60 shadow-sm space-y-3">

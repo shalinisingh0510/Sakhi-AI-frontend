@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { HeartPulse, Clock, Sparkles, CheckCircle2, Info, AlertCircle } from "lucide-react";
+import { HeartPulse, Sparkles, CheckCircle2, Info } from "lucide-react";
 import { calculatorsApi, type ImplantationResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper } from "./FloCalculatorWidgets";
 
 export function ImplantationCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -28,7 +29,7 @@ export function ImplantationCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [method]);
+  }, [method, inputDate, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -105,7 +106,7 @@ export function ImplantationCalculator() {
             </div>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="inputDate" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 {method === "od" ? "Date of Ovulation" : "First Day of Last Period"}
@@ -115,31 +116,22 @@ export function ImplantationCalculator() {
                 type="date"
                 value={inputDate}
                 onChange={(e) => setInputDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
             {method === "lp" && (
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="cycleLen" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                    Average Cycle Length
-                  </label>
-                  <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                    {cycleLength} days
-                  </span>
-                </div>
-                <input
-                  id="cycleLen"
-                  type="range"
-                  min="20"
-                  max="45"
-                  value={cycleLength}
-                  onChange={(e) => setCycleLength(Number(e.target.value))}
-                  className="w-full accent-berry cursor-pointer"
-                />
-              </div>
+              <FloStepper
+                id="cycleLen"
+                label="Average Cycle Length"
+                value={cycleLength}
+                min={20}
+                max={45}
+                unit="days"
+                onChange={(val) => setCycleLength(val)}
+                helperText="Standard cycle is 28 days"
+              />
             )}
 
             <button
@@ -160,7 +152,7 @@ export function ImplantationCalculator() {
               {/* Highlight Implantation Window Card */}
               <div className="rounded-3xl bg-gradient-to-br from-blush/80 via-white to-lavender/40 p-6 sm:p-8 border border-peach/70 shadow-sm relative overflow-hidden">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-berry flex items-center gap-1.5">
-                  <HeartPulse className="h-4 w-4 text-rose" />
+                  <HeartPulse className="h-3.5 w-3.5 text-rose" />
                   <span>Expected Implantation Window</span>
                 </span>
 
@@ -173,7 +165,7 @@ export function ImplantationCalculator() {
                   <strong>{formatDateDisplay(result.peak_implantation_date)}</strong>.
                 </p>
 
-                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-4 text-xs">
+                <div className="mt-6 pt-4 border-t border-peach/50 flex flex-wrap gap-6 text-xs">
                   <div>
                     <span className="text-ink/60 block">Estimated Ovulation Date:</span>
                     <span className="font-semibold text-ink">{formatDateDisplay(result.ovulation_date)}</span>

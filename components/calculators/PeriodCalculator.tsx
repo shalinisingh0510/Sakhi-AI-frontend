@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CalendarDays, Clock, Bell, Sparkles, Heart, Info, ArrowRight } from "lucide-react";
+import { CalendarDays, Clock, Bell } from "lucide-react";
 import { calculatorsApi, type PeriodResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloCycleCalendar } from "./FloCalculatorWidgets";
 
 export function PeriodCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -29,7 +30,7 @@ export function PeriodCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, [forecastMonths]);
+  }, [forecastMonths, cycleLength, periodDuration, lastPeriodDate]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -80,10 +81,10 @@ export function PeriodCalculator() {
         <div className="lg:col-span-5 rounded-3xl bg-white p-6 sm:p-8 border border-peach/60 shadow-sm space-y-6">
           <div className="border-b border-peach/40 pb-4">
             <h2 className="font-display text-lg font-bold text-ink">Cycle Parameters</h2>
-            <p className="text-xs text-ink/65 mt-0.5">Customize your cycle length and duration.</p>
+            <p className="text-xs text-ink/65 mt-0.5">Customize your cycle length and flow duration using the steppers.</p>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="periodStart" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 When Did Your Last Period Start?
@@ -93,50 +94,34 @@ export function PeriodCalculator() {
                 type="date"
                 value={lastPeriodDate}
                 onChange={(e) => setLastPeriodDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="periodDur" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  How Many Days Does It Last?
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {periodDuration} days
-                </span>
-              </div>
-              <input
-                id="periodDur"
-                type="range"
-                min="2"
-                max="10"
-                value={periodDuration}
-                onChange={(e) => setPeriodDuration(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-            </div>
+            {/* Flo Stepper: Period Duration */}
+            <FloStepper
+              id="periodDuration"
+              label="How Many Days Does It Last?"
+              value={periodDuration}
+              min={2}
+              max={10}
+              unit="days"
+              onChange={(val) => setPeriodDuration(val)}
+              helperText="Typical: 4 to 7 days"
+            />
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="cycleLen" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Average Cycle Length
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {cycleLength} days
-                </span>
-              </div>
-              <input
-                id="cycleLen"
-                type="range"
-                min="20"
-                max="45"
-                value={cycleLength}
-                onChange={(e) => setCycleLength(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-            </div>
+            {/* Flo Stepper: Cycle Length */}
+            <FloStepper
+              id="cycleLength"
+              label="Average Cycle Length"
+              value={cycleLength}
+              min={20}
+              max={45}
+              unit="days"
+              onChange={(val) => setCycleLength(val)}
+              helperText="Count from Day 1 to next Day 1"
+            />
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
@@ -190,7 +175,7 @@ export function PeriodCalculator() {
                     : "Your period is expected around now."}
                 </p>
 
-                <div className="mt-4 pt-3 border-t border-peach/50 flex items-center gap-4 text-xs">
+                <div className="mt-4 pt-3 border-t border-peach/50 flex items-center gap-6 text-xs">
                   <div>
                     <span className="text-ink/60 block">Ovulation Day:</span>
                     <span className="font-semibold text-ink">{formatDateDisplay(result.next_ovulation_date)}</span>
@@ -199,8 +184,20 @@ export function PeriodCalculator() {
                     <span className="text-ink/60 block">Flow Duration:</span>
                     <span className="font-semibold text-ink">{periodDuration} days</span>
                   </div>
+                  <div>
+                    <span className="text-ink/60 block">Cycle Length:</span>
+                    <span className="font-semibold text-ink">{cycleLength} days</span>
+                  </div>
                 </div>
               </div>
+
+              {/* Flo Cycle Calendar Visualizer */}
+              <FloCycleCalendar
+                lastPeriodDate={lastPeriodDate}
+                periodDuration={periodDuration}
+                cycleLength={cycleLength}
+                monthsToShow={2}
+              />
 
               {/* Multi-Month Calendar Forecast Cards */}
               <div className="space-y-3">

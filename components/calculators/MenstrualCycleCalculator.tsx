@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calendar, Sparkles, Heart, Activity, Compass, Info, CheckCircle2 } from "lucide-react";
+import { Calendar, Compass, Info } from "lucide-react";
 import { calculatorsApi, type MenstrualCycleResult } from "@/lib/calculators-api";
 import { CalculatorLayout } from "./CalculatorLayout";
+import { FloStepper, FloCycleCalendar } from "./FloCalculatorWidgets";
 
 export function MenstrualCycleCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -28,7 +29,7 @@ export function MenstrualCycleCalculator() {
 
   useEffect(() => {
     handleCalculate();
-  }, []);
+  }, [lastPeriodDate, periodDuration, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -85,10 +86,10 @@ export function MenstrualCycleCalculator() {
         <div className="lg:col-span-5 rounded-3xl bg-white p-6 sm:p-8 border border-peach/60 shadow-sm space-y-6">
           <div className="border-b border-peach/40 pb-4">
             <h2 className="font-display text-lg font-bold text-ink">Cycle Parameters</h2>
-            <p className="text-xs text-ink/65 mt-0.5">Customize your cycle length and bleeding duration.</p>
+            <p className="text-xs text-ink/65 mt-0.5">Customize your cycle length and bleeding duration using steppers.</p>
           </div>
 
-          <form onSubmit={handleCalculate} className="space-y-4">
+          <form onSubmit={handleCalculate} className="space-y-5">
             <div>
               <label htmlFor="periodStart" className="block text-xs font-semibold uppercase tracking-wider text-ink/75 mb-1.5">
                 When Did Your Last Period Start?
@@ -98,50 +99,34 @@ export function MenstrualCycleCalculator() {
                 type="date"
                 value={lastPeriodDate}
                 onChange={(e) => setLastPeriodDate(e.target.value)}
-                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all"
+                className="w-full rounded-2xl border border-peach bg-cream/40 px-4 py-2.5 text-sm text-ink font-semibold focus:border-berry focus:bg-white focus:outline-none focus:ring-2 focus:ring-berry/20 transition-all shadow-2xs"
                 required
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="periodDur" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Bleeding Duration
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {periodDuration} days
-                </span>
-              </div>
-              <input
-                id="periodDur"
-                type="range"
-                min="2"
-                max="10"
-                value={periodDuration}
-                onChange={(e) => setPeriodDuration(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-            </div>
+            {/* Flo Stepper: Bleeding Duration */}
+            <FloStepper
+              id="periodDur"
+              label="Bleeding Duration"
+              value={periodDuration}
+              min={2}
+              max={10}
+              unit="days"
+              onChange={(val) => setPeriodDuration(val)}
+              helperText="Typical: 4 to 7 days"
+            />
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="cycleLen" className="block text-xs font-semibold uppercase tracking-wider text-ink/75">
-                  Average Cycle Length
-                </label>
-                <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs font-bold text-berry">
-                  {cycleLength} days
-                </span>
-              </div>
-              <input
-                id="cycleLen"
-                type="range"
-                min="20"
-                max="45"
-                value={cycleLength}
-                onChange={(e) => setCycleLength(Number(e.target.value))}
-                className="w-full accent-berry cursor-pointer"
-              />
-            </div>
+            {/* Flo Stepper: Cycle Length */}
+            <FloStepper
+              id="cycleLen"
+              label="Average Cycle Length"
+              value={cycleLength}
+              min={20}
+              max={45}
+              unit="days"
+              onChange={(val) => setCycleLength(val)}
+              helperText="Count from Day 1 to next Day 1"
+            />
 
             <button
               type="submit"
@@ -168,13 +153,21 @@ export function MenstrualCycleCalculator() {
                   <p className="text-xs text-ink/65">{periodDuration} days duration</p>
                 </div>
                 <div className="rounded-3xl bg-white p-5 border border-peach/70 shadow-sm space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-moss">Next Ovulation</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Next Ovulation</span>
                   <p className="font-display text-xl font-bold text-ink">
                     {formatDateDisplay(result.ovulation_date)}
                   </p>
                   <p className="text-xs text-ink/65">Peak fertility day</p>
                 </div>
               </div>
+
+              {/* Flo Cycle Calendar Visualizer */}
+              <FloCycleCalendar
+                lastPeriodDate={lastPeriodDate}
+                periodDuration={periodDuration}
+                cycleLength={cycleLength}
+                monthsToShow={2}
+              />
 
               {/* 4 Phases Detailed Accordions */}
               <div className="space-y-4">
@@ -206,7 +199,7 @@ export function MenstrualCycleCalculator() {
                       </div>
 
                       <div className="mt-3 pt-3 border-t border-peach/40 text-[11px] text-ink/70">
-                        <span className="font-semibold text-moss">Wellness Tip: </span>
+                        <span className="font-semibold text-emerald-700">Wellness Tip: </span>
                         {phase.wellness_tips}
                       </div>
                     </div>
