@@ -12,7 +12,12 @@ const intlMiddleware = createMiddleware({
 // Routes that strictly require authentication and completed onboarding
 const PROTECTED_PATHS = [
   "/dashboard",
-  "/health",
+  "/health/cycle",
+  "/health/tracker",
+  "/health/symptoms",
+  "/health/activity",
+  "/health/nutrition",
+  "/health/check-in",
   "/chat",
   "/profile",
   "/settings",
