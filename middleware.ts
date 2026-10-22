@@ -9,10 +9,20 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'as-needed'
 });
 
-// Routes that strictly require authentication
-const PROTECTED_PATHS = ["/dashboard", "/profile", "/settings", "/progress", "/notifications"];
-// Routes only for unauthenticated users
-const AUTH_PATHS = ["/login", "/register", "/onboarding"];
+// Routes that strictly require authentication and completed onboarding
+const PROTECTED_PATHS = [
+  "/dashboard",
+  "/health",
+  "/chat",
+  "/profile",
+  "/settings",
+  "/progress",
+  "/notifications",
+  "/caregivers",
+];
+
+// Auth-only pages (for login and register)
+const AUTH_PATHS = ["/login", "/register"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -32,7 +42,7 @@ export function middleware(request: NextRequest) {
 
   if (authRaw) {
     try {
-      const parsed = JSON.parse(authRaw);
+      const parsed = JSON.parse(decodeURIComponent(authRaw));
       isAuthenticated = parsed?.state?.isAuthenticated ?? false;
       onboardingComplete = parsed?.state?.user?.onboardingComplete ?? false;
     } catch {
@@ -40,31 +50,39 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Get pathname without locale prefix for route checking
-  const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
-  
-  const isProtected = PROTECTED_PATHS.some((p) => pathnameWithoutLocale.startsWith(p));
-  const isAuthPage = AUTH_PATHS.some((p) => pathnameWithoutLocale.startsWith(p));
+  // Extract locale accurately from supported locales list
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const hasLocale = locales.includes(pathSegments[0] as any);
+  const locale = hasLocale ? pathSegments[0] : defaultLocale;
+  const pathnameWithoutLocale = hasLocale
+    ? '/' + pathSegments.slice(1).join('/')
+    : pathname;
 
-  // Redirect unauthenticated users away from protected routes
-  if (isProtected && !isAuthenticated) {
-    const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+  const isProtected = PROTECTED_PATHS.some((p) => pathnameWithoutLocale === p || pathnameWithoutLocale.startsWith(`${p}/`));
+  const isAuthPage = AUTH_PATHS.some((p) => pathnameWithoutLocale === p || pathnameWithoutLocale.startsWith(`${p}/`));
+  const isOnboarding = pathnameWithoutLocale === '/onboarding' || pathnameWithoutLocale.startsWith('/onboarding/');
+
+  // If already authenticated and onboarded, redirect away from onboarding and auth pages
+  if ((isOnboarding || isAuthPage) && isAuthenticated && onboardingComplete) {
+    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
-  // Redirect authenticated but not-yet-onboarded users to onboarding
-  // from ANY protected route (not just /dashboard)
+  // Redirect unauthenticated users away from protected routes to Flo questionnaire onboarding
+  if (isProtected && !isAuthenticated) {
+    const redirectUrl = encodeURIComponent(pathnameWithoutLocale);
+    return NextResponse.redirect(new URL(`/${locale}/onboarding?redirect=${redirectUrl}`, request.url));
+  }
+
+  // Redirect authenticated but not-yet-onboarded users to onboarding from any protected route
   if (isAuthenticated && !onboardingComplete && isProtected) {
-    const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
-    // Avoid redirect loop: don't redirect if already heading to onboarding
-    if (!pathnameWithoutLocale.startsWith('/onboarding')) {
-      return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url));
+    if (!isOnboarding) {
+      const redirectUrl = encodeURIComponent(pathnameWithoutLocale);
+      return NextResponse.redirect(new URL(`/${locale}/onboarding?redirect=${redirectUrl}`, request.url));
     }
   }
 
   // Redirect authenticated users away from auth pages
   if (isAuthPage && isAuthenticated) {
-    const locale = request.nextUrl.pathname.split('/')[1] || defaultLocale;
     if (!onboardingComplete) {
       return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url));
     }

@@ -177,7 +177,7 @@ export function AuthPromptModal() {
             </div>
 
             <Link
-              href="/login"
+              href="/login?redirect=/health/cycle"
               onClick={closeAuthModal}
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#3F1F36] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#522947] active:scale-[0.99]"
             >
@@ -187,11 +187,11 @@ export function AuthPromptModal() {
             </Link>
 
             <Link
-              href="/register"
+              href="/onboarding?redirect=/health/cycle"
               onClick={closeAuthModal}
               className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 shadow-2xs transition-all hover:bg-slate-50"
             >
-              <span>Create Free Account</span>
+              <span>Get Started with Questionnaire</span>
             </Link>
 
             <button

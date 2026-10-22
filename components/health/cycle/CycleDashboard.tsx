@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cycleApi, type CurrentCycleResponse, type CycleStatisticsResponse, type MenstrualCycleResponse } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -16,7 +17,9 @@ import { CycleCalendar } from "./CycleCalendar";
 
 export function CycleDashboard() {
   const t = useTranslations("CycleTracker");
+  const router = useRouter();
   const token = useAuthStore((s) => s.token);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   
   const [current, setCurrent] = useState<CurrentCycleResponse | null>(null);
   const [stats, setStats] = useState<CycleStatisticsResponse | null>(null);
@@ -44,8 +47,12 @@ export function CycleDashboard() {
   }, [token]);
 
   useEffect(() => {
+    if (!token || !isAuthenticated) {
+      router.push("/onboarding?redirect=/health/cycle");
+      return;
+    }
     fetchData();
-  }, [fetchData]);
+  }, [token, isAuthenticated, fetchData, router]);
 
   const handleLogPeriod = async (date: string) => {
     if (!token) return;
