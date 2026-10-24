@@ -142,8 +142,13 @@ export function AppFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/about" className="hover:text-white transition-colors text-berry-200 font-medium">
+                  About Us &amp; Medical Board
+                </Link>
+              </li>
+              <li>
                 <Link href="/caregivers" className="hover:text-white transition-colors">
-                  Caregiver & Teen Bridge
+                  Caregiver &amp; Teen Bridge
                 </Link>
               </li>
               <li>

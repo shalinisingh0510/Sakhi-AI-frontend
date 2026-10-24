@@ -290,7 +290,7 @@ export default function HomePage() {
               Caregivers
             </Link>
             <Link
-              href="/learn#curated-library"
+              href="/about"
               className="rounded-full px-3.5 py-1.5 transition-all hover:bg-peach/40 hover:text-berry"
             >
               About

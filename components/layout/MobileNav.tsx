@@ -18,6 +18,7 @@ export function MobileNav() {
     { href: "/learn",      label: t("learn"),       icon: BookIcon },
     { href: "/caregivers", label: t("caregivers"),  icon: CaregiverIcon },
     { href: "/tools",      label: "Calculators",    icon: ToolsIcon },
+    { href: "/about",      label: "About",          icon: InfoIcon },
   ];
 
   return (
@@ -101,3 +102,14 @@ function ToolsIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+function InfoIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4" />
+      <path d="M12 8h.01" />
+    </svg>
+  );
+}
+
