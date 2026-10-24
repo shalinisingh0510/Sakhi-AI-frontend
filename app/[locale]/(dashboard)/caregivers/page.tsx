@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo, Suspense } from "react";
+import { useLocale } from "next-intl";
 import { learningApi, type LearningContent, type Subtopic } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { 
@@ -25,15 +26,17 @@ import { LearningVideoCard } from "@/components/learning/feed/LearningVideoCard"
 import { LearningArticleCard } from "@/components/learning/feed/LearningArticleCard";
 import { LearningPostCard } from "@/components/learning/feed/LearningPostCard";
 
-const TYPES = [
-  { id: "", label: "All Formats" },
-  { id: "ARTICLE", label: "Articles" },
-  { id: "VIDEO", label: "Video Guides" },
-  { id: "POST", label: "Infographics" },
-];
-
 function CaregiversPageContent() {
+  const locale = useLocale();
+  const isHi = locale === "hi";
   const { token } = useAuthStore();
+
+  const TYPES = [
+    { id: "", label: isHi ? "सभी प्रारूप" : "All Formats" },
+    { id: "ARTICLE", label: isHi ? "लेख" : "Articles" },
+    { id: "VIDEO", label: isHi ? "वीडियो गाइड" : "Video Guides" },
+    { id: "POST", label: isHi ? "इन्फोग्राफिक्स" : "Infographics" },
+  ];
 
   // State
   const [data, setData] = useState<LearningContent[]>([]);
@@ -110,17 +113,27 @@ function CaregiversPageContent() {
   // Sorting
   const sortedData = useMemo(() => {
     const items = [...data];
+    // Prioritize content matching active language (e.g. Hindi when locale is 'hi')
+    const sortWithLocale = (comparator: (a: LearningContent, b: LearningContent) => number) => {
+      return items.sort((a, b) => {
+        const aMatches = a.language === locale ? 1 : 0;
+        const bMatches = b.language === locale ? 1 : 0;
+        if (bMatches !== aMatches) return bMatches - aMatches;
+        return comparator(a, b);
+      });
+    };
+
     if (sortBy === "newest") {
-      return items.sort((a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime());
+      return sortWithLocale((a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime());
     }
     if (sortBy === "duration") {
-      return items.sort((a, b) => (a.duration_minutes || 5) - (b.duration_minutes || 5));
+      return sortWithLocale((a, b) => (a.duration_minutes || 5) - (b.duration_minutes || 5));
     }
     if (sortBy === "az") {
-      return items.sort((a, b) => a.title.localeCompare(b.title));
+      return sortWithLocale((a, b) => a.title.localeCompare(b.title));
     }
-    return items;
-  }, [data, sortBy]);
+    return sortWithLocale(() => 0);
+  }, [data, sortBy, locale]);
 
   return (
     <div className="mx-auto flex max-w-[1536px] gap-8 px-4 py-6 md:px-8">
@@ -181,13 +194,15 @@ function CaregiversPageContent() {
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-berry">
                   <Sparkles size={13} />
-                  <span>EVIDENCE-BASED CAREGIVER MODULES</span>
+                  <span>{isHi ? "प्रमाणित अभिभावक मॉड्यूल" : "EVIDENCE-BASED CAREGIVER MODULES"}</span>
                 </div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink tracking-tight mt-1">
-                  Curated Caregiver Learning Library
+                  {isHi ? "देखभालकर्ता शिक्षण पुस्तकालय" : "Curated Caregiver Learning Library"}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-                  Pediatrician-reviewed guides, video walkthroughs, and practical manuals for raising bodily confident young adults.
+                  {isHi 
+                    ? "बाल रोग विशेषज्ञों द्वारा समीक्षित मार्गदर्शिकाएं, वीडियो और व्यावहारिक निर्देश।"
+                    : "Pediatrician-reviewed guides, video walkthroughs, and practical manuals for raising bodily confident young adults."}
                 </p>
               </div>
 
@@ -219,10 +234,10 @@ function CaregiversPageContent() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3.5 pr-8 text-xs font-semibold text-slate-700 shadow-2xs outline-none transition-all hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20"
                   >
-                    <option value="recommended">Sort by: Recommended</option>
-                    <option value="newest">Sort by: Most Recent</option>
-                    <option value="duration">Sort by: Quick Reads</option>
-                    <option value="az">Sort by: Alphabetical (A-Z)</option>
+                    <option value="recommended">{isHi ? "क्रमबद्ध करें: अनुशंसित" : "Sort by: Recommended"}</option>
+                    <option value="newest">{isHi ? "क्रमबद्ध करें: नवीनतम" : "Sort by: Most Recent"}</option>
+                    <option value="duration">{isHi ? "क्रमबद्ध करें: कम समय" : "Sort by: Quick Reads"}</option>
+                    <option value="az">{isHi ? "क्रमबद्ध करें: वर्णमाला (A-Z)" : "Sort by: Alphabetical (A-Z)"}</option>
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                 </div>
@@ -238,7 +253,7 @@ function CaregiversPageContent() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search caregiver modules (e.g., father, pads, cramps, taboo)..."
+                  placeholder={isHi ? "अभिभावक मॉड्यूल खोजें (उदा. पिता, पैड, ऐंठन)..." : "Search caregiver modules (e.g., father, pads, cramps, taboo)..."}
                   className="w-full rounded-xl border border-slate-200 bg-[#FCFBFB] py-2.5 pl-10 pr-4 text-xs font-medium text-ink placeholder:text-slate-400 focus:border-berry focus:bg-white focus:outline-none focus:ring-1 focus:ring-berry/20 transition-all"
                 />
               </div>
@@ -251,7 +266,7 @@ function CaregiversPageContent() {
                     onChange={(e) => setSelectedSubtopic(e.target.value)}
                     className="w-full sm:w-auto appearance-none rounded-xl border border-slate-200 bg-[#FCFBFB] py-2.5 pl-3.5 pr-8 text-xs font-semibold text-slate-700 outline-none transition-all hover:border-slate-300 focus:border-berry focus:bg-white focus:ring-1 focus:ring-berry/20"
                   >
-                    <option value="all">All Caregiver Categories</option>
+                    <option value="all">{isHi ? "सभी श्रेणियां" : "All Caregiver Categories"}</option>
                     {subtopics.map((sub) => (
                       <option key={sub.id} value={sub.id}>
                         {sub.name}
@@ -274,10 +289,10 @@ function CaregiversPageContent() {
               <div className="flex h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-[#FCF8FA] text-center px-4">
                 <HeartHandshake className="h-8 w-8 text-berry/50 mb-2" />
                 <p className="text-sm font-semibold text-slate-700">
-                  No caregiver modules matched your filter.
+                  {isHi ? "आपके फ़िल्टर से कोई मॉड्यूल मेल नहीं खाता।" : "No caregiver modules matched your filter."}
                 </p>
                 <p className="mt-1 text-xs text-slate-500 max-w-sm">
-                  Try clearing the search or category filters to explore all 8 caregiver modules.
+                  {isHi ? "सभी 8 अभिभावक मॉड्यूल देखने के लिए खोज या श्रेणी फ़िल्टर साफ़ करें।" : "Try clearing the search or category filters to explore all 8 caregiver modules."}
                 </p>
                 {(searchQuery || typeFilter || selectedSubtopic !== "all") && (
                   <button

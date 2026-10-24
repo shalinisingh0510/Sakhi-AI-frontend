@@ -11,6 +11,7 @@ import { AnonymousShieldModal } from "@/components/privacy/AnonymousShieldModal"
 import { AnonymousPaywallModal } from "@/components/privacy/AnonymousPaywallModal";
 import { AnonymousTrialBanner } from "@/components/privacy/AnonymousTrialBanner";
 import { PanicBlurCurtain } from "@/components/privacy/PanicBlurCurtain";
+import { LanguageSelector } from "@/components/layout/LanguageSelector";
 import {
   BookOpen,
   Search,
@@ -311,37 +312,8 @@ export default function HomePage() {
               <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             </form>
 
-            {/* Language Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setLangMenuOpen(!langMenuOpen)}
-                className="flex items-center gap-1.5 rounded-full border border-peach/80 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-berry/30 hover:bg-peach/20 transition-all"
-                aria-expanded={langMenuOpen}
-                aria-label="Select Language"
-              >
-                <span>{selectedLanguage}</span>
-                <Globe2 className="h-3.5 w-3.5 text-slate-500" />
-              </button>
-
-              {langMenuOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-36 rounded-2xl border border-peach/80 bg-white p-1.5 shadow-lg z-50">
-                  {["English", "हिंदी (Hindi)", "मराठी (Marathi)", "বাংলা (Bengali)", "தமிழ் (Tamil)"].map((lang) => (
-                    <button
-                      key={lang}
-                      type="button"
-                      onClick={() => {
-                        setSelectedLanguage(lang.split(" ")[0]);
-                        setLangMenuOpen(false);
-                      }}
-                      className="w-full text-left rounded-xl px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-peach/30 hover:text-berry"
-                    >
-                      {lang}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Sign In Button */}
             <button

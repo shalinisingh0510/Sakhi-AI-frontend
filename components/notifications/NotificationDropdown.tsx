@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   CheckCheck,
   Sparkles,
@@ -21,6 +22,11 @@ export function NotificationDropdown({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const locale = useLocale();
+  const isHi = locale === "hi";
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  const getHref = (path: string) => `${prefix}${path}`;
+
   const {
     notifications,
     unreadCount,
@@ -74,11 +80,11 @@ export function NotificationDropdown({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="font-display text-sm font-bold text-ink">
-              Notifications
+              {isHi ? "सूचनाएं" : "Notifications"}
             </h3>
             {unreadCount > 0 && (
               <span className="rounded-full bg-berry px-2 py-0.2 text-[10px] font-extrabold text-white">
-                {unreadCount} new
+                {unreadCount} {isHi ? "नई" : "new"}
               </span>
             )}
           </div>
@@ -89,10 +95,10 @@ export function NotificationDropdown({
                 type="button"
                 onClick={() => markAllAsRead()}
                 className="text-berry hover:text-berry/80 font-medium flex items-center gap-1 transition-colors"
-                title="Mark all as read"
+                title={isHi ? "सभी पढ़ा हुआ मार्क करें" : "Mark all as read"}
               >
                 <CheckCheck className="h-3.5 w-3.5" />
-                <span>Mark read</span>
+                <span>{isHi ? "सब पढ़ें" : "Mark read"}</span>
               </button>
             )}
           </div>
@@ -103,33 +109,35 @@ export function NotificationDropdown({
           <div className="flex items-center justify-between">
             <span className="font-semibold text-emerald-800 flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              <span>2-Hour Cadence Engine Active</span>
+              <span>{isHi ? "2-घंटे का चक्र इंजन सक्रिय" : "2-Hour Cadence Engine Active"}</span>
             </span>
             <button
               type="button"
               onClick={handleSimulateNextAlert}
               disabled={triggering}
               className="rounded-lg bg-berry/10 hover:bg-berry/20 text-berry font-bold px-2 py-0.5 text-[10px] transition-all"
-              title="Test next 2-hour notification now"
+              title={isHi ? "अगला 2-घंटे का अलर्ट तुरंत टेस्ट करें" : "Test next 2-hour notification now"}
             >
-              {triggering ? "Triggering..." : "Simulate Alert"}
+              {triggering ? (isHi ? "भेजा जा रहा है..." : "Triggering...") : (isHi ? "अलर्ट टेस्ट करें" : "Simulate Alert")}
             </button>
           </div>
           <p className="text-[10px] text-ink/55 leading-tight">
-            Notifies you every 2 hours on Period, Ovulation, Energy, Activity, and Learning.
+            {isHi 
+              ? "मासिक चक्र, ओव्यूलेशन, ऊर्जा, गतिविधि और स्वास्थ्य पर हर 2 घंटे में अलर्ट देता है।"
+              : "Notifies you every 2 hours on Period, Ovulation, Energy, Activity, and Learning."}
           </p>
         </div>
 
         {/* Browser Push Permission Prompt if not granted */}
         {browserPermission !== "granted" && (
           <div className="mt-2 flex items-center justify-between rounded-xl bg-amber-50 border border-amber-200/80 px-2.5 py-1.5 text-[11px] text-amber-900">
-            <span>Enable desktop push notifications:</span>
+            <span>{isHi ? "डेस्कटॉप सूचनाएं सक्षम करें:" : "Enable desktop push notifications:"}</span>
             <button
               type="button"
               onClick={requestBrowserPermission}
               className="rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold px-2 py-0.5 text-[10px] transition-colors"
             >
-              Enable
+              {isHi ? "सक्षम करें" : "Enable"}
             </button>
           </div>
         )}
@@ -140,15 +148,22 @@ export function NotificationDropdown({
         {notifications.length === 0 ? (
           <div className="py-8 text-center px-4 space-y-2">
             <span className="text-2xl">🌸</span>
-            <p className="text-xs font-semibold text-ink/70">All caught up!</p>
+            <p className="text-xs font-semibold text-ink/70">
+              {isHi ? "सब कुछ पढ़ा जा चुका है!" : "All caught up!"}
+            </p>
             <p className="text-[11px] text-ink/45 max-w-xs mx-auto">
-              Your 2-hour cycle, energy, and learning updates will appear here automatically.
+              {isHi 
+                ? "आपके 2-घंटे के चक्र, ऊर्जा और शिक्षण अपडेट यहां स्वतः दिखाई देंगे।"
+                : "Your 2-hour cycle, energy, and learning updates will appear here automatically."}
             </p>
           </div>
         ) : (
           notifications.slice(0, 15).map((n) => {
-            const actionUrl = n.metadata?.action_url || "/notifications";
-            const cta = n.metadata?.cta || "View";
+            const rawUrl = n.metadata?.action_url || "/notifications";
+            const actionUrl = locale !== "en" && rawUrl.startsWith("/") && !rawUrl.startsWith(`/${locale}`)
+              ? `/${locale}${rawUrl}`
+              : rawUrl;
+            const cta = n.metadata?.cta || (isHi ? "देखें" : "View");
 
             return (
               <div
@@ -192,7 +207,7 @@ export function NotificationDropdown({
                       type="button"
                       onClick={() => deleteNotification(n.id)}
                       className="text-ink/30 hover:text-rose-600 transition-colors p-1"
-                      title="Remove notification"
+                      title={isHi ? "हटाएं" : "Remove notification"}
                     >
                       <Trash2 className="h-3 w-3" />
                     </button>
@@ -207,11 +222,11 @@ export function NotificationDropdown({
       {/* Footer */}
       <div className="border-t border-peach/50 bg-[#FFFDFB] p-3 text-center">
         <Link
-          href="/notifications"
+          href={getHref("/notifications")}
           onClick={onClose}
           className="text-xs font-semibold text-berry hover:text-berry/80 flex items-center justify-center gap-1 transition-colors"
         >
-          <span>View All Notifications in Inbox</span>
+          <span>{isHi ? "इनबॉक्स में सभी सूचनाएं देखें" : "View All Notifications in Inbox"}</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>

@@ -18,19 +18,31 @@ import { Card } from "@/components/ui/Card";
 import { useNotificationStore, NOTIFICATION_INTERVAL_MS } from "@/lib/notification-store";
 import { useAuthStore } from "@/lib/auth-store";
 import type { ApiNotificationItem } from "@/lib/api";
+import { useLocale } from "next-intl";
 
 type NotificationFilter = "all" | "cycle" | "energy" | "activity" | "learning" | "system";
 
-const FILTER_TABS: { key: NotificationFilter; label: string; icon: string }[] = [
-  { key: "all", label: "All Alerts", icon: "🔔" },
-  { key: "cycle", label: "Cycle & Ovulation", icon: "🌸" },
-  { key: "energy", label: "Energy Insights", icon: "⚡" },
-  { key: "activity", label: "Activity & Hydration", icon: "💧" },
-  { key: "learning", label: "Learning & Modules", icon: "📚" },
-  { key: "system", label: "System & Safety", icon: "🛡️" },
-];
-
 export default function NotificationsPage() {
+  const locale = useLocale();
+  const isHi = locale === "hi";
+
+  const FILTER_TABS: { key: NotificationFilter; label: string; icon: string }[] = isHi
+    ? [
+        { key: "all", label: "सभी अलर्ट", icon: "🔔" },
+        { key: "cycle", label: "चक्र व ओव्यूलेशन", icon: "🌸" },
+        { key: "energy", label: "ऊर्जा अंतर्दृष्टि", icon: "⚡" },
+        { key: "activity", label: "गतिविधि व जलपान", icon: "💧" },
+        { key: "learning", label: "शिक्षण व मॉड्यूल", icon: "📚" },
+        { key: "system", label: "सिस्टम व सुरक्षा", icon: "🛡️" },
+      ]
+    : [
+        { key: "all", label: "All Alerts", icon: "🔔" },
+        { key: "cycle", label: "Cycle & Ovulation", icon: "🌸" },
+        { key: "energy", label: "Energy Insights", icon: "⚡" },
+        { key: "activity", label: "Activity & Hydration", icon: "💧" },
+        { key: "learning", label: "Learning & Modules", icon: "📚" },
+        { key: "system", label: "System & Safety", icon: "🛡️" },
+      ];
   const {
     notifications,
     unreadCount,
@@ -130,6 +142,9 @@ export default function NotificationsPage() {
     }
   };
 
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  const getHref = (path: string) => `${prefix}${path}`;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-8">
       {/* Anonymous mode info notice */}
@@ -140,14 +155,17 @@ export default function NotificationsPage() {
               👤
             </span>
             <span>
-              <strong>Anonymous Mode Active:</strong> All cycle, ovulation, and energy alerts are delivered locally to your browser without requiring your email.
+              <strong>{isHi ? "अनाम मोड सक्रिय:" : "Anonymous Mode Active:"}</strong>{" "}
+              {isHi
+                ? "सभी चक्र, ओव्यूलेशन और ऊर्जा अलर्ट आपके ब्राउज़र में बिना ईमेल के स्थानीय रूप से प्राप्त होते हैं।"
+                : "All cycle, ovulation, and energy alerts are delivered locally to your browser without requiring your email."}
             </span>
           </div>
           <Link
-            href="/chat"
+            href={getHref("/chat")}
             className="hidden font-semibold text-berry hover:underline sm:inline-block"
           >
-            Ask Sakhi AI →
+            {isHi ? "सखी AI से पूछें →" : "Ask Sakhi AI →"}
           </Link>
         </div>
       )}
@@ -160,9 +178,13 @@ export default function NotificationsPage() {
               <Bell className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-sm font-semibold text-ink">Enable Native Browser Notifications</p>
+              <p className="text-sm font-semibold text-ink">
+                {isHi ? "ब्राउज़र सूचनाएं सक्षम करें" : "Enable Native Browser Notifications"}
+              </p>
               <p className="text-xs text-ink/65">
-                Receive 2-hour cycle rhythm, energy forecasts, and hydration prompts right on your desktop or phone screen.
+                {isHi
+                  ? "2-घंटे का चक्र अपडेट, ऊर्जा पूर्वानुमान और जलपान अनुस्मारक सीधे अपनी स्क्रीन पर पाएं।"
+                  : "Receive 2-hour cycle rhythm, energy forecasts, and hydration prompts right on your desktop or phone screen."}
               </p>
             </div>
           </div>
@@ -171,7 +193,7 @@ export default function NotificationsPage() {
             onClick={requestBrowserPermission}
             className="inline-flex shrink-0 items-center justify-center rounded-xl bg-berry px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-rose"
           >
-            Allow Notifications
+            {isHi ? "सूचनाएं चालू करें" : "Allow Notifications"}
           </button>
         </div>
       )}
@@ -185,13 +207,15 @@ export default function NotificationsPage() {
               <div className="max-w-2xl">
                 <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-berry shadow-sm">
                   <span className="h-2 w-2 rounded-full bg-rose animate-pulse" />
-                  Sakhi 2-Hour Intelligence Engine
+                  {isHi ? "सखी 2-घंटे का चक्र इंजन" : "Sakhi 2-Hour Intelligence Engine"}
                 </div>
                 <h1 className="font-display text-3xl font-bold text-ink sm:text-4xl">
-                  Notification Center
+                  {isHi ? "सूचना केंद्र" : "Notification Center"}
                 </h1>
                 <p className="mt-2 text-sm leading-relaxed text-ink/70 sm:text-base">
-                  Real-time alerts for your menstrual cycle, fertile window, metabolic energy, hydration check-ins, and published learning modules.
+                  {isHi
+                    ? "आपके मासिक धर्म चक्र, ओव्यूलेशन विंडो, चयापचय ऊर्जा, जलपान और नए शिक्षण मॉड्यूल के लिए रीयल-टाइम अलर्ट।"
+                    : "Real-time alerts for your menstrual cycle, fertile window, metabolic energy, hydration check-ins, and published learning modules."}
                 </p>
               </div>
 
@@ -202,7 +226,9 @@ export default function NotificationsPage() {
                     <Bell className="h-6 w-6" />
                   </span>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">Unread</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                      {isHi ? "अपठित" : "Unread"}
+                    </p>
                     <p className="font-display text-2xl font-bold text-berry">{unreadCount}</p>
                   </div>
                 </div>

@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 
 export function MobileNav() {
   const pathname = usePathname();
+  const locale = useLocale();
   const t = useTranslations("Navigation");
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  const getLocalizedHref = (path: string) => {
+    if (locale === "en") return path;
+    return `/${locale}${path}`;
+  };
 
   const TABS = [
     { href: "/dashboard",  label: t("home"),        icon: HomeIcon },
@@ -17,8 +23,8 @@ export function MobileNav() {
     { href: "/chat",       label: t("chat"),        icon: ChatIcon },
     { href: "/learn",      label: t("learn"),       icon: BookIcon },
     { href: "/caregivers", label: t("caregivers"),  icon: CaregiverIcon },
-    { href: "/tools",      label: "Calculators",    icon: ToolsIcon },
-    { href: "/about",      label: "About",          icon: InfoIcon },
+    { href: "/tools",      label: t("tools"),       icon: ToolsIcon },
+    { href: "/about",      label: t("about"),       icon: InfoIcon },
   ];
 
   return (
@@ -27,13 +33,14 @@ export function MobileNav() {
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-peach/60 bg-white/90 pb-safe pt-2 backdrop-blur-sm md:hidden"
     >
       {TABS.map(({ href, label, icon: Icon }) => {
-        const active = pathname === href || pathname.startsWith(href + "/");
+        const locHref = getLocalizedHref(href);
+        const active = pathname === href || pathname === locHref || pathname.startsWith(href + "/") || pathname.startsWith(locHref + "/");
         const isHealthTab = href === "/health";
 
         return (
           <Link
             key={href}
-            href={href}
+            href={locHref}
             onClick={(e) => {
               if (isHealthTab && !isAuthenticated) {
                 e.preventDefault();

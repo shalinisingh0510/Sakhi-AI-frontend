@@ -87,10 +87,10 @@ export const authApi = {
       body: { email, password },
     }),
 
-  register: (name: string, email: string, password: string) =>
+  register: (name: string, email: string, password: string, preferred_language?: string) =>
     request<AuthResponse>("/auth/register", {
       method: "POST",
-      body: { name, email, password },
+      body: { name, email, password, ...(preferred_language ? { preferred_language } : {}) },
     }),
 
   loginWithGoogle: (data: { credential?: string; code?: string; email?: string; name?: string; picture?: string }) =>
@@ -179,10 +179,10 @@ export const conversationApi = {
       token,
     }),
 
-  sendMessage: (conversationId: string, message: string, token: string, mode: "text" | "voice" = "text") =>
+  sendMessage: (conversationId: string, message: string, token: string, mode: "text" | "voice" = "text", language?: string) =>
     request<ApiConversationDetail>(`/conversations/${conversationId}/messages`, {
       method: "POST",
-      body: { message, mode },
+      body: { message, mode, ...(language ? { preferred_language: language } : {}) },
       token,
     }),
 };
@@ -194,7 +194,7 @@ export const chatApi = {
     if (!sessionId) {
       res = await conversationApi.createConversation(content, token, mode, language);
     } else {
-      res = await conversationApi.sendMessage(sessionId, content, token, mode);
+      res = await conversationApi.sendMessage(sessionId, content, token, mode, language);
     }
     const messages = res.messages || [];
     const lastMsg = messages[messages.length - 1];

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   X,
   ArrowRight,
@@ -13,6 +14,9 @@ import {
 import { useNotificationStore } from "@/lib/notification-store";
 
 export function NotificationToast() {
+  const locale = useLocale();
+  const isHi = locale === "hi";
+
   const activeToast = useNotificationStore((s) => s.activeToast);
   const dismissToast = useNotificationStore((s) => s.dismissToast);
   const markAsRead = useNotificationStore((s) => s.markAsRead);
@@ -37,8 +41,11 @@ export function NotificationToast() {
     }
   };
 
-  const actionUrl = activeToast.metadata?.action_url || "/notifications";
-  const cta = activeToast.metadata?.cta || "View Details";
+  const rawUrl = activeToast.metadata?.action_url || "/notifications";
+  const actionUrl = locale !== "en" && rawUrl.startsWith("/") && !rawUrl.startsWith(`/${locale}`)
+    ? `/${locale}${rawUrl}`
+    : rawUrl;
+  const cta = activeToast.metadata?.cta || (isHi ? "विवरण देखें" : "View Details");
 
   const handleAction = () => {
     markAsRead(activeToast.id);
@@ -58,9 +65,9 @@ export function NotificationToast() {
           <div className="flex-1 min-w-0 pr-2">
             <div className="flex items-center gap-1.5 mb-1">
               <span className="rounded-full bg-berry/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-berry">
-                {activeToast.metadata?.cadence || "2-Hour Alert"}
+                {isHi ? "2-घंटे का अलर्ट" : (activeToast.metadata?.cadence || "2-Hour Alert")}
               </span>
-              <span className="text-[10px] text-ink/40">Just now</span>
+              <span className="text-[10px] text-ink/40">{isHi ? "अभी-अभी" : "Just now"}</span>
             </div>
             <h4 className="font-display text-sm font-bold text-ink truncate">
               {activeToast.title}
@@ -87,7 +94,7 @@ export function NotificationToast() {
             type="button"
             onClick={dismissToast}
             className="text-ink/40 hover:text-ink p-1 rounded-lg hover:bg-cream transition-colors shrink-0"
-            aria-label="Dismiss alert"
+            aria-label={isHi ? "अलर्ट बंद करें" : "Dismiss alert"}
           >
             <X className="h-4 w-4" />
           </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { ShieldCheck, Sparkles, HeartHandshake, CheckCircle2, Menu } from "lucide-react";
 
 interface CaregiverHeroProps {
@@ -31,14 +32,42 @@ const ROLE_TIPS: Record<string, { title: string; desc: string }> = {
   }
 };
 
+const ROLE_TIPS_HI: Record<string, { title: string; desc: string }> = {
+  all: {
+    title: "बुनियादी दृष्टिकोण",
+    desc: "सहजता और स्पष्टता से बात करें। जब अभिभावक आत्मविश्वास के साथ मासिक धर्म पर चर्चा करते हैं, तो बच्चों में जीवनभर का संकोच समाप्त होता है।"
+  },
+  mothers: {
+    title: "माताएं व मौसी/बुआ: शारीरिक स्वायत्तता को सामान्य बनाएं",
+    desc: "अपनी शुरुआती यादें साझा करें और आधुनिक उत्पादों के बारे में बताएं ताकि वह अपने स्वास्थ्य और चक्र पर आत्मविश्वास महसूस करे।"
+  },
+  fathers: {
+    title: "पिता व पुरुष संरक्षक: झिझक मिटाएं",
+    desc: "घर में पैड्स सहजता से उपलब्ध रखें। मासिक धर्म को कभी गुप्त न समझें और शारीरिक परेशानी में सहयोग व संवेदनशीलता दिखाएं।"
+  },
+  teachers: {
+    title: "शिक्षक व काउंसलर: सुरक्षित विद्यालय वातावरण",
+    desc: "कक्षा या मेडिकल कक्ष में आपातकालीन पैड किट रखें और बिना किसी असहजता के शौचालय उपयोग की अनुमति दें।"
+  },
+  siblings: {
+    title: "बड़े भाई-बहन: सहकर्मी समर्थन",
+    desc: "एक विश्वासपात्र साथी बनें जो बिना किसी उपदेश के सही सलाह दे सके। उन्हें आश्वस्त करें कि ऐंठन और दाग लगना पूरी तरह स्वाभाविक है।"
+  }
+};
+
 export function CaregiverHero({ selectedRole, onSelectRole, onOpenMobileNav }: CaregiverHeroProps) {
-  const currentTip = ROLE_TIPS[selectedRole] || ROLE_TIPS.all;
+  const locale = useLocale();
+  const isHi = locale === "hi";
+
+  const currentTip = isHi 
+    ? (ROLE_TIPS_HI[selectedRole] || ROLE_TIPS_HI.all) 
+    : (ROLE_TIPS[selectedRole] || ROLE_TIPS.all);
 
   const ROLES = [
-    { id: "mothers", label: "Mothers & Aunts" },
-    { id: "fathers", label: "Fathers & Male Mentors" },
-    { id: "teachers", label: "Teachers & Counselors" },
-    { id: "siblings", label: "Elder Siblings" },
+    { id: "mothers", label: isHi ? "माताएं व मौसी/बुआ" : "Mothers & Aunts" },
+    { id: "fathers", label: isHi ? "पिता व संरक्षक" : "Fathers & Male Mentors" },
+    { id: "teachers", label: isHi ? "शिक्षक व काउंसलर" : "Teachers & Counselors" },
+    { id: "siblings", label: isHi ? "बड़े भाई-बहन" : "Elder Siblings" },
   ];
 
   return (
@@ -62,21 +91,25 @@ export function CaregiverHero({ selectedRole, onSelectRole, onOpenMobileNav }: C
             )}
             <div className="inline-flex items-center gap-1.5 rounded-full border border-berry/20 bg-white/90 px-3.5 py-1 text-[11px] font-bold text-berry shadow-2xs backdrop-blur-sm">
               <ShieldCheck size={13} className="text-berry" />
-              <span>Co-created with pediatricians and child health educators</span>
+              <span>{isHi ? "बाल रोग विशेषज्ञों और स्वास्थ्य शिक्षकों के साथ सह-निर्मित" : "Co-created with pediatricians and child health educators"}</span>
             </div>
           </div>
 
           <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-ink leading-[1.18] tracking-tight">
-            Empowering the Next Generation: A Caregiver&apos;s Guide to Puberty &amp; Period Literacy
+            {isHi 
+              ? "नई पीढ़ी का सशक्तिकरण: यौवन और मासिक धर्म साक्षरता के लिए अभिभावक मार्गदर्शिका"
+              : "Empowering the Next Generation: A Caregiver's Guide to Puberty & Period Literacy"}
           </h1>
 
           <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
-            Practical conversation starters, age-appropriate guidance, and stigma-free advice for mothers, fathers, elder sisters, teachers, and guardians navigating growing years together.
+            {isHi
+              ? "माताओं, पिताओं, बड़ी बहनों, शिक्षकों और संरक्षकों के लिए व्यावहारिक बातचीत, आयु-अनुकूल मार्गदर्शन और कलंक-मुक्त सलाह।"
+              : "Practical conversation starters, age-appropriate guidance, and stigma-free advice for mothers, fathers, elder sisters, teachers, and guardians navigating growing years together."}
           </p>
 
           {/* Tailored For Pills */}
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-slate-400 mr-1">Tailored for:</span>
+            <span className="text-xs font-semibold text-slate-400 mr-1">{isHi ? "विशेष रूप से इनके लिए:" : "Tailored for:"}</span>
             {ROLES.map((r) => {
               const isActive = selectedRole === r.id;
               return (
@@ -125,7 +158,7 @@ export function CaregiverHero({ selectedRole, onSelectRole, onOpenMobileNav }: C
               
               <div className="absolute top-3 right-3 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold text-emerald-800 shadow-sm backdrop-blur-md flex items-center gap-1">
                 <CheckCircle2 size={12} className="text-emerald-600" />
-                <span>Pediatric Approved</span>
+                <span>{isHi ? "बाल चिकित्सा प्रमाणित" : "Pediatric Approved"}</span>
               </div>
             </div>
 
@@ -135,8 +168,8 @@ export function CaregiverHero({ selectedRole, onSelectRole, onOpenMobileNav }: C
                   <Sparkles size={16} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-ink">Safe Sanctuary Space</h4>
-                  <p className="text-[11px] text-slate-500">Confidential, stigma-neutral advice</p>
+                  <h4 className="text-xs font-bold text-ink">{isHi ? "सुरक्षित आश्रय स्थल" : "Safe Sanctuary Space"}</h4>
+                  <p className="text-[11px] text-slate-500">{isHi ? "गोपनीय, कलंक-मुक्त मार्गदर्शन" : "Confidential, stigma-neutral advice"}</p>
                 </div>
               </div>
             </div>

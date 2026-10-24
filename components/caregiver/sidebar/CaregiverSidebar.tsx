@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { 
   HeartHandshake, 
   Map, 
@@ -30,29 +31,33 @@ export function CaregiverSidebar({
   onSelectStage
 }: CaregiverSidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
+  const isHi = locale === "hi";
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  const getHref = (path: string) => `${prefix}${path}`;
 
   const navItems = [
-    { href: "/caregivers", label: "Caregiver Hub", icon: HeartHandshake },
-    { href: "/caregivers#roadmap", label: "Milestone Roadmap", icon: Map },
-    { href: "/caregivers#scripts", label: "Dialogue Scripts", icon: MessageSquareQuote },
-    { href: "/caregivers#faqs", label: "Pediatric Q&A", icon: HelpCircle },
-    { href: "/caregivers#toolkits", label: "Toolkits & Audio", icon: DownloadCloud },
-    { href: "/caregivers#simulator", label: "AI Practice Simulator", icon: Bot },
-    { href: "/caregivers#modules", label: "Curated Modules", icon: BookOpen },
+    { href: getHref("/caregivers"), label: isHi ? "अभिभावक केंद्र" : "Caregiver Hub", icon: HeartHandshake },
+    { href: getHref("/caregivers#roadmap"), label: isHi ? "पड़ाव रोडमैप" : "Milestone Roadmap", icon: Map },
+    { href: getHref("/caregivers#scripts"), label: isHi ? "संवाद पटकथाएं" : "Dialogue Scripts", icon: MessageSquareQuote },
+    { href: getHref("/caregivers#faqs"), label: isHi ? "बाल चिकित्सा प्रश्नोत्तर" : "Pediatric Q&A", icon: HelpCircle },
+    { href: getHref("/caregivers#toolkits"), label: isHi ? "टूलकिट और ऑडियो" : "Toolkits & Audio", icon: DownloadCloud },
+    { href: getHref("/caregivers#simulator"), label: isHi ? "AI अभ्यास सिमुलेटर" : "AI Practice Simulator", icon: Bot },
+    { href: getHref("/caregivers#modules"), label: isHi ? "चयनित मॉड्यूल" : "Curated Modules", icon: BookOpen },
   ];
 
   const ROLES = [
-    { id: "all", label: "All Caregivers" },
-    { id: "mothers", label: "Mothers & Aunts" },
-    { id: "fathers", label: "Fathers & Male Mentors" },
-    { id: "teachers", label: "Teachers & Counselors" },
-    { id: "siblings", label: "Elder Siblings" },
+    { id: "all", label: isHi ? "सभी अभिभावक" : "All Caregivers" },
+    { id: "mothers", label: isHi ? "माताएं व मौसी/बुआ" : "Mothers & Aunts" },
+    { id: "fathers", label: isHi ? "पिता व संरक्षक" : "Fathers & Male Mentors" },
+    { id: "teachers", label: isHi ? "शिक्षक व काउंसलर" : "Teachers & Counselors" },
+    { id: "siblings", label: isHi ? "बड़े भाई-बहन" : "Elder Siblings" },
   ];
 
   const STAGES = [
-    { id: "9-11", label: "Ages 9–11 (Early Prep)" },
-    { id: "12-14", label: "Ages 12–14 (First Period)" },
-    { id: "15-18", label: "Ages 15–18 (Cycle Literacy)" },
+    { id: "9-11", label: isHi ? "उम्र 9–11 (प्रारंभिक तैयारी)" : "Ages 9–11 (Early Prep)" },
+    { id: "12-14", label: isHi ? "उम्र 12–14 (पहला पीरियड)" : "Ages 12–14 (First Period)" },
+    { id: "15-18", label: isHi ? "उम्र 15–18 (चक्र साक्षरता)" : "Ages 15–18 (Cycle Literacy)" },
   ];
 
   return (
@@ -88,7 +93,7 @@ export function CaregiverSidebar({
         <p className="mb-2.5 px-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-ink/40">
           <span className="flex items-center gap-1.5">
             <Users2 size={12} />
-            <span>MENTOR FOCUS</span>
+            <span>{isHi ? "संरक्षक भूमिका" : "MENTOR FOCUS"}</span>
           </span>
         </p>
 
@@ -121,7 +126,7 @@ export function CaregiverSidebar({
       {/* Age Stages */}
       <div className="mt-5 pt-4 border-t border-slate-100">
         <p className="mb-2.5 px-3 text-[10px] font-bold uppercase tracking-widest text-ink/40">
-          AGE BANDS
+          {isHi ? "आयु वर्ग" : "AGE BANDS"}
         </p>
 
         <div className="space-y-1">
@@ -153,10 +158,12 @@ export function CaregiverSidebar({
       <div className="mt-6 rounded-2xl bg-gradient-to-br from-berry/5 to-lavender/10 p-3.5 border border-berry/10 text-xs text-slate-600">
         <p className="font-bold text-ink flex items-center gap-1.5 mb-1 text-[11px]">
           <span>🩺</span>
-          <span>Pediatric Panel</span>
+          <span>{isHi ? "बाल चिकित्सा विशेषज्ञ पैनल" : "Pediatric Panel"}</span>
         </p>
         <p className="text-[11px] leading-relaxed text-slate-500">
-          Curated under guidance of Dr. Sunita Ramanathan, MD & youth psychologists.
+          {isHi 
+            ? "डॉ. सुनीता रामनाथन (MD) और बाल मनोवैज्ञानिकों के मार्गदर्शन में तैयार।"
+            : "Curated under guidance of Dr. Sunita Ramanathan, MD & youth psychologists."}
         </p>
       </div>
     </aside>

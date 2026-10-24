@@ -12,7 +12,8 @@ import { normalizeUser } from "@/lib/api-config";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useNotificationStore } from "@/lib/notification-store";
 import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { LanguageSelector } from "@/components/layout/LanguageSelector";
 
 export function AppNav() {
   const pathname = usePathname();
@@ -34,14 +35,20 @@ export function AppNav() {
   const seconds = secondsRemaining % 60;
   const timerStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
+  const locale = useLocale();
+  const getLocalizedHref = (path: string) => {
+    if (locale === "en") return path;
+    return `/${locale}${path}`;
+  };
+
   const NAV_LINKS = [
     { href: "/dashboard", label: t("home"), icon: HomeIcon },
     { href: "/health", label: t("health"), icon: HeartIcon },
     { href: "/chat", label: t("chat"), icon: ChatIcon },
     { href: "/learn", label: t("learn"), icon: BookIcon },
     { href: "/caregivers", label: t("caregivers"), icon: CaregiverIcon },
-    { href: "/tools", label: "Calculators", icon: ToolsIcon },
-    { href: "/about", label: "About", icon: InfoIcon },
+    { href: "/tools", label: t("tools"), icon: ToolsIcon },
+    { href: "/about", label: t("about"), icon: InfoIcon },
   ];
 
   useEffect(() => {
@@ -103,20 +110,21 @@ export function AppNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-peach/60 bg-white/80 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href={getLocalizedHref("/dashboard")} className="flex items-center gap-2">
           <span className="text-xl" aria-hidden="true">🌸</span>
           <span className="font-display text-lg font-bold text-berry">Sakhi AI</span>
         </Link>
 
         <nav aria-label="App navigation" className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + "/");
+            const locHref = getLocalizedHref(href);
+            const active = pathname === href || pathname === locHref || pathname.startsWith(href + "/") || pathname.startsWith(locHref + "/");
             const isHealthTab = href === "/health";
 
             return (
               <Link
                 key={href}
-                href={href}
+                href={locHref}
                 onClick={(e) => {
                   if (isHealthTab && !isAuthenticated) {
                     e.preventDefault();
@@ -137,6 +145,9 @@ export function AppNav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {/* Global Language Selector */}
+          <LanguageSelector />
+
           <div className="relative" ref={notifRef}>
             <button
               type="button"
@@ -183,7 +194,7 @@ export function AppNav() {
               </button>
 
               <Link
-                href="/login"
+                href={getLocalizedHref("/login")}
                 className="flex items-center gap-2 rounded-full border border-peach/80 bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-berry shadow-2xs hover:bg-blush/30 transition-all"
               >
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-berry/10 text-xs font-bold text-berry">
@@ -297,7 +308,7 @@ export function AppNav() {
                     )}
 
                     <Link
-                      href="/profile"
+                      href={getLocalizedHref("/profile")}
                       role="menuitem"
                       className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
                       onClick={() => setMenuOpen(false)}
@@ -305,7 +316,7 @@ export function AppNav() {
                       <PersonIcon className="h-4 w-4" aria-hidden="true" /> {t("profile")}
                     </Link>
                     <Link
-                      href="/settings"
+                      href={getLocalizedHref("/settings")}
                       role="menuitem"
                       className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
                       onClick={() => setMenuOpen(false)}

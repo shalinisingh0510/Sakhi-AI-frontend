@@ -3,7 +3,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   User,
   Mail,
@@ -17,16 +17,20 @@ import {
   Sparkles,
   Heart,
   BookOpen,
-  CalendarHeart
+  CalendarHeart,
+  Globe,
+  ChevronDown
 } from "lucide-react";
 
 import { authApi } from "@/lib/api";
 import { demoDelay, isDemoMode, normalizeUser } from "@/lib/api-config";
-import { useAuthStore } from "@/lib/auth-store";
+import { useAuthStore, type SupportedLanguage } from "@/lib/auth-store";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { SUPPORTED_LANGUAGES } from "@/components/layout/LanguageSelector";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const locale = useLocale();
   const { login, setLoading, isLoading, isAuthenticated } = useAuthStore();
   const t = useTranslations("Auth.register");
 
@@ -42,6 +46,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    language: (locale || "en") as SupportedLanguage,
     agreeTerms: true,
   });
 
@@ -80,6 +85,8 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
+      document.cookie = `NEXT_LOCALE=${form.language}; path=/; max-age=31536000; SameSite=Lax`;
+
       if (isDemoMode()) {
         await demoDelay(1000);
         login(
@@ -88,20 +95,23 @@ export default function RegisterPage() {
             name: form.name.trim(),
             email: form.email.trim(),
             ageGroup: "18+",
-            language: "en",
+            language: form.language,
             role: "user",
             onboardingComplete: false,
           },
           "demo-token-123"
         );
-        router.push("/onboarding");
+        const redirectPath = form.language === "en" ? "/onboarding" : `/${form.language}/onboarding`;
+        window.location.href = redirectPath;
         return;
       }
 
-      const res = await authApi.register(form.name.trim(), form.email.trim(), form.password);
+      const res = await authApi.register(form.name.trim(), form.email.trim(), form.password, form.language);
       const normalized = normalizeUser(res.user, form.email.trim());
+      normalized.language = form.language;
       login(normalized, res.access_token);
-      router.push("/onboarding");
+      const redirectPath = form.language === "en" ? "/onboarding" : `/${form.language}/onboarding`;
+      window.location.href = redirectPath;
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : t("errors.general");
       setErrors({ general: errorMsg });
@@ -317,6 +327,31 @@ export default function RegisterPage() {
                   {errors.email && (
                     <p className="mt-1 text-[11px] font-semibold text-rose">{errors.email}</p>
                   )}
+                </div>
+
+                {/* Preferred Language */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Preferred Language (पसंदीदा भाषा)
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={form.language}
+                      onChange={(e) => setForm((f) => ({ ...f, language: e.target.value as SupportedLanguage }))}
+                      className="w-full appearance-none rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-9 text-xs font-semibold text-ink outline-none transition-all hover:border-slate-300 focus:border-berry focus:ring-1 focus:ring-berry/20 cursor-pointer"
+                    >
+                      {SUPPORTED_LANGUAGES.map((l) => (
+                        <option key={l.code} value={l.code}>
+                          {l.native} ({l.name})
+                        </option>
+                      ))}
+                    </select>
+                    <Globe className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-berry" />
+                    <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Your dashboard, chatbot, and health reminders will appear in this language.
+                  </p>
                 </div>
 
                 {/* Password with Show/Hide */}

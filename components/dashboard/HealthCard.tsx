@@ -1,17 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { type WellnessDashboardResponse } from "@/lib/api";
 import { ArrowRight, Droplets, Zap, Smile } from "lucide-react";
 
 export function HealthCard({ data }: { data: WellnessDashboardResponse | null }) {
+  const locale = useLocale();
+  const isHi = locale === "hi";
+
+  const getLocalizedHref = (path: string) => {
+    return locale === "en" ? path : `/${locale}${path}`;
+  };
+
   if (!data) {
     return (
       <Card padding="lg" className="flex h-full flex-col bg-white">
-        <h2 className="font-display text-xl font-bold text-ink mb-2">Your Health Today</h2>
-        <p className="text-sm text-ink/70 mb-6">A quick snapshot of how you&apos;re doing.</p>
+        <h2 className="font-display text-xl font-bold text-ink mb-2">
+          {isHi ? "आज आपका स्वास्थ्य" : "Your Health Today"}
+        </h2>
+        <p className="text-sm text-ink/70 mb-6">
+          {isHi ? "आपके स्वास्थ्य का त्वरित अवलोकन" : "A quick snapshot of how you're doing."}
+        </p>
         <div className="flex-1 flex flex-col justify-center gap-4 animate-pulse">
           <div className="h-16 w-full rounded-2xl bg-slate-100" />
           <div className="h-16 w-full rounded-2xl bg-slate-100" />
@@ -23,39 +35,46 @@ export function HealthCard({ data }: { data: WellnessDashboardResponse | null })
 
   // Period Status
   const cycleDay = data.cycle.cycle_day;
-  let periodText = "Period data unavailable";
-  let periodSub = "Start tracking your cycle";
+  let periodText = isHi ? "मासिक धर्म डेटा अनुपलब्ध" : "Period data unavailable";
+  let periodSub = isHi ? "अपना चक्र ट्रैक करना शुरू करें" : "Start tracking your cycle";
 
   if (cycleDay !== null && cycleDay !== undefined) {
-    periodText = `Day ${cycleDay}`;
+    periodText = isHi ? `दिन ${cycleDay}` : `Day ${cycleDay}`;
     if (data.cycle.next_period) {
       const nextDate = new Date(data.cycle.next_period);
       const today = new Date();
-      // Ensure we compare midnight to midnight in local time
       today.setHours(0, 0, 0, 0);
       nextDate.setHours(0, 0, 0, 0);
       const diffTime = nextDate.getTime() - today.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
       if (diffDays === 0) {
-        periodSub = "Next period expected today";
+        periodSub = isHi ? "अगला पीरियड आज संभावित है" : "Next period expected today";
       } else if (diffDays < 0) {
-        periodSub = `Next period is ${Math.abs(diffDays)} days late`;
+        periodSub = isHi
+          ? `अगला पीरियड ${Math.abs(diffDays)} दिन देर से है`
+          : `Next period is ${Math.abs(diffDays)} days late`;
       } else {
-        periodSub = `Next period in ~${diffDays} days`;
+        periodSub = isHi
+          ? `अगला पीरियड लगभग ~${diffDays} दिनों में`
+          : `Next period in ~${diffDays} days`;
       }
     } else {
-      periodSub = "Next period unknown";
+      periodSub = isHi ? "अगली पीरियड तारीख अज्ञात" : "Next period unknown";
     }
   }
 
   // Energy
   const energy = data.today.energy;
-  const energyText = energy ? `Energy: ${energy}` : "Energy: Not logged today";
+  const energyText = energy 
+    ? (isHi ? `ऊर्जा स्तर: ${energy}` : `Energy: ${energy}`)
+    : (isHi ? "ऊर्जा स्तर: आज दर्ज नहीं किया गया" : "Energy: Not logged today");
 
   // Mood
   const mood = data.today.mood;
-  const moodText = mood ? `Mood: ${mood}` : "Mood: Not logged today";
+  const moodText = mood 
+    ? (isHi ? `मनोदशा: ${mood}` : `Mood: ${mood}`)
+    : (isHi ? "मनोदशा: आज दर्ज नहीं की गई" : "Mood: Not logged today");
 
   return (
     <Card padding="lg" className="flex h-full flex-col bg-white border-rose/20 shadow-sm relative overflow-hidden">
@@ -64,8 +83,12 @@ export function HealthCard({ data }: { data: WellnessDashboardResponse | null })
       </div>
       
       <div className="mb-6 relative z-10">
-        <h2 className="font-display text-2xl font-bold text-ink">Your Health Today</h2>
-        <p className="text-sm text-ink/70">A quick snapshot of how you&apos;re doing</p>
+        <h2 className="font-display text-2xl font-bold text-ink">
+          {isHi ? "आज आपका स्वास्थ्य" : "Your Health Today"}
+        </h2>
+        <p className="text-sm text-ink/70">
+          {isHi ? "आपके स्वास्थ्य का त्वरित अवलोकन" : "A quick snapshot of how you're doing"}
+        </p>
       </div>
 
       <div className="flex flex-col gap-3 flex-1 relative z-10 mb-6">
@@ -101,9 +124,9 @@ export function HealthCard({ data }: { data: WellnessDashboardResponse | null })
         </div>
       </div>
 
-      <Link href="/health" className="mt-auto block relative z-10">
+      <Link href={getLocalizedHref("/health")} className="mt-auto block relative z-10">
         <Button variant="secondary" className="w-full flex items-center justify-center gap-2">
-          View Health <ArrowRight size={16} />
+          {isHi ? "स्वास्थ्य देखें" : "View Health"} <ArrowRight size={16} />
         </Button>
       </Link>
     </Card>

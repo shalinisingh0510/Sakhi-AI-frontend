@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   Shield,
   CheckCircle2,
@@ -14,17 +15,29 @@ import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
 
 type AboutTab = "mission" | "medical" | "privacy" | "journey";
 
-const ABOUT_TABS: { key: AboutTab; label: string; icon: string }[] = [
-  { key: "mission", label: "Our Mission & Story", icon: "🌸" },
-  { key: "medical", label: "Medical Advisory Board", icon: "🩺" },
-  { key: "privacy", label: "Sakhi AI Privacy Standard", icon: "🛡️" },
-  { key: "journey", label: "Lifespan Health Journey", icon: "✨" },
-];
-
 export default function AboutPage() {
+  const locale = useLocale();
+  const isHi = locale === "hi";
   const openAnonymousModal = useAnonymousModalStore((s) => s.openModal);
 
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  const getHref = (path: string) => `${prefix}${path}`;
+
   const [activeTab, setActiveTab] = useState<AboutTab>("mission");
+
+  const ABOUT_TABS: { key: AboutTab; label: string; icon: string }[] = isHi
+    ? [
+        { key: "mission", label: "हमारा मिशन और कहानी", icon: "🌸" },
+        { key: "medical", label: "चिकित्सा सलाहकार बोर्ड", icon: "🩺" },
+        { key: "privacy", label: "सखी AI गोपनीयता मानक", icon: "🛡️" },
+        { key: "journey", label: "जीवनभर की स्वास्थ्य यात्रा", icon: "✨" },
+      ]
+    : [
+        { key: "mission", label: "Our Mission & Story", icon: "🌸" },
+        { key: "medical", label: "Medical Advisory Board", icon: "🩺" },
+        { key: "privacy", label: "Sakhi AI Privacy Standard", icon: "🛡️" },
+        { key: "journey", label: "Lifespan Health Journey", icon: "✨" },
+      ];
 
   const MEDICAL_BOARD = [
     {
@@ -126,18 +139,37 @@ export default function AboutPage() {
         <div className="relative max-w-3xl space-y-5">
           <div className="inline-flex items-center gap-2 rounded-full border border-berry/20 bg-white/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-berry shadow-xs">
             <span className="h-2 w-2 rounded-full bg-rose animate-pulse" />
-            Sakhi AI Clinical Architecture • Global Mission
+            {isHi ? "सखी AI क्लिनिकल आर्किटेक्चर • वैश्विक मिशन" : "Sakhi AI Clinical Architecture • Global Mission"}
           </div>
 
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl leading-[1.12]">
-            Building a Better, Safer Future for{" "}
-            <span className="bg-gradient-to-r from-berry via-rose to-amber-600 bg-clip-text text-transparent">
-              Female Health
-            </span>
+            {isHi ? (
+              <>
+                महिला स्वास्थ्य के लिए बेहतर, सुरक्षित भविष्य का{" "}
+                <span className="bg-gradient-to-r from-berry via-rose to-amber-600 bg-clip-text text-transparent">
+                  निर्माण
+                </span>
+              </>
+            ) : (
+              <>
+                Building a Better, Safer Future for{" "}
+                <span className="bg-gradient-to-r from-berry via-rose to-amber-600 bg-clip-text text-transparent">
+                  Female Health
+                </span>
+              </>
+            )}
           </h1>
 
           <p className="text-base sm:text-lg leading-relaxed text-ink/75 max-w-2xl font-normal">
-            Built to the highest clinical and digital security standards, <strong>Sakhi AI</strong> combines medical board rigor, compassionate multilingual AI, and <strong>Sakhi AI Anonymous Mode</strong>—ensuring every woman and adolescent girl can understand, track, and advocate for her body without shame or fear.
+            {isHi ? (
+              <>
+                उच्चतम क्लिनिकल और डिजिटल सुरक्षा मानकों के साथ निर्मित, <strong>सखी AI</strong> चिकित्सा बोर्ड की प्रामाणिकता, 11+ भाषाओं में संवेदनशील AI और <strong>सखी AI अनाम मोड</strong> को जोड़ता है—ताकि हर महिला और किशोरी बिना किसी झिझक या डर के अपने शरीर को समझ सके।
+              </>
+            ) : (
+              <>
+                Built to the highest clinical and digital security standards, <strong>Sakhi AI</strong> combines medical board rigor, compassionate multilingual AI, and <strong>Sakhi AI Anonymous Mode</strong>—ensuring every woman and adolescent girl can understand, track, and advocate for her body without shame or fear.
+              </>
+            )}
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -147,22 +179,22 @@ export default function AboutPage() {
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:from-emerald-700 hover:to-teal-800 hover:shadow-lg active:scale-95"
             >
               <Shield className="h-4 w-4" />
-              <span>Sakhi AI Anonymous Mode</span>
+              <span>{isHi ? "सखी AI अनाम मोड 🛡️" : "Sakhi AI Anonymous Mode"}</span>
             </button>
 
             <Link
-              href="/chat"
+              href={getHref("/chat")}
               className="inline-flex items-center gap-2 rounded-full border border-peach/90 bg-white/90 px-6 py-3 text-sm font-bold text-ink shadow-xs transition-all hover:border-berry/30 hover:bg-blush/40"
             >
-              <span>Chat with Sakhi AI</span>
+              <span>{isHi ? "सखी AI से बात करें" : "Chat with Sakhi AI"}</span>
               <ArrowRight className="h-4 w-4 text-berry" />
             </Link>
 
             <Link
-              href="/tools"
+              href={getHref("/tools")}
               className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-ink/70 hover:text-berry transition-colors"
             >
-              Explore Calculators →
+              {isHi ? "कैलकुलेटर देखें →" : "Explore Calculators →"}
             </Link>
           </div>
         </div>
@@ -171,23 +203,23 @@ export default function AboutPage() {
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 border-t border-peach/80 pt-8">
           <div className="rounded-2xl border border-white/80 bg-white/70 p-4 backdrop-blur-sm shadow-xs">
             <p className="font-display text-2xl sm:text-3xl font-black text-berry">120+</p>
-            <p className="mt-1 text-xs font-semibold text-ink/70">Medical Board Clinicians</p>
-            <p className="text-[11px] text-ink/50 mt-0.5">ACOG &amp; WHO Standards</p>
+            <p className="mt-1 text-xs font-semibold text-ink/70">{isHi ? "चिकित्सा बोर्ड विशेषज्ञ" : "Medical Board Clinicians"}</p>
+            <p className="text-[11px] text-ink/50 mt-0.5">{isHi ? "ACOG और WHO मानक" : "ACOG & WHO Standards"}</p>
           </div>
           <div className="rounded-2xl border border-white/80 bg-white/70 p-4 backdrop-blur-sm shadow-xs">
             <p className="font-display text-2xl sm:text-3xl font-black text-emerald-700">100%</p>
-            <p className="mt-1 text-xs font-semibold text-ink/70">Anonymous &amp; Private</p>
-            <p className="text-[11px] text-ink/50 mt-0.5">Zero-Knowledge Decoupling</p>
+            <p className="mt-1 text-xs font-semibold text-ink/70">{isHi ? "अनाम और गोपनीय" : "Anonymous & Private"}</p>
+            <p className="text-[11px] text-ink/50 mt-0.5">{isHi ? "शून्य-पहचान सुरक्षा" : "Zero-Knowledge Decoupling"}</p>
           </div>
           <div className="rounded-2xl border border-white/80 bg-white/70 p-4 backdrop-blur-sm shadow-xs">
             <p className="font-display text-2xl sm:text-3xl font-black text-amber-700">11+</p>
-            <p className="mt-1 text-xs font-semibold text-ink/70">Regional Languages</p>
-            <p className="text-[11px] text-ink/50 mt-0.5">Hindi, Bengali, Marathi, etc.</p>
+            <p className="mt-1 text-xs font-semibold text-ink/70">{isHi ? "क्षेत्रीय भाषाएं" : "Regional Languages"}</p>
+            <p className="text-[11px] text-ink/50 mt-0.5">{isHi ? "हिंदी, बंगाली, मराठी आदि" : "Hindi, Bengali, Marathi, etc."}</p>
           </div>
           <div className="rounded-2xl border border-white/80 bg-white/70 p-4 backdrop-blur-sm shadow-xs">
-            <p className="font-display text-2xl sm:text-3xl font-black text-rose">2 Hours</p>
-            <p className="mt-1 text-xs font-semibold text-ink/70">Autonomous Cadence</p>
-            <p className="text-[11px] text-ink/50 mt-0.5">Cycle, Energy &amp; Activity</p>
+            <p className="font-display text-2xl sm:text-3xl font-black text-rose">{isHi ? "2 घंटे" : "2 Hours"}</p>
+            <p className="mt-1 text-xs font-semibold text-ink/70">{isHi ? "स्वायत्त अलर्ट चक्र" : "Autonomous Cadence"}</p>
+            <p className="text-[11px] text-ink/50 mt-0.5">{isHi ? "चक्र, ऊर्जा और गतिविधि" : "Cycle, Energy & Activity"}</p>
           </div>
         </div>
       </section>
@@ -542,13 +574,15 @@ export default function AboutPage() {
         <div className="max-w-3xl space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-berry">
             <Stethoscope className="h-4 w-4" />
-            <span>Clinical Disclaimer &amp; Medical Protocol</span>
+            <span>{isHi ? "क्लिनिकल अस्वीकरण और चिकित्सा प्रोटोकॉल" : "Clinical Disclaimer & Medical Protocol"}</span>
           </div>
           <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
-            A Compassionate Companion, Not a Physician Replacement
+            {isHi ? "एक संवेदनशील साथी, डॉक्टर का विकल्प नहीं" : "A Compassionate Companion, Not a Physician Replacement"}
           </h2>
           <p className="text-xs sm:text-sm leading-relaxed text-ink/70">
-            Sakhi AI provides educational guidance, cycle prediction, and algorithmic symptom assessments based on published medical consensus. It does not provide medical diagnoses or replace an emergency room physician, OB-GYN examination, or prescription medication. If you experience acute abdominal pain, excessive hemorrhaging (soaking two or more maxi pads per hour for two consecutive hours), or high fever with pelvic symptoms, please seek immediate in-person clinical care.
+            {isHi 
+              ? "सखी AI केवल शैक्षिक मार्गदर्शन, चक्र पूर्वानुमान और स्वास्थ्य मूल्यांकन प्रदान करता है। यह चिकित्सीय निदान या डॉक्टर की सलाह का विकल्प नहीं है। गंभीर दर्द या अत्यधिक रक्तस्राव की स्थिति में तुरंत नजदीकी डॉक्टर से परामर्श लें।"
+              : "Sakhi AI provides educational guidance, cycle prediction, and algorithmic symptom assessments based on published medical consensus. It does not provide medical diagnoses or replace an emergency room physician, OB-GYN examination, or prescription medication. If you experience acute abdominal pain, excessive hemorrhaging (soaking two or more maxi pads per hour for two consecutive hours), or high fever with pelvic symptoms, please seek immediate in-person clinical care."}
           </p>
         </div>
       </section>
@@ -556,25 +590,27 @@ export default function AboutPage() {
       {/* 5. BOTTOM CTA BANNER (Sakhi AI aesthetic) */}
       <section className="mt-12 rounded-3xl border border-berry/20 bg-gradient-to-r from-berry via-rose to-amber-600 p-8 sm:p-12 text-white text-center shadow-lg">
         <h2 className="font-display text-2xl sm:text-4xl font-extrabold">
-          Ready to Understand Your Body with Confidence?
+          {isHi ? "क्या आप आत्मविश्वास के साथ अपने शरीर को समझने के लिए तैयार हैं?" : "Ready to Understand Your Body with Confidence?"}
         </h2>
         <p className="mt-3 text-sm sm:text-base text-white/90 max-w-xl mx-auto font-normal">
-          Join hundreds of thousands of women and girls who use Sakhi AI every single day for cycle tracking, hormonal equilibrium, and trusted health education.
+          {isHi 
+            ? "लाखों महिलाओं और किशोरियों से जुड़ें जो हर दिन चक्र ट्रैकिंग और हार्मोनल संतुलन के लिए सखी AI का उपयोग करती हैं।"
+            : "Join hundreds of thousands of women and girls who use Sakhi AI every single day for cycle tracking, hormonal equilibrium, and trusted health education."}
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/chat"
+            href={getHref("/chat")}
             className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-berry shadow-md transition-all hover:bg-blush hover:scale-105 active:scale-95"
           >
-            <span>Ask Sakhi AI Anything</span>
+            <span>{isHi ? "सखी AI से कुछ भी पूछें" : "Ask Sakhi AI Anything"}</span>
             <ArrowRight className="h-4 w-4 text-berry" />
           </Link>
           <Link
-            href="/tools"
+            href={getHref("/tools")}
             className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/10 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20"
           >
-            Explore Calculators
+            {isHi ? "कैलकुलेटर देखें" : "Explore Calculators"}
           </Link>
         </div>
       </section>

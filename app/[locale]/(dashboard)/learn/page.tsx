@@ -46,7 +46,7 @@ function LearnPageContent() {
   
   const searchQuery = searchParams?.get("search") || "";
   const typeFilter = searchParams?.get("type") || "";
-  const languageFilter = searchParams?.get("language") || locale;
+  const explicitLanguageFilter = searchParams?.get("language") || "";
 
   const fetchContent = useCallback(async (pageNum: number, isLoadMore = false) => {
     if (isLoadMore) setLoadingMore(true);
@@ -56,7 +56,7 @@ function LearnPageContent() {
       const res = await learningApi.getFeed(token || "", {
         type: typeFilter,
         search: searchQuery,
-        language: languageFilter,
+        language: explicitLanguageFilter || undefined,
         page: pageNum,
         limit: 24,
       });
@@ -79,7 +79,7 @@ function LearnPageContent() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [token, typeFilter, searchQuery, languageFilter]);
+  }, [token, typeFilter, searchQuery, explicitLanguageFilter]);
 
   // Refetch when filters or search changes
   useEffect(() => {
@@ -97,20 +97,33 @@ function LearnPageContent() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // Client-side sorting on loaded items
+  // Client-side sorting on loaded items: ALWAYS display user's selected language first (e.g. Hindi first)
   const sortedData = useMemo(() => {
     const items = [...data];
-    if (sortBy === "newest") {
-      return items.sort((a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime());
-    }
-    if (sortBy === "duration") {
-      return items.sort((a, b) => (a.duration_minutes || 5) - (b.duration_minutes || 5));
-    }
-    if (sortBy === "az") {
-      return items.sort((a, b) => a.title.localeCompare(b.title));
-    }
-    return items;
-  }, [data, sortBy]);
+    const targetLang = (locale || "en").toLowerCase();
+
+    const isMatch = (item: LearningContent) => {
+      const l = (item.language || "").toLowerCase();
+      return l === targetLang || l.startsWith(targetLang) ? 0 : 1;
+    };
+
+    return items.sort((a, b) => {
+      // Prioritize active language (e.g. Hindi content appears first)
+      const langDiff = isMatch(a) - isMatch(b);
+      if (langDiff !== 0) return langDiff;
+
+      if (sortBy === "newest") {
+        return new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime();
+      }
+      if (sortBy === "duration") {
+        return (a.duration_minutes || 5) - (b.duration_minutes || 5);
+      }
+      if (sortBy === "az") {
+        return a.title.localeCompare(b.title);
+      }
+      return 0;
+    });
+  }, [data, sortBy, locale]);
 
   const isSearchingOrFiltering = !!searchQuery || !!typeFilter;
 
@@ -268,8 +281,8 @@ function LearnPageContent() {
               No learning content found for this selection.
             </p>
             <p className="mt-1 text-xs text-slate-500 max-w-sm">
-              {(languageFilter || user?.language) !== "en" 
-                ? "Content might be in translation for this dialect. Try switching to English." 
+              {(locale || user?.language) !== "en" 
+                ? "Content might be in translation for this dialect. Try switching to English or clearing filters." 
                 : "Try clearing filters to explore all topics."}
             </p>
             {isSearchingOrFiltering && (

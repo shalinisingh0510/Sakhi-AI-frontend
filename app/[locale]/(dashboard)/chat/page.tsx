@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
@@ -19,9 +19,23 @@ import { UserMessage } from "@/components/chat/UserMessage";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 
+const LOCALE_TO_LANG: Record<string, string> = {
+  en: "english",
+  hi: "hindi",
+  bn: "bengali",
+  mr: "marathi",
+  ta: "tamil",
+  te: "telugu",
+  kn: "kannada",
+  gu: "gujarati",
+  pa: "punjabi",
+  or: "odia",
+};
+
 function ChatInner() {
   const t = useTranslations("Chat");
   const tA11y = useTranslations("A11y");
+  const locale = useLocale();
   
   const { user, token, login } = useAuthStore();
   const openAnonymousModal = useAnonymousModalStore((s) => s.openModal);
@@ -35,6 +49,9 @@ function ChatInner() {
   
   const searchParams = useSearchParams();
   const [guestMsgCount, setGuestMsgCount] = useState(0);
+
+  // Determine active language from locale or user profile
+  const activeLanguage = LOCALE_TO_LANG[locale] || (user?.language ? user.language.toLowerCase() : "english");
 
   // Pre-populate input if URL contains ?prompt=
   useEffect(() => {
@@ -59,8 +76,7 @@ function ChatInner() {
       }
     }
     try {
-      const languageMap: Record<string, string> = { english: "en", hindi: "hi", marathi: "mr" };
-      const langCode = user?.language ? languageMap[user.language.toLowerCase()] : "en";
+      const langCode = locale || (user?.language ? LOCALE_TO_LANG[user.language.toLowerCase()] || "en" : "en");
       
       const res = await chatApi.transcribeVoice(audioBlob, activeToken, langCode);
       if (res.text) {
@@ -162,9 +178,12 @@ function ChatInner() {
       setGuestMsgCount(newCount);
 
       setTimeout(() => {
+        const fallbackHindi = `नमस्ते प्यारी सखी! मुझसे अपना सवाल साझा करने के लिए धन्यवाद। मासिक धर्म चक्र, ऐंठन या शारीरिक बदलाव पूरी तरह सामान्य जैविक संकेत हैं।\n\n💡 राहत के उपाय: आराम करें, पेट पर गर्म पानी की सिकाई करें और पर्याप्त पानी पिएं। सखी AI हमेशा आपके साथ है।`;
+        const fallbackEnglish = `Hello dear Sakhi! Thank you for sharing your question with me. During puberty, menstruation, and wellness milestones, bodily sensations like cramps, cycle changes, or emotional shifts are natural biological signals.\n\n💡 Gentle Relief: Rest comfortably, use a warm water compress to ease cramps, and stay well hydrated. You are never alone in this journey.`;
+
         addMessage({
           role: "sakhi",
-          content: `नमस्ते प्यारी सखी! Thank you for sharing your question with me. During puberty, menstruation, and wellness milestones, bodily sensations like cramps, cycle changes, or emotional shifts are natural biological signals.\n\n💡 Gentle Relief: Rest comfortably, use a warm water compress to ease cramps, and stay well hydrated. You are never alone in this journey.`,
+          content: locale === "hi" ? fallbackHindi : fallbackEnglish,
         });
         setTyping(false);
       }, 700);
@@ -178,7 +197,7 @@ function ChatInner() {
           trimmed, 
           activeToken, 
           currentMode, 
-          user?.language || "english"
+          activeLanguage
         );
         // Add new conversation to list
         setConversations(prev => [detail.conversation, ...prev]);
@@ -187,7 +206,8 @@ function ChatInner() {
           sessionId, 
           trimmed, 
           activeToken, 
-          currentMode
+          currentMode,
+          activeLanguage
         );
         // Update conversation list timestamp
         setConversations(prev => prev.map(c => c.id === sessionId ? detail.conversation : c));
@@ -269,9 +289,13 @@ function ChatInner() {
                     <Shield className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="font-bold text-white">Sakhi AI Anonymous Chat Active</span>
+                    <span className="font-bold text-white">
+                      {locale === "hi" ? "सखी AI अनाम चैट सक्रिय 🛡️" : "Sakhi AI Anonymous Chat Active"}
+                    </span>
                     <p className="text-[11px] text-emerald-200/80">
-                      Messages & questions are end-to-end decoupled. No email or name stored.
+                      {locale === "hi" 
+                        ? "आपके सवाल पूरी तरह सुरक्षित और अनाम हैं। कोई ईमेल या नाम दर्ज नहीं किया जाता।"
+                        : "Messages & questions are end-to-end decoupled. No email or name stored."}
                     </p>
                   </div>
                 </div>
@@ -282,7 +306,7 @@ function ChatInner() {
                     className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors flex items-center gap-1"
                   >
                     <KeyRound className="h-3.5 w-3.5" />
-                    <span>Recovery Key</span>
+                    <span>{locale === "hi" ? "रिकवरी की" : "Recovery Key"}</span>
                   </button>
                   {!isPaid && (
                     <button
@@ -291,7 +315,7 @@ function ChatInner() {
                       className="rounded-xl bg-amber-400 hover:bg-amber-300 px-3 py-1.5 text-xs font-bold text-ink transition-colors flex items-center gap-1"
                     >
                       <Zap className="h-3.5 w-3.5 fill-current" />
-                      <span>{isExpired ? "Unlock (₹99)" : "Upgrade"}</span>
+                      <span>{isExpired ? (locale === "hi" ? "अनलॉक करें (₹99)" : "Unlock (₹99)") : (locale === "hi" ? "अपग्रेड करें" : "Upgrade")}</span>
                     </button>
                   )}
                 </div>
@@ -303,7 +327,10 @@ function ChatInner() {
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>
-                    <strong>Private Guest Chat:</strong> You can ask any question without logging in! We protect your privacy in Anonymous Mode.
+                    <strong>{locale === "hi" ? "निजी गेस्ट चैट:" : "Private Guest Chat:"}</strong>{" "}
+                    {locale === "hi" 
+                      ? "बिना लॉग इन किए कोई भी सवाल पूछें! अनाम मोड में आपकी निजता 100% सुरक्षित है।" 
+                      : "You can ask any question without logging in! We protect your privacy in Anonymous Mode."}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -319,14 +346,14 @@ function ChatInner() {
                     }}
                     className="rounded-xl border border-emerald-600/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-800 transition-all"
                   >
-                    Track Anonymously 🛡️
+                    {locale === "hi" ? "अनाम ट्रैक करें 🛡️" : "Track Anonymously 🛡️"}
                   </button>
                   <button
                     type="button"
                     onClick={() => useAuthModalStore.getState().openAuthModal("chat")}
                     className="rounded-xl bg-berry px-3 py-1.5 font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
                   >
-                    Sign In
+                    {locale === "hi" ? "साइन इन करें" : "Sign In"}
                   </button>
                 </div>
               </div>

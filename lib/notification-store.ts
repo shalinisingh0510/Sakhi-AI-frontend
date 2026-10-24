@@ -93,6 +93,75 @@ const LOCAL_TOPIC_TEMPLATES: Record<
   ],
 };
 
+const LOCAL_TOPIC_TEMPLATES_HI: Record<string, { title: string; body: string; type: string; action_url: string; cta: string }[]> = {
+  period_cycle: [
+    {
+      title: "🌸 मासिक धर्म चक्र अपडेट",
+      body: "आपकी शारीरिक लय के अनुसार, फॉलिक्युलर चरण में ऊर्जा और रचनात्मकता बढ़ रही है। पर्याप्त पानी पिएं और सक्रिय रहें।",
+      type: "cycle_update",
+      action_url: "/tools/period-calculator",
+      cta: "पीरियड कैलकुलेटर खोलें",
+    },
+    {
+      title: "🩸 मासिक धर्म चक्र अवलोकन",
+      body: "ल्यूटियल चरण में शरीर को अधिक आराम और पोषण की आवश्यकता होती है। गर्म सिकाई और हल्का भोजन राहत देते हैं।",
+      type: "cycle_update",
+      action_url: "/tools/period-calculator",
+      cta: "कैलकुलेटर में जांचें",
+    },
+  ],
+  ovulation: [
+    {
+      title: "✨ गर्भधारण की संभावना (ओव्यूलेशन विंडो)",
+      body: "आपकी शारीरिक लय के अनुसार ओव्यूलेशन विंडो सक्रिय हो रही है। एस्ट्रोजन का स्तर ऊर्जा और उत्साह को सहारा दे रहा है।",
+      type: "ovulation_alert",
+      action_url: "/tools/ovulation-calculator",
+      cta: "संभावित दिन देखें",
+    },
+  ],
+  energy: [
+    {
+      title: "⚡ ऊर्जा पूर्वानुमान: चरम स्तर",
+      body: "हार्मोनल संतुलन आज आपकी सहनशक्ति और एकाग्रता को बढ़ावा दे रहा है—महत्वपूर्ण कार्यों और व्यायाम के लिए उत्तम समय।",
+      type: "energy_insight",
+      action_url: "/dashboard",
+      cta: "ऊर्जा पूर्वानुमान देखें",
+    },
+    {
+      title: "🌙 विश्राम और ऊर्जा संतुलन",
+      body: "प्रोजेस्टेरोन हार्मोन आपको आराम करने का संकेत दे रहा है। सोने से 30 मिनट पहले स्क्रीन का उपयोग कम करें।",
+      type: "energy_insight",
+      action_url: "/chat?prompt=मासिक+धर्म+के+दौरान+कमजोरी+कैसे+दूर+करें",
+      cta: "सखी AI से पूछें",
+    },
+  ],
+  activity: [
+    {
+      title: "💧 जलपान व हाइड्रेशन अनुस्मारक",
+      body: "शारीरिक संतुलन के लिए पर्याप्त जल आवश्यक है। सूजन कम करने और ऊर्जा बनाए रखने के लिए एक गिलास गुनगुना पानी पिएं।",
+      type: "activity_checkin",
+      action_url: "/dashboard",
+      cta: "पानी पीने का हिसाब रखें",
+    },
+    {
+      title: "🧘 पेल्विक स्वास्थ्य व सरल योगासन",
+      body: "5 मिनट का ब्रेक लें और बालासन (Child's Pose) या मार्जरी आसन करें। यह मासिक ऐंठन से तुरंत राहत देता है।",
+      type: "activity_checkin",
+      action_url: "/learn",
+      cta: "व्यायाम मार्गदर्शिका",
+    },
+  ],
+  learning: [
+    {
+      title: "📚 स्वास्थ्य सीख: बीज चक्र (Seed Cycling)",
+      body: "चक्र के 1-14 दिनों में कद्दू और अलसी के बीज, और 15-28 दिनों में सूरजमुखी और तिल के बीज प्राकृतिक रूप से हार्मोन संतुलित करते हैं।",
+      type: "learning_tip",
+      action_url: "/learn",
+      cta: "लेख पढ़ें",
+    },
+  ],
+};
+
 interface NotificationState {
   notifications: ApiNotificationItem[];
   unreadCount: number;
@@ -289,7 +358,12 @@ export const useNotificationStore = create<NotificationState>()(
         const now = Date.now();
         const { topicIndex, showToast, notifications } = get();
         const chosenTopic = topic || ROTATING_TOPICS[topicIndex % ROTATING_TOPICS.length];
-        const templates = LOCAL_TOPIC_TEMPLATES[chosenTopic] || LOCAL_TOPIC_TEMPLATES.period_cycle;
+        
+        const userLang = useAuthStore.getState().user?.language?.toLowerCase();
+        const isHindi = userLang === "hindi" || (typeof document !== "undefined" && document.cookie.includes("NEXT_LOCALE=hi"));
+        const templatePool = isHindi ? LOCAL_TOPIC_TEMPLATES_HI : LOCAL_TOPIC_TEMPLATES;
+        
+        const templates = templatePool[chosenTopic] || templatePool.period_cycle;
         const template = templates[Math.floor(Math.random() * templates.length)];
 
         const localItem: ApiNotificationItem = {
@@ -297,7 +371,7 @@ export const useNotificationStore = create<NotificationState>()(
           user_id: "local-user",
           title: template.title,
           body: template.body,
-          notification_type: template.type,
+          notification_type: template.type as ApiNotificationItem["notification_type"],
           metadata: {
             action_url: template.action_url,
             cta: template.cta,

@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useLocale } from "next-intl";
 import { CaregiverSidebar } from "./CaregiverSidebar";
 
 interface CaregiverMobileDrawerProps {
@@ -20,6 +21,7 @@ export function CaregiverMobileDrawer({
   activeStage,
   onSelectStage,
 }: CaregiverMobileDrawerProps) {
+  const locale = useLocale();
   if (!isOpen) return null;
 
   return (
@@ -33,7 +35,9 @@ export function CaregiverMobileDrawer({
       {/* Drawer panel */}
       <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-white p-6 shadow-xl overflow-y-auto">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-          <span className="font-display font-bold text-lg text-ink">Caregiver Navigation</span>
+          <span className="font-display font-bold text-lg text-ink">
+            {locale === "hi" ? "अभिभावक नेविगेशन" : "Caregiver Navigation"}
+          </span>
           <button
             onClick={onClose}
             className="rounded-xl p-2 text-ink/40 hover:bg-slate-100 hover:text-ink transition-colors"
