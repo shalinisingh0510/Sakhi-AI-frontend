@@ -186,7 +186,7 @@ export function AuthPromptModal() {
               className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-emerald-400 bg-emerald-50/90 py-3 text-xs sm:text-sm font-bold text-emerald-900 shadow-2xs transition-all hover:bg-emerald-100 active:scale-[0.99]"
             >
               <ShieldCheck size={18} className="text-emerald-700" />
-              <span>Track Anonymously (No Email Needed · Flo Mode)</span>
+              <span>Track Anonymously (No Email Needed · Sakhi Mode)</span>
             </button>
 
             <GoogleAuthButton

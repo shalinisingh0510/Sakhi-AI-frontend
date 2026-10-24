@@ -1,6 +1,6 @@
 /**
  * Calculators API Client & Offline Calculation Engine for Sakhi AI
- * Implements 100% faithful Flo Health logic and models with client fallback
+ * Implements 100% evidence-based clinical logic and models with client fallback
  */
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";

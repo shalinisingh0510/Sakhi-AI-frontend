@@ -169,7 +169,7 @@ on another device or browser without identifying yourself.
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-berry/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-berry uppercase">
               <Lock className="h-3 w-3" />
-              <span>Flo Health-Grade Privacy Sanctuary</span>
+              <span>Sakhi AI Privacy Sanctuary</span>
             </div>
             <h2 id="shield-title" className="font-display text-xl font-bold text-ink mt-0.5">
               Anonymous Mode Center
@@ -267,7 +267,7 @@ on another device or browser without identifying yourself.
                   </div>
 
                   <p className="text-[11px] text-ink/65 leading-relaxed">
-                    Save this key securely. Because Flo/Sakhi blinded itself to who you are, this key is the only credential to restore your tracking data if you change phones or clear cookies.
+                    Save this key securely. Because Sakhi AI blinded itself to who you are, this key is the only credential to restore your tracking data if you change phones or clear cookies.
                   </p>
 
                   <div className="flex items-center gap-2 pt-1">

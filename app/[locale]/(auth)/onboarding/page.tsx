@@ -46,7 +46,7 @@ const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] =
 
 const TOTAL_STEPS = 11;
 
-// Reusable Flo Stepper
+// Reusable Sakhi Stepper
 function FloStepper({
   value,
   min,
@@ -314,7 +314,7 @@ function OnboardingContent() {
           await cycleApi.logPeriod(activeToken, {
             start_date: lastPeriodDate,
             flow: flowLevel,
-            notes: `Flo questionnaire baseline. Cycle: ${cycleLength}d, Period: ${periodDuration}d, Cramps: ${crampSeverity}`,
+            notes: `Sakhi questionnaire baseline. Cycle: ${cycleLength}d, Period: ${periodDuration}d, Cramps: ${crampSeverity}`,
           });
         } catch (cycleErr) {
           console.warn("Period baseline note:", cycleErr);
@@ -345,7 +345,7 @@ function OnboardingContent() {
                 {
                   condition_code: conditionMap[condKey].code,
                   display_name: conditionMap[condKey].label,
-                  notes: "Self-reported during Flo onboarding questionnaire",
+                  notes: "Self-reported during Sakhi onboarding questionnaire",
                 },
                 activeToken
               );
@@ -374,7 +374,7 @@ function OnboardingContent() {
     setErrorMsg("");
 
     try {
-      // 1. Create Flo-grade anonymous session
+      // 1. Create Sakhi AI anonymous session
       const anonRes = await authApi.createAnonymous();
       const activeToken = anonRes.access_token;
       const normalized = normalizeUser(anonRes.user, "");
@@ -406,7 +406,7 @@ function OnboardingContent() {
           await cycleApi.logPeriod(activeToken, {
             start_date: lastPeriodDate,
             flow: flowLevel,
-            notes: `Flo questionnaire baseline. Cycle: ${cycleLength}d, Period: ${periodDuration}d, Cramps: ${crampSeverity}`,
+            notes: `Sakhi questionnaire baseline. Cycle: ${cycleLength}d, Period: ${periodDuration}d, Cramps: ${crampSeverity}`,
           });
         } catch (cycleErr) {
           console.warn("Period baseline note:", cycleErr);
@@ -427,7 +427,7 @@ function OnboardingContent() {
                 {
                   condition_code: conditionMap[condKey].code,
                   display_name: conditionMap[condKey].label,
-                  notes: "Self-reported during Flo onboarding questionnaire",
+                  notes: "Self-reported during Sakhi onboarding questionnaire",
                 },
                 activeToken
               );
@@ -511,7 +511,7 @@ function OnboardingContent() {
             <div className="space-y-6">
               <div className="space-y-2 text-center">
                 <span className="inline-block rounded-full bg-peach/40 px-3 py-1 text-xs font-bold text-berry">
-                  Personalized Flo Experience
+                  Personalized Sakhi Experience
                 </span>
                 <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   What brings you to Sakhi AI today?
@@ -1374,7 +1374,7 @@ function OnboardingContent() {
                 </div>
               </div>
 
-              {/* Flo Trust & Security Badge */}
+              {/* Sakhi Trust & Security Badge */}
               <div className="rounded-2xl bg-cream/60 p-3.5 border border-peach/50 flex items-center gap-3 text-xs text-ink/70">
                 <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
                 <span>
@@ -1423,7 +1423,7 @@ function OnboardingContent() {
                       </div>
                       <div>
                         <p className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
-                          Save & Track in Flo-Grade Anonymous Mode 🛡️
+                          Save & Track in Sakhi AI Anonymous Mode 🛡️
                         </p>
                         <p className="text-[11px] text-emerald-800/80 mt-0.5">
                           Zero personal identity stored. You get a private 16-character recovery key.

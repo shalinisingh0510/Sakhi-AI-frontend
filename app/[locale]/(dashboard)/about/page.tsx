@@ -17,7 +17,7 @@ type AboutTab = "mission" | "medical" | "privacy" | "journey";
 const ABOUT_TABS: { key: AboutTab; label: string; icon: string }[] = [
   { key: "mission", label: "Our Mission & Story", icon: "🌸" },
   { key: "medical", label: "Medical Advisory Board", icon: "🩺" },
-  { key: "privacy", label: "Flo-Grade Privacy Standard", icon: "🛡️" },
+  { key: "privacy", label: "Sakhi AI Privacy Standard", icon: "🛡️" },
   { key: "journey", label: "Lifespan Health Journey", icon: "✨" },
 ];
 
@@ -118,7 +118,7 @@ export default function AboutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* 1. HERO SECTION (Flo.health aesthetic: Clean gradients, high-contrast typography, clinical authority) */}
+      {/* 1. HERO SECTION (Sakhi AI aesthetic: Clean gradients, high-contrast typography, clinical authority) */}
       <section className="relative overflow-hidden rounded-3xl border border-berry/15 bg-gradient-to-br from-blush/70 via-white to-lavender/30 p-6 sm:p-12 lg:p-16 shadow-soft">
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-rose/10 blur-3xl pointer-events-none" />
         <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-peach/20 blur-3xl pointer-events-none" />
@@ -126,7 +126,7 @@ export default function AboutPage() {
         <div className="relative max-w-3xl space-y-5">
           <div className="inline-flex items-center gap-2 rounded-full border border-berry/20 bg-white/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-berry shadow-xs">
             <span className="h-2 w-2 rounded-full bg-rose animate-pulse" />
-            Flo-Inspired Clinical Architecture • Global Mission
+            Sakhi AI Clinical Architecture • Global Mission
           </div>
 
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl leading-[1.12]">
@@ -137,7 +137,7 @@ export default function AboutPage() {
           </h1>
 
           <p className="text-base sm:text-lg leading-relaxed text-ink/75 max-w-2xl font-normal">
-            Inspired by world-class standards set by <strong>Flo Health</strong>, Sakhi AI combines medical board rigor, compassionate multilingual AI, and <strong>Flo-Grade Anonymous Mode</strong>—ensuring every woman and adolescent girl can understand, track, and advocate for her body without shame or fear.
+            Built to the highest clinical and digital security standards, <strong>Sakhi AI</strong> combines medical board rigor, compassionate multilingual AI, and <strong>Sakhi AI Anonymous Mode</strong>—ensuring every woman and adolescent girl can understand, track, and advocate for her body without shame or fear.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -147,7 +147,7 @@ export default function AboutPage() {
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:from-emerald-700 hover:to-teal-800 hover:shadow-lg active:scale-95"
             >
               <Shield className="h-4 w-4" />
-              <span>Flo-Grade Anonymous Mode</span>
+              <span>Sakhi AI Anonymous Mode</span>
             </button>
 
             <Link
@@ -232,7 +232,7 @@ export default function AboutPage() {
                   In many parts of South Asia and underserved global communities, menstruation and reproductive biology remain shrouded in whispered silence. Young girls learn about their periods through sudden fear and soiled clothing. Adult women silently battle debilitating cramps, undiagnosed PCOS, or fertility stress without a safe space to ask questions.
                 </p>
                 <p className="text-sm sm:text-base leading-relaxed text-ink/70">
-                  Sakhi AI was created as an ever-present, culturally compassionate elder sister—a <em>Sakhi</em>. Blending generative AI trained on peer-reviewed clinical knowledge with the highest digital health security inspired by Flo Health, we provide personalized guidance in 11+ languages without judgment or shame.
+                  Sakhi AI was created as an ever-present, culturally compassionate elder sister—a <em>Sakhi</em>. Blending generative AI trained on peer-reviewed clinical knowledge with the highest digital health security standards, we provide personalized guidance in 11+ languages without judgment or shame.
                 </p>
 
                 <div className="pt-2 flex flex-wrap gap-4">
@@ -309,7 +309,7 @@ export default function AboutPage() {
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 text-xl mb-4">
                   🛡️
                 </span>
-                <h3 className="font-bold text-base text-ink">Flo-Grade Privacy Standard</h3>
+                <h3 className="font-bold text-base text-ink">Sakhi AI Privacy Standard</h3>
                 <p className="mt-2 text-xs sm:text-sm leading-relaxed text-ink/65">
                   Your body, your data. Period. We pioneer Anonymous Mode where health logs exist completely detached from your name, phone number, and email.
                 </p>
@@ -328,7 +328,7 @@ export default function AboutPage() {
           </div>
         )}
 
-        {/* TAB 2: MEDICAL ADVISORY BOARD (Flo-Grade 120+ Clinicians Backing) */}
+        {/* TAB 2: MEDICAL ADVISORY BOARD (120+ Clinicians Backing) */}
         {activeTab === "medical" && (
           <div className="space-y-8 animate-fade-in">
             <div className="max-w-3xl">
@@ -339,7 +339,7 @@ export default function AboutPage() {
                 Guided by World-Class OB-GYNs &amp; Researchers
               </h2>
               <p className="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">
-                Following the gold standard of <strong>Flo Health’s 120+ clinician review network</strong>, every calculator formula, cycle prediction, and medical library article on Sakhi AI is peer-reviewed by certified reproductive physicians and adolescent specialists.
+                Following our gold-standard <strong>120+ clinician review network</strong>, every calculator formula, cycle prediction, and medical library article on Sakhi AI is peer-reviewed by certified reproductive physicians and adolescent specialists.
               </p>
             </div>
 
@@ -392,7 +392,7 @@ export default function AboutPage() {
           </div>
         )}
 
-        {/* TAB 3: FLO-GRADE PRIVACY STANDARD */}
+        {/* TAB 3: SAKHI AI PRIVACY STANDARD */}
         {activeTab === "privacy" && (
           <div className="space-y-8 animate-fade-in">
             <div className="max-w-3xl">
@@ -400,10 +400,10 @@ export default function AboutPage() {
                 Data Sovereignty
               </span>
               <h2 className="mt-2 font-display text-2xl sm:text-4xl font-extrabold text-ink">
-                Flo-Grade Anonymous Mode: Your Body, Your Data
+                Sakhi AI Anonymous Mode: Your Body, Your Data
               </h2>
               <p className="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">
-                In 2022, Flo Health revolutionized reproductive privacy by releasing <strong>Anonymous Mode</strong>, allowing users to track their cycles without any personal identifiers. We have implemented this standard natively in Sakhi AI.
+                Sakhi AI pioneers radical reproductive privacy with our native <strong>Anonymous Mode</strong>, allowing users to track their cycles, chat with AI, and use calculators without any personal identifiers or required login.
               </p>
             </div>
 
@@ -415,7 +415,7 @@ export default function AboutPage() {
                     <tr className="border-b border-peach/70 text-ink/60 text-xs uppercase tracking-wider">
                       <th className="py-3 px-4">Privacy Feature</th>
                       <th className="py-3 px-4 text-rose">Legacy Health Apps</th>
-                      <th className="py-3 px-4 text-emerald-700 font-bold">Sakhi AI (Flo-Grade Standard)</th>
+                      <th className="py-3 px-4 text-emerald-700 font-bold">Sakhi AI Standard</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-peach/50 text-ink/80">
@@ -465,7 +465,7 @@ export default function AboutPage() {
                   🛡️
                 </span>
                 <div>
-                  <h3 className="font-bold text-ink">Try Flo-Grade Anonymous Mode Right Now</h3>
+                  <h3 className="font-bold text-ink">Try Sakhi AI Anonymous Mode Right Now</h3>
                   <p className="text-xs text-ink/70 mt-0.5">
                     Launch anonymous mode in 1 second. All calculators, chat, and notification engine alerts work with full confidentiality.
                   </p>
@@ -553,7 +553,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5. BOTTOM CTA BANNER (Flo-grade aesthetic) */}
+      {/* 5. BOTTOM CTA BANNER (Sakhi AI aesthetic) */}
       <section className="mt-12 rounded-3xl border border-berry/20 bg-gradient-to-r from-berry via-rose to-amber-600 p-8 sm:p-12 text-white text-center shadow-lg">
         <h2 className="font-display text-2xl sm:text-4xl font-extrabold">
           Ready to Understand Your Body with Confidence?

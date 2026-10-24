@@ -511,7 +511,7 @@ export default function NotificationsPage() {
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-teal-700" />
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-800">
-                Flo-Grade Privacy
+                Sakhi AI Privacy
               </p>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-ink/70">

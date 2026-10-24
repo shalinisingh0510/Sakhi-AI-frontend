@@ -105,7 +105,7 @@ export function MenstrualCycleCalculator() {
               />
             </div>
 
-            {/* Flo Stepper: Bleeding Duration */}
+            {/* Stepper: Bleeding Duration */}
             <FloStepper
               id="periodDur"
               label="Bleeding Duration"
@@ -117,7 +117,7 @@ export function MenstrualCycleCalculator() {
               helperText="Typical: 4 to 7 days"
             />
 
-            {/* Flo Stepper: Cycle Length */}
+            {/* Stepper: Cycle Length */}
             <FloStepper
               id="cycleLen"
               label="Average Cycle Length"
@@ -162,7 +162,7 @@ export function MenstrualCycleCalculator() {
                 </div>
               </div>
 
-              {/* Flo Cycle Calendar Visualizer */}
+              {/* Cycle Calendar Visualizer */}
               <FloCycleCalendar
                 lastPeriodDate={lastPeriodDate}
                 periodDuration={periodDuration}

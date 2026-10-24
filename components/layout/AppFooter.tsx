@@ -71,7 +71,7 @@ export function AppFooter() {
                   Sakhi AI
                 </span>
                 <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/30">
-                  Flo-Grade Privacy
+                  Sakhi AI Privacy
                 </span>
               </div>
               <p className="mt-0.5 text-sm text-slate-400 font-medium">
@@ -122,7 +122,7 @@ export function AppFooter() {
       {/* Main 4-Column Navigation */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
-          {/* Column 1: Flo / Sakhi App */}
+          {/* Column 1: Sakhi AI App */}
           <div className="space-y-3">
             <h3 className="font-display text-xs font-bold uppercase tracking-wider text-rose-400">
               Sakhi App
@@ -163,7 +163,7 @@ export function AppFooter() {
                   className="text-left text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1"
                 >
                   <Shield className="h-3 w-3" />
-                  <span>Flo-Grade Anonymous Mode</span>
+                  <span>Sakhi AI Anonymous Mode</span>
                 </button>
               </li>
               <li>
@@ -339,7 +339,7 @@ export function AppFooter() {
         </div>
       </div>
 
-      {/* Flo-Grade Medical Disclaimer */}
+      {/* Sakhi AI Medical Disclaimer */}
       <div className="border-t border-slate-800/90 bg-[#070D11] py-5">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center sm:text-left text-[11px] text-slate-400 leading-relaxed">
           <p>

@@ -175,7 +175,7 @@ export function AppNav() {
                   }
                 }}
                 className="flex items-center gap-1.5 rounded-full border border-emerald-400 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
-                title="Flo-grade anonymous tracking without email"
+                title="Sakhi AI anonymous tracking without email"
               >
                 <ShieldIcon className="h-3.5 w-3.5 text-emerald-600" />
                 <span className="hidden sm:inline">Anonymous Mode</span>

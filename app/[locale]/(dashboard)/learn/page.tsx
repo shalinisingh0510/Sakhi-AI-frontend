@@ -149,7 +149,7 @@ function LearnPageContent() {
             <div className="flex items-center gap-2.5">
               <Shield className="h-4 w-4 text-emerald-400 shrink-0" />
               <span>
-                <strong>Flo-Grade Anonymous Learning Active:</strong> Read clinical articles and watch puberty guides with zero identity tracking.
+                <strong>Sakhi AI Anonymous Learning Active:</strong> Read clinical articles and watch puberty guides with zero identity tracking.
               </span>
             </div>
             <div className="flex items-center gap-2 shrink-0">

@@ -1076,7 +1076,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Flo-Inspired AppFooter */}
+      {/* Sakhi AI AppFooter */}
       <AppFooter />
 
       {/* Global Modals & Privacy Curtains */}

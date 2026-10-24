@@ -84,7 +84,7 @@ export function PanicBlurCurtain() {
         <div className="flex items-center justify-between text-xs text-stone-600 px-2">
           <span className="flex items-center gap-1.5">
             <Shield className="h-3.5 w-3.5 text-stone-500" />
-            Flo-grade Anonymous Mode Protection
+            Sakhi AI Anonymous Mode Protection
           </span>
           <span>Click &apos;Reveal Dashboard&apos; or press Alt+H when safe</span>
         </div>

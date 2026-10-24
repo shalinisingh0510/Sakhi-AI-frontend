@@ -4,7 +4,7 @@ import React from "react";
 import { Minus, Plus, Calendar as CalendarIcon, Baby } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
-/* FloStepper: Signature Flo-style +/- numeric stepper with slider           */
+/* FloStepper: Signature Sakhi AI numeric stepper with slider                 */
 /* -------------------------------------------------------------------------- */
 interface FloStepperProps {
   id?: string;
@@ -54,7 +54,7 @@ export function FloStepper({
         {helperText && <span className="text-[11px] text-ink/50">{helperText}</span>}
       </div>
 
-      {/* Flo Stepper Controls */}
+      {/* Stepper Controls */}
       <div className="flex items-center justify-between rounded-2xl border border-peach/80 bg-cream/30 p-2 shadow-2xs">
         <button
           type="button"
@@ -107,7 +107,7 @@ export function FloStepper({
 }
 
 /* -------------------------------------------------------------------------- */
-/* FloCycleCalendar: Visual Flo-style multi-month cycle & fertility calendar */
+/* FloCycleCalendar: Visual Sakhi AI multi-month cycle & fertility calendar  */
 /* -------------------------------------------------------------------------- */
 interface FloCycleCalendarProps {
   lastPeriodDate: string; // YYYY-MM-DD
@@ -192,7 +192,7 @@ export function FloCycleCalendar({
         <div>
           <h3 className="font-display text-base sm:text-lg font-bold text-ink flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-berry" />
-            <span>Flo Cycle Calendar Visualizer</span>
+            <span>Sakhi AI Cycle Calendar Visualizer</span>
           </h3>
           <p className="text-xs text-ink/65 mt-0.5">
             Your predicted period, fertile window, and ovulation days mapped on the calendar.

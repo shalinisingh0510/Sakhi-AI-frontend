@@ -67,7 +67,7 @@ export function AnonymousTrialBanner() {
           <Shield className="h-3.5 w-3.5" />
         </div>
         <span className="font-bold tracking-tight">
-          Flo-Grade Anonymous Mode
+          Sakhi AI Anonymous Mode
         </span>
         <span className="hidden sm:inline text-white/60">•</span>
         <span className="hidden sm:inline text-white/80">

@@ -100,7 +100,7 @@ export function PeriodCalculator() {
               />
             </div>
 
-            {/* Flo Stepper: Period Duration */}
+            {/* Stepper: Period Duration */}
             <FloStepper
               id="periodDuration"
               label="How Many Days Does It Last?"
@@ -112,7 +112,7 @@ export function PeriodCalculator() {
               helperText="Typical: 4 to 7 days"
             />
 
-            {/* Flo Stepper: Cycle Length */}
+            {/* Stepper: Cycle Length */}
             <FloStepper
               id="cycleLength"
               label="Average Cycle Length"
@@ -192,7 +192,7 @@ export function PeriodCalculator() {
                 </div>
               </div>
 
-              {/* Flo Cycle Calendar Visualizer */}
+              {/* Cycle Calendar Visualizer */}
               <FloCycleCalendar
                 lastPeriodDate={lastPeriodDate}
                 periodDuration={periodDuration}

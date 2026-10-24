@@ -145,7 +145,7 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Flo-Grade Anonymous Mode & Privacy Sanctuary */}
+      {/* Sakhi AI Anonymous Mode & Privacy Sanctuary */}
       <Card className="mb-6 border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/40">
         <div className="flex items-center justify-between gap-4 mb-2">
           <div className="flex items-center gap-2.5">
@@ -153,7 +153,7 @@ export default function SettingsPage() {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-ink">Flo-Grade Anonymous Mode</h2>
+              <h2 className="font-semibold text-ink">Sakhi AI Anonymous Mode</h2>
               <p className="text-xs text-ink/60">Decoupled identity & zero-knowledge tracking</p>
             </div>
           </div>

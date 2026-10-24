@@ -73,7 +73,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
-  // Redirect unauthenticated users away from protected routes to Flo questionnaire onboarding
+  // Redirect unauthenticated users away from protected routes to Sakhi questionnaire onboarding
   if (isProtected && !isAuthenticated) {
     const redirectUrl = encodeURIComponent(pathnameWithoutLocale);
     return NextResponse.redirect(new URL(`/${locale}/onboarding?redirect=${redirectUrl}`, request.url));

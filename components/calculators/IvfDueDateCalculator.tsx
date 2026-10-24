@@ -188,7 +188,7 @@ export function IvfDueDateCalculator() {
                 </div>
               </div>
 
-              {/* Flo Trimester Bar */}
+              {/* Trimester Bar */}
               <FloTrimesterBar
                 currentWeek={result.gestational_age_weeks}
                 currentDay={result.gestational_age_days}

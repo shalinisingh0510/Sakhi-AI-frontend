@@ -143,7 +143,7 @@ function ChatInner() {
 
     let activeToken = token;
 
-    // Auto-create Flo-grade Anonymous session if not signed in
+    // Auto-create Sakhi AI Anonymous session if not signed in
     if (!activeToken) {
       try {
         const anonRes = await authApi.createAnonymous();
@@ -269,7 +269,7 @@ function ChatInner() {
                     <Shield className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="font-bold text-white">Flo-Grade Anonymous Chat Active</span>
+                    <span className="font-bold text-white">Sakhi AI Anonymous Chat Active</span>
                     <p className="text-[11px] text-emerald-200/80">
                       Messages & questions are end-to-end decoupled. No email or name stored.
                     </p>

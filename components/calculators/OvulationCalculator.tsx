@@ -113,7 +113,7 @@ export function OvulationCalculator() {
               />
             </div>
 
-            {/* Flo Stepper: Cycle Length */}
+            {/* Stepper: Cycle Length */}
             <FloStepper
               id="cycleLength"
               label="Average Cycle Length"
@@ -191,7 +191,7 @@ export function OvulationCalculator() {
                 </div>
               </div>
 
-              {/* Flo Visual Cycle Calendar */}
+              {/* Visual Cycle Calendar */}
               <FloCycleCalendar
                 lastPeriodDate={lastPeriodDate}
                 periodDuration={5}

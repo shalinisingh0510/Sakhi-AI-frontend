@@ -22,13 +22,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-type FloMode = "cycle" | "pregnancy" | "ttc" | "hormones";
+type HealthMode = "cycle" | "pregnancy" | "ttc" | "hormones";
 
 export function FloProductTourShowcase() {
   const router = useRouter();
   const { login } = useAuthStore();
   const { openModal } = useAnonymousModalStore();
-  const [activeMode, setActiveMode] = useState<FloMode>("cycle");
+  const [activeMode, setActiveMode] = useState<HealthMode>("cycle");
 
   const handleStartAnonymous = async () => {
     try {
@@ -49,7 +49,7 @@ export function FloProductTourShowcase() {
         <div>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-peach/40 px-3 py-1 text-xs font-bold text-berry">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Flo-Grade Health Experience</span>
+            <span>Sakhi AI Health Experience</span>
           </div>
           <h1 className="mt-2 font-display text-2xl font-bold text-ink sm:text-3xl">
             Health & Wellness Sanctuary
@@ -86,7 +86,7 @@ export function FloProductTourShowcase() {
         </div>
       </div>
 
-      {/* Hero Showcase (like Flo product tour) */}
+      {/* Hero Showcase (Sakhi AI product tour) */}
       <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-cream via-[#FFF5F7] to-peach/30 p-6 sm:p-10 border border-peach/50 shadow-sm">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7 space-y-4">
@@ -96,7 +96,7 @@ export function FloProductTourShowcase() {
               className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-300 px-3 py-1 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
             >
               <ShieldCheck className="h-4 w-4 text-emerald-700" />
-              <span>Flo Health Anonymous Mode Active · Zero Identifiers</span>
+              <span>Sakhi AI Anonymous Mode Active · Zero Identifiers</span>
             </button>
 
             <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl lg:text-5xl tracking-tight leading-tight">
@@ -164,7 +164,7 @@ export function FloProductTourShowcase() {
                 </span>
               </div>
 
-              {/* Flo Circular Dial Simulation */}
+              {/* Sakhi AI Circular Dial Simulation */}
               <div className="py-8 flex flex-col items-center justify-center">
                 <div className="relative flex h-52 w-52 items-center justify-center rounded-full border-8 border-dashed border-berry/30 bg-radial from-blush/40 to-cream shadow-inner">
                   <div className="absolute inset-2 rounded-full border border-berry/20 flex flex-col items-center justify-center text-center p-4">
@@ -208,11 +208,11 @@ export function FloProductTourShowcase() {
         </div>
       </section>
 
-      {/* Flo 4 Modes Showcase (Track Period, Pregnancy, TTC, Hormones) */}
+      {/* Sakhi AI 4 Modes Showcase (Track Period, Pregnancy, TTC, Hormones) */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-peach/40 px-3 py-1 text-xs font-bold text-berry">
-            <span>Explore Flo Health Modes</span>
+            <span>Explore Sakhi AI Modes</span>
           </div>
           <h2 className="mt-2 font-display text-2xl font-bold text-ink sm:text-3xl">
             Customized for every milestone

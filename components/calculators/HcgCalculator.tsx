@@ -236,7 +236,7 @@ export function HcgCalculator() {
                 </div>
               </div>
 
-              {/* Flo hCG Doubling Gauge */}
+              {/* hCG Doubling Gauge */}
               {result.doubling_time_hours !== null && (
                 <FloHcgDoublingGauge
                   doublingTimeHours={result.doubling_time_hours}

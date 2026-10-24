@@ -30,7 +30,7 @@ export function AnonymousBanner() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-900">
-                Flo-Grade Anonymous Mode Active
+                Sakhi AI Anonymous Mode Active
               </span>
               <span className="rounded-full bg-emerald-200/80 px-2 py-0.2 text-[10px] font-semibold text-emerald-800">
                 100% Decoupled

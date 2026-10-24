@@ -47,7 +47,7 @@ export function PregnancyWeeksToMonthsCalculator() {
             Pregnancy is calculated medically in <strong>weeks</strong> (40 full weeks or 280 days from the first day of your last menstrual period). However, friends, family, and everyday calendars count pregnancy in <strong>9 calendar months</strong>.
           </p>
           <p>
-            Because a calendar month averages 4.3 weeks (rather than an exact 4 weeks), months and weeks don&apos;t align uniformly. The medical standard followed by Flo Health and obstetricians maps weeks to months as follows:
+            Because a calendar month averages 4.3 weeks (rather than an exact 4 weeks), months and weeks don&apos;t align uniformly. The medical standard followed by Sakhi AI and obstetricians maps weeks to months as follows:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono bg-cream p-4 rounded-2xl border border-peach/50">
             <div>
@@ -98,7 +98,7 @@ export function PregnancyWeeksToMonthsCalculator() {
           </div>
 
           <form onSubmit={handleCalculate} className="space-y-5">
-            {/* Flo Stepper: Pregnancy Weeks */}
+            {/* Stepper: Pregnancy Weeks */}
             <FloStepper
               id="weeksSelect"
               label="Pregnancy Weeks"
@@ -174,7 +174,7 @@ export function PregnancyWeeksToMonthsCalculator() {
                 </div>
               </div>
 
-              {/* Flo Trimester Bar with Fruit Milestone */}
+              {/* Trimester Bar with Fruit Milestone */}
               <FloTrimesterBar
                 currentWeek={result.weeks}
                 currentDay={result.days}

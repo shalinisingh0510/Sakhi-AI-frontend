@@ -167,7 +167,7 @@ export function DueDateCalculator() {
                 </p>
               </div>
 
-              {/* Flo Trimester Bar & Fetal Growth Card */}
+              {/* Trimester Bar & Fetal Growth Card */}
               <FloTrimesterBar
                 currentWeek={result.gestational_age_weeks}
                 currentDay={result.gestational_age_days}

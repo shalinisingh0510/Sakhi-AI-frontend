@@ -100,7 +100,7 @@ export function UltrasoundDueDateCalculator() {
               />
             </div>
 
-            {/* Flo Stepper: Gestational Age Weeks at Scan */}
+            {/* Stepper: Gestational Age Weeks at Scan */}
             <FloStepper
               id="scanWeeks"
               label="Gestational Age at Scan (Weeks)"
@@ -204,7 +204,7 @@ export function UltrasoundDueDateCalculator() {
                 </div>
               </div>
 
-              {/* Flo Trimester Bar */}
+              {/* Trimester Bar */}
               <FloTrimesterBar
                 currentWeek={result.current_gestational_age_weeks}
                 currentDay={result.current_gestational_age_days}
