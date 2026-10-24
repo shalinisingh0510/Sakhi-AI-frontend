@@ -5,6 +5,9 @@ import Link from "next/link";
 import {
   Sparkles,
   ShieldCheck,
+  Shield,
+  Zap,
+  Lock,
   Share2,
   Printer,
   ChevronRight,
@@ -14,6 +17,8 @@ import {
   BookOpen,
 } from "lucide-react";
 import { LOCAL_CATALOG } from "@/lib/calculators-api";
+import { useAuthStore } from "@/lib/auth-store";
+import { useAnonymousTimerStore } from "@/lib/anonymous-timer-store";
 
 interface CalculatorLayoutProps {
   currentSlug: string;
@@ -38,6 +43,9 @@ export function CalculatorLayout({
 }: CalculatorLayoutProps) {
   const [activeTab, setActiveTab] = useState<"calculator" | "how-it-works" | "faq">("calculator");
   const [copied, setCopied] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const { isExpired, isPaid, openPaywall } = useAnonymousTimerStore();
+  const isAnon = user?.isAnonymous ?? false;
 
   // Pick 3 related calculators
   const relatedCalculators = LOCAL_CATALOG.filter((c) => c.slug !== currentSlug).slice(0, 3);
@@ -153,6 +161,27 @@ export function CalculatorLayout({
         <div className="space-y-8">
           {activeTab === "calculator" && (
             <div className="transition-all duration-300">
+              {isAnon && isExpired && !isPaid && (
+                <div className="mb-6 rounded-2xl border border-rose-300 bg-rose-50 p-4 text-xs text-rose-900 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-200 text-rose-800 shrink-0">
+                      <Lock className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm">10-Minute Anonymous Trial Expired</p>
+                      <p className="text-rose-700">Unlock unlimited calculator predictions and AI chat with Anonymous Pro.</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openPaywall}
+                    className="shrink-0 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 text-xs shadow-xs transition-all flex items-center gap-1.5"
+                  >
+                    <Zap className="h-3.5 w-3.5 fill-current" />
+                    <span>Unlock Unlimited (₹99 / $1.99)</span>
+                  </button>
+                </div>
+              )}
               {children}
             </div>
           )}

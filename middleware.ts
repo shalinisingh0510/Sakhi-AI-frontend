@@ -18,7 +18,6 @@ const PROTECTED_PATHS = [
   "/health/activity",
   "/health/nutrition",
   "/health/check-in",
-  "/chat",
   "/profile",
   "/settings",
   "/progress",

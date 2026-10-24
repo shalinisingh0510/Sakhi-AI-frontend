@@ -5,11 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { useAnonymousTimerStore } from "@/lib/anonymous-timer-store";
 import { useChatStore } from "@/lib/chat-store";
-import { conversationApi, chatApi, type ConversationSummary } from "@/lib/api";
+import { conversationApi, chatApi, authApi, type ConversationSummary } from "@/lib/api";
+import { normalizeUser } from "@/lib/api-config";
 import { useVoice } from "@/lib/use-voice";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { Button } from "@/components/ui/Button";
+import { Shield, Sparkles, Zap, Lock, KeyRound, Clock } from "lucide-react";
 
 import { UserMessage } from "@/components/chat/UserMessage";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";
@@ -19,7 +23,9 @@ function ChatInner() {
   const t = useTranslations("Chat");
   const tA11y = useTranslations("A11y");
   
-  const { user, token } = useAuthStore();
+  const { user, token, login } = useAuthStore();
+  const openAnonymousModal = useAnonymousModalStore((s) => s.openModal);
+  const { isExpired, isPaid, openPaywall } = useAnonymousTimerStore();
   const { messages, isTyping, sessionId, addMessage, setMessages, setTyping, clearChat, setSessionId } = useChatStore();
   // We keep useVoice for TTS, but use useAudioRecorder for STT
   const { speak } = useVoice();
@@ -39,15 +45,24 @@ function ChatInner() {
   }, [searchParams]);
 
   const handleRecordingComplete = async (audioBlob: Blob) => {
-    if (!token) {
-      useAuthModalStore.getState().openAuthModal("chat");
-      return;
+    let activeToken = token;
+    if (!activeToken) {
+      try {
+        const anonRes = await authApi.createAnonymous();
+        activeToken = anonRes.access_token;
+        const normalized = normalizeUser(anonRes.user, "");
+        normalized.onboardingComplete = true;
+        login(normalized, activeToken);
+      } catch {
+        useAuthModalStore.getState().openAuthModal("chat");
+        return;
+      }
     }
     try {
       const languageMap: Record<string, string> = { english: "en", hindi: "hi", marathi: "mr" };
       const langCode = user?.language ? languageMap[user.language.toLowerCase()] : "en";
       
-      const res = await chatApi.transcribeVoice(audioBlob, token, langCode);
+      const res = await chatApi.transcribeVoice(audioBlob, activeToken, langCode);
       if (res.text) {
         setInput((prev) => prev ? prev + " " + res.text : res.text);
         setInputMode("voice");
@@ -109,6 +124,14 @@ function ChatInner() {
   async function sendMessage(content: string, overrideMode?: "text" | "voice") {
     const trimmed = content.trim();
     if (!trimmed || isTyping) return;
+
+    // Check anonymous trial timer expiration
+    const isAnon = user?.isAnonymous ?? false;
+    const timerStore = useAnonymousTimerStore.getState();
+    if (isAnon && timerStore.isExpired && !timerStore.isPaid) {
+      timerStore.openPaywall();
+      return;
+    }
     
     const currentMode = overrideMode || inputMode;
     setInput("");
@@ -118,21 +141,32 @@ function ChatInner() {
     addMessage({ role: "user", content: trimmed });
     setTyping(true);
 
-    // Guest mode handling
-    if (!token) {
+    let activeToken = token;
+
+    // Auto-create Flo-grade Anonymous session if not signed in
+    if (!activeToken) {
+      try {
+        const anonRes = await authApi.createAnonymous();
+        activeToken = anonRes.access_token;
+        const normalized = normalizeUser(anonRes.user, "");
+        normalized.onboardingComplete = true;
+        login(normalized, activeToken);
+      } catch (anonErr) {
+        console.warn("Could not auto-start anonymous mode, falling back:", anonErr);
+      }
+    }
+
+    // Guest fallback if backend unreachable
+    if (!activeToken) {
       const newCount = guestMsgCount + 1;
       setGuestMsgCount(newCount);
 
       setTimeout(() => {
         addMessage({
           role: "sakhi",
-          content: `नमस्ते प्यारी सखी! Thank you for sharing your question with me. During puberty, menstruation, and wellness milestones, bodily sensations like cramps, cycle changes, or emotional shifts are natural biological signals.\n\n💡 Gentle Relief: Rest comfortably, use a warm water compress to ease cramps, and stay well hydrated. You are never alone in this journey.\n\n🌸 *Guest Notice: To continue chatting freely, receive personalized cycle answers, and automatically save this conversation history, please sign in to your Sakhi account.*`,
+          content: `नमस्ते प्यारी सखी! Thank you for sharing your question with me. During puberty, menstruation, and wellness milestones, bodily sensations like cramps, cycle changes, or emotional shifts are natural biological signals.\n\n💡 Gentle Relief: Rest comfortably, use a warm water compress to ease cramps, and stay well hydrated. You are never alone in this journey.`,
         });
         setTyping(false);
-
-        if (newCount >= 2) {
-          useAuthModalStore.getState().openAuthModal("chat");
-        }
       }, 700);
       return;
     }
@@ -142,7 +176,7 @@ function ChatInner() {
       if (!sessionId) {
         detail = await conversationApi.createConversation(
           trimmed, 
-          token, 
+          activeToken, 
           currentMode, 
           user?.language || "english"
         );
@@ -152,7 +186,7 @@ function ChatInner() {
         detail = await conversationApi.sendMessage(
           sessionId, 
           trimmed, 
-          token, 
+          activeToken, 
           currentMode
         );
         // Update conversation list timestamp
@@ -228,21 +262,73 @@ function ChatInner() {
         {/* Message Area */}
         <div className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
           <div className="mx-auto max-w-3xl space-y-6">
+            {user?.isAnonymous && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-emerald-500/40 bg-emerald-950/90 p-3.5 text-xs text-emerald-100 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+                    <Shield className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-white">Flo-Grade Anonymous Chat Active</span>
+                    <p className="text-[11px] text-emerald-200/80">
+                      Messages & questions are end-to-end decoupled. No email or name stored.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => openAnonymousModal("shield")}
+                    className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors flex items-center gap-1"
+                  >
+                    <KeyRound className="h-3.5 w-3.5" />
+                    <span>Recovery Key</span>
+                  </button>
+                  {!isPaid && (
+                    <button
+                      type="button"
+                      onClick={openPaywall}
+                      className="rounded-xl bg-amber-400 hover:bg-amber-300 px-3 py-1.5 text-xs font-bold text-ink transition-colors flex items-center gap-1"
+                    >
+                      <Zap className="h-3.5 w-3.5 fill-current" />
+                      <span>{isExpired ? "Unlock (₹99)" : "Upgrade"}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {!token && (
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-peach/80 bg-gradient-to-r from-blush/60 via-white to-peach/40 p-3.5 text-xs text-ink shadow-2xs">
                 <div className="flex items-center gap-2">
-                  <span className="text-base" aria-hidden="true">🌸</span>
+                  <Shield className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>
-                    <strong>Guest Chat Mode:</strong> Ask quick questions! For chatting longer, saving conversation history, and accessing past chats, please sign in.
+                    <strong>Private Guest Chat:</strong> You can ask any question without logging in! We protect your privacy in Anonymous Mode.
                   </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => useAuthModalStore.getState().openAuthModal("chat")}
-                  className="shrink-0 rounded-xl bg-berry px-3.5 py-1.5 font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
-                >
-                  Sign In to Save History
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      authApi.createAnonymous().then((res) => {
+                        const normalized = normalizeUser(res.user, "");
+                        normalized.onboardingComplete = true;
+                        login(normalized, res.access_token);
+                        openAnonymousModal("shield");
+                      });
+                    }}
+                    className="rounded-xl border border-emerald-600/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-800 transition-all"
+                  >
+                    Track Anonymously 🛡️
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => useAuthModalStore.getState().openAuthModal("chat")}
+                    className="rounded-xl bg-berry px-3 py-1.5 font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
+                  >
+                    Sign In
+                  </button>
+                </div>
               </div>
             )}
 

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { useAnonymousTimerStore } from "@/lib/anonymous-timer-store";
 import { authApi } from "@/lib/api";
 import { normalizeUser } from "@/lib/api-config";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
@@ -21,6 +22,11 @@ export function AppNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const { secondsRemaining, isExpired, isPaid, openPaywall } = useAnonymousTimerStore();
+  const minutes = Math.floor(secondsRemaining / 60);
+  const seconds = secondsRemaining % 60;
+  const timerStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
   const NAV_LINKS = [
     { href: "/dashboard", label: t("home"), icon: HomeIcon },
@@ -165,16 +171,34 @@ export function AppNav() {
           ) : (
             <div className="flex items-center gap-2">
               {user?.isAnonymous && (
-                <button
-                  type="button"
-                  onClick={() => useAnonymousModalStore.getState().openModal("shield")}
-                  className="flex items-center gap-1.5 rounded-full border border-emerald-400 bg-emerald-50/90 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
-                  title="Anonymous Mode Active · Click to view recovery key & shield controls"
-                >
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="hidden sm:inline">🔒 Anonymous Mode</span>
-                  <span className="sm:hidden">🔒 Anon</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => useAnonymousModalStore.getState().openModal("shield")}
+                    className="flex items-center gap-1.5 rounded-full border border-emerald-400 bg-emerald-50/90 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
+                    title="Anonymous Mode Active · Click to view recovery key & shield controls"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="hidden sm:inline">
+                      {isPaid ? "🛡️ Anonymous Pro" : `🔒 Anon (${timerStr})`}
+                    </span>
+                    <span className="sm:hidden">{isPaid ? "Pro" : timerStr}</span>
+                  </button>
+                  {!isPaid && (
+                    <button
+                      type="button"
+                      onClick={openPaywall}
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-bold shadow-2xs transition-all ${
+                        isExpired
+                          ? "bg-rose-600 text-white animate-pulse"
+                          : "bg-amber-400 hover:bg-amber-300 text-ink"
+                      }`}
+                      title="Unlock unlimited anonymous mode"
+                    >
+                      {isExpired ? "Unlock" : "Upgrade"}
+                    </button>
+                  )}
+                </div>
               )}
 
               <div className="relative" ref={menuRef}>

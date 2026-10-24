@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useState, useCallback, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-import { learningApi, type LearningContent } from "@/lib/api";
+import { learningApi, authApi, type LearningContent } from "@/lib/api";
+import { normalizeUser } from "@/lib/api-config";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
-import { Loader2, ChevronDown, Sparkles } from "lucide-react";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { Loader2, ChevronDown, Sparkles, Shield } from "lucide-react";
 
 import { LearnSidebar } from "@/components/learning/sidebar/LearnSidebar";
 import { LearnMobileDrawer } from "@/components/learning/sidebar/LearnMobileDrawer";
@@ -142,21 +144,57 @@ function LearnPageContent() {
           </>
         )}
 
+        {user?.isAnonymous && (
+          <div className="mt-4 mb-2 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-emerald-500/40 bg-emerald-950/90 p-3.5 text-xs text-emerald-100 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <Shield className="h-4 w-4 text-emerald-400 shrink-0" />
+              <span>
+                <strong>Flo-Grade Anonymous Learning Active:</strong> Read clinical articles and watch puberty guides with zero identity tracking.
+              </span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => useAnonymousModalStore.getState().openModal("shield")}
+                className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors"
+              >
+                View Key
+              </button>
+            </div>
+          </div>
+        )}
+
         {!token && (
           <div className="mt-4 mb-2 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-peach/80 bg-gradient-to-r from-blush/50 via-white to-peach/30 p-4 text-xs sm:text-sm text-ink shadow-2xs">
             <div className="flex items-center gap-2.5">
-              <span className="text-lg" aria-hidden="true">🌸</span>
+              <Shield className="h-4 w-4 text-emerald-600 shrink-0" />
               <span className="leading-snug">
-                <strong>Welcome to Sakhi AI!</strong> You are exploring in guest mode. For saving bookmarks, quiz scores, and learning progress, please sign in.
+                <strong>Explore Freely:</strong> Learn about cycles, hormones, and wellness in private Anonymous Mode. No account or email needed.
               </span>
             </div>
-            <button
-              type="button"
-              onClick={() => useAuthModalStore.getState().openAuthModal("progress")}
-              className="shrink-0 rounded-xl bg-berry px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
-            >
-              Sign In to Save Progress
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  authApi.createAnonymous().then((res) => {
+                    const normalized = normalizeUser(res.user, "");
+                    normalized.onboardingComplete = true;
+                    useAuthStore.getState().login(normalized, res.access_token);
+                    useAnonymousModalStore.getState().openModal("shield");
+                  });
+                }}
+                className="rounded-xl border border-emerald-600/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-800 transition-all"
+              >
+                Learn Anonymously 🛡️
+              </button>
+              <button
+                type="button"
+                onClick={() => useAuthModalStore.getState().openAuthModal("progress")}
+                className="shrink-0 rounded-xl bg-berry px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-berry/90 transition-all active:scale-[0.99]"
+              >
+                Sign In
+              </button>
+            </div>
           </div>
         )}
 

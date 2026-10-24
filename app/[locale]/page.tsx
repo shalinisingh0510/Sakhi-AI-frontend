@@ -6,6 +6,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
+import { AppFooter } from "@/components/layout/AppFooter";
+import { AnonymousShieldModal } from "@/components/privacy/AnonymousShieldModal";
+import { AnonymousPaywallModal } from "@/components/privacy/AnonymousPaywallModal";
+import { AnonymousTrialBanner } from "@/components/privacy/AnonymousTrialBanner";
+import { PanicBlurCurtain } from "@/components/privacy/PanicBlurCurtain";
 import {
   BookOpen,
   Search,
@@ -233,6 +238,7 @@ export default function HomePage() {
 
   return (
     <main id="main-content" className="min-h-screen bg-[#FFFDF9] text-ink selection:bg-rose/20 selection:text-berry" tabIndex={-1}>
+      <AnonymousTrialBanner />
       {/* 1. TOP NAVBAR (Matches Stitch Screenshot 1) */}
       <header className="sticky top-0 z-40 border-b border-peach/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -1070,31 +1076,14 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="border-t border-peach/80 bg-white py-10 text-xs text-slate-500">
-        <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <span className="text-base" aria-hidden="true">🌸</span>
-            <span className="font-display font-bold text-berry">Sakhi AI</span>
-            <span>— Compassionate Women&apos;s Health Literacy</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/learn" className="hover:text-berry transition-colors">Learning Hub</Link>
-            <Link href="/chat" className="hover:text-berry transition-colors">AI Sakhi</Link>
-            <Link href="/caregivers" className="hover:text-berry transition-colors">Caregiver Guide</Link>
-            <button
-              type="button"
-              onClick={() => openAuthModal("general")}
-              className="font-semibold text-berry hover:underline"
-            >
-              Sign In
-            </button>
-          </div>
-        </div>
-      </footer>
+      {/* Flo-Inspired AppFooter */}
+      <AppFooter />
 
-      {/* Global Auth Prompt Modal */}
+      {/* Global Modals & Privacy Curtains */}
       <AuthPromptModal />
+      <AnonymousShieldModal />
+      <AnonymousPaywallModal />
+      <PanicBlurCurtain />
     </main>
   );
 }
