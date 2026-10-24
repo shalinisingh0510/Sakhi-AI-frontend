@@ -113,6 +113,25 @@ export const authApi = {
     });
     return { user: res as unknown as User };
   },
+
+  createAnonymous: (preferred_language = "english") =>
+    request<AuthResponse>("/auth/anonymous", {
+      method: "POST",
+      body: { preferred_language },
+    }),
+
+  restoreAnonymous: (recovery_key: string) =>
+    request<AuthResponse>("/auth/anonymous/restore", {
+      method: "POST",
+      body: { recovery_key },
+    }),
+
+  convertAnonymous: (data: { email: string; password: string; name: string }, token: string) =>
+    request<AuthResponse>("/auth/anonymous/convert", {
+      method: "POST",
+      body: data,
+      token,
+    }),
 };
 
 export interface Citation {

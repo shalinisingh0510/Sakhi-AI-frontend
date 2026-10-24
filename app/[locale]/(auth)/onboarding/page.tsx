@@ -13,6 +13,7 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
+  Shield,
   AlertCircle,
   Calendar,
   Heart,
@@ -21,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { useAuthStore, type SupportedLanguage, type AgeGroup } from "@/lib/auth-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
 import {
   authApi,
   cycleApi,
@@ -111,6 +113,7 @@ function OnboardingContent() {
   const redirectTarget = searchParams?.get("redirect") || "/health/tracker";
 
   const { user, token, login, completeOnboarding, isAuthenticated } = useAuthStore();
+  const openAnonymousModal = useAnonymousModalStore((s) => s.openModal);
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -326,6 +329,31 @@ function OnboardingContent() {
         } catch (updateErr) {
           console.warn("Profile update note:", updateErr);
         }
+
+        // Step 2d: Save reported health conditions
+        const conditionMap: Record<string, { code: string; label: string }> = {
+          PCOS: { code: "PCOS_PCOD", label: "PCOS / PCOD" },
+          ENDOMETRIOSIS: { code: "ENDOMETRIOSIS", label: "Endometriosis" },
+          THYROID: { code: "HYPOTHYROID", label: "Thyroid Condition" },
+          ANEMIA: { code: "ANEMIA", label: "Anemia / Iron Deficiency" },
+        };
+
+        for (const condKey of selectedConditions) {
+          if (condKey in conditionMap) {
+            try {
+              await healthApi.addCondition(
+                {
+                  condition_code: conditionMap[condKey].code,
+                  display_name: conditionMap[condKey].label,
+                  notes: "Self-reported during Flo onboarding questionnaire",
+                },
+                activeToken
+              );
+            } catch (condErr) {
+              console.warn("Condition sync note:", condErr);
+            }
+          }
+        }
       }
 
       // 3. Mark complete in local auth store
@@ -335,6 +363,91 @@ function OnboardingContent() {
       router.push(redirectTarget);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAnonymousSubmit = async () => {
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      // 1. Create Flo-grade anonymous session
+      const anonRes = await authApi.createAnonymous();
+      const activeToken = anonRes.access_token;
+      const normalized = normalizeUser(anonRes.user, "");
+      normalized.onboardingComplete = true;
+      login(normalized, activeToken);
+
+      // 2. Sync clinical metrics under anonymous session
+      if (activeToken && !activeToken.startsWith("local-") && !activeToken.startsWith("demo-")) {
+        try {
+          const clampedYear = Math.max(1950, Math.min(new Date().getFullYear() - 14, birthYear));
+          const dobString = `${clampedYear}-${birthMonth}-15`;
+          await healthApi.createProfile(
+            {
+              date_of_birth: dobString,
+              biological_sex: "FEMALE",
+              activity_level: "MODERATE",
+              diet_type: "OTHER",
+              cycle_tracking_enabled: true,
+              nutrition_tracking_enabled: true,
+              activity_tracking_enabled: true,
+            },
+            activeToken
+          );
+        } catch (profileErr) {
+          console.warn("Health profile note:", profileErr);
+        }
+
+        try {
+          await cycleApi.logPeriod(activeToken, {
+            start_date: lastPeriodDate,
+            flow: flowLevel,
+            notes: `Flo questionnaire baseline. Cycle: ${cycleLength}d, Period: ${periodDuration}d, Cramps: ${crampSeverity}`,
+          });
+        } catch (cycleErr) {
+          console.warn("Period baseline note:", cycleErr);
+        }
+
+        // Save reported health conditions
+        const conditionMap: Record<string, { code: string; label: string }> = {
+          PCOS: { code: "PCOS_PCOD", label: "PCOS / PCOD" },
+          ENDOMETRIOSIS: { code: "ENDOMETRIOSIS", label: "Endometriosis" },
+          THYROID: { code: "HYPOTHYROID", label: "Thyroid Condition" },
+          ANEMIA: { code: "ANEMIA", label: "Anemia / Iron Deficiency" },
+        };
+
+        for (const condKey of selectedConditions) {
+          if (condKey in conditionMap) {
+            try {
+              await healthApi.addCondition(
+                {
+                  condition_code: conditionMap[condKey].code,
+                  display_name: conditionMap[condKey].label,
+                  notes: "Self-reported during Flo onboarding questionnaire",
+                },
+                activeToken
+              );
+            } catch (condErr) {
+              console.warn("Condition sync note:", condErr);
+            }
+          }
+        }
+      }
+
+      // 3. Mark complete in local auth store
+      completeOnboarding(computedAgeGroup, language, "Anonymous Friend");
+
+      // 4. Open Shield Center to show Recovery Key
+      openAnonymousModal("shield");
+
+      // 5. Navigate to tracker
+      router.push(redirectTarget);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to initialize anonymous mode. Please try again.";
       setErrorMsg(msg);
     } finally {
       setLoading(false);
@@ -1289,6 +1402,38 @@ function OnboardingContent() {
                   </span>
                 </button>
               </div>
+
+              {!isAuthenticated && (
+                <div className="space-y-3 pt-3 border-t border-peach/50">
+                  <div className="flex items-center gap-2 text-xs text-ink/50 justify-center">
+                    <span className="h-px w-10 bg-peach/60" />
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-ink/40">Or Private Mode</span>
+                    <span className="h-px w-10 bg-peach/60" />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAnonymousSubmit}
+                    disabled={loading}
+                    className="w-full rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-800 p-3.5 transition-all text-left flex items-center justify-between gap-3 group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <Shield className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                          Save & Track in Flo-Grade Anonymous Mode 🛡️
+                        </p>
+                        <p className="text-[11px] text-emerald-800/80 mt-0.5">
+                          Zero personal identity stored. You get a private 16-character recovery key.
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-emerald-700 shrink-0 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              )}
 
               {/* Already have an account */}
               <div className="text-center pt-2">

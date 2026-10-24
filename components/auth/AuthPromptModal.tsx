@@ -13,6 +13,10 @@ import {
   UserCheck
 } from "lucide-react";
 import { useAuthModalStore, type AuthPromptReason } from "@/lib/auth-modal-store";
+import { useAuthStore } from "@/lib/auth-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { authApi } from "@/lib/api";
+import { normalizeUser } from "@/lib/api-config";
 import { GoogleAuthButton } from "./GoogleAuthButton";
 
 const MODAL_CONTENT: Record<AuthPromptReason, {
@@ -98,6 +102,20 @@ export function AuthPromptModal() {
     };
   }, [isOpen, closeAuthModal]);
 
+  const { login } = useAuthStore();
+
+  const handleEnableAnonymous = async () => {
+    try {
+      const res = await authApi.createAnonymous();
+      const normalized = normalizeUser(res.user);
+      login(normalized, res.access_token);
+      closeAuthModal();
+      useAnonymousModalStore.getState().openModal("shield");
+    } catch (e) {
+      console.error("Failed to start anonymous session:", e);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -162,6 +180,15 @@ export function AuthPromptModal() {
 
           {/* Action Buttons */}
           <div className="w-full space-y-2.5">
+            <button
+              type="button"
+              onClick={handleEnableAnonymous}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-emerald-400 bg-emerald-50/90 py-3 text-xs sm:text-sm font-bold text-emerald-900 shadow-2xs transition-all hover:bg-emerald-100 active:scale-[0.99]"
+            >
+              <ShieldCheck size={18} className="text-emerald-700" />
+              <span>Track Anonymously (No Email Needed · Flo Mode)</span>
+            </button>
+
             <GoogleAuthButton
               onSuccess={closeAuthModal}
               className="py-2.5 text-xs sm:text-sm font-semibold"

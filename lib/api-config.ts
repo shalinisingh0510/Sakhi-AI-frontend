@@ -15,16 +15,20 @@ export class ApiError extends Error {
 }
 
 export function normalizeUser(raw: unknown, fallbackEmail = ""): User {
-  const u = (raw ?? {}) as Partial<User>;
+  const u = (raw ?? {}) as Partial<User> & Record<string, unknown>;
+  const isAnon = Boolean(u.is_anonymous ?? u.isAnonymous);
+  const recoveryKey = (u.recovery_key ?? u.recoveryKey) as string | undefined;
   return {
     id: u.id ?? `user-${Date.now()}`,
-    name: u.name ?? "",
+    name: u.name ?? (isAnon ? "Anonymous Sakhi" : ""),
     email: u.email ?? fallbackEmail,
     role: u.role ?? "user",
     ageGroup: (u.ageGroup as AgeGroup) ?? "18+",
     language: (u.language as SupportedLanguage) ?? "en",
     avatarUrl: u.avatarUrl,
-    onboardingComplete: u.onboardingComplete ?? false,
+    onboardingComplete: u.onboardingComplete ?? isAnon,
+    isAnonymous: isAnon,
+    recoveryKey: recoveryKey,
   };
 }
 

@@ -19,6 +19,7 @@ import { EnergyOverviewCard } from "./energy/EnergyOverviewCard";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 import { energyApi, type EnergySummaryResponse } from "@/lib/api";
+import { AnonymousBanner } from "@/components/privacy/AnonymousBanner";
 
 const COMING_SOON_MODULES: { icon: string; key: string; label: string }[] = [];
 
@@ -66,6 +67,7 @@ export function HealthDashboard({ data }: Props) {
 
   return (
     <div className="flex flex-col gap-6 py-6">
+      <AnonymousBanner />
       <WellnessDashboardHeader profile={data.profile} />
 
       <MyWellnessPlanCard />

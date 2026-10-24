@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { authApi } from "@/lib/api";
+import { normalizeUser } from "@/lib/api-config";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useTranslations } from "next-intl";
 
@@ -128,67 +131,151 @@ export function AppNav() {
           </Link>
 
           {!isAuthenticated ? (
-            <Link
-              href="/login"
-              className="flex items-center gap-2 rounded-full border border-peach/80 bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-berry shadow-2xs hover:bg-blush/30 transition-all"
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-berry/10 text-xs font-bold text-berry">
-                <PersonIcon className="h-3.5 w-3.5" />
-              </span>
-              <span>Sign In</span>
-            </Link>
-          ) : (
-            <div className="relative" ref={menuRef}>
+            <div className="flex items-center gap-2">
               <button
-                ref={menuButtonRef}
                 type="button"
-                className="flex items-center gap-2 rounded-full border border-peach/60 bg-white px-3 py-2 text-sm font-medium text-ink hover:border-berry/30 transition-all"
-                aria-expanded={menuOpen}
-                aria-haspopup="menu"
-                aria-label={tA11y("profileMenu")}
-                onClick={() => setMenuOpen((open) => !open)}
+                onClick={async () => {
+                  try {
+                    const res = await authApi.createAnonymous();
+                    const normalized = normalizeUser(res.user);
+                    useAuthStore.getState().login(normalized, res.access_token);
+                    useAnonymousModalStore.getState().openModal("shield");
+                  } catch (e) {
+                    console.error("Anonymous init failed:", e);
+                  }
+                }}
+                className="flex items-center gap-1.5 rounded-full border border-emerald-400 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
+                title="Flo-grade anonymous tracking without email"
               >
-                <span
-                  className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-rose to-berry text-xs font-bold text-white"
-                  aria-hidden="true"
-                >
-                  {user?.name?.[0]?.toUpperCase() ?? "S"}
-                </span>
-                <span className="hidden sm:block">{user?.name ?? t("profile")}</span>
+                <ShieldIcon className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">Anonymous Mode</span>
+                <span className="sm:hidden">Anon</span>
               </button>
 
-              {menuOpen && (
-                <div
-                  role="menu"
-                  className="absolute right-0 top-full z-50 mt-1 w-44 rounded-2xl border border-peach/60 bg-white p-1.5 shadow-soft"
+              <Link
+                href="/login"
+                className="flex items-center gap-2 rounded-full border border-peach/80 bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-berry shadow-2xs hover:bg-blush/30 transition-all"
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-berry/10 text-xs font-bold text-berry">
+                  <PersonIcon className="h-3.5 w-3.5" />
+                </span>
+                <span>Sign In</span>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              {user?.isAnonymous && (
+                <button
+                  type="button"
+                  onClick={() => useAnonymousModalStore.getState().openModal("shield")}
+                  className="flex items-center gap-1.5 rounded-full border border-emerald-400 bg-emerald-50/90 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
+                  title="Anonymous Mode Active · Click to view recovery key & shield controls"
                 >
-                  <Link
-                    href="/profile"
-                    role="menuitem"
-                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <PersonIcon className="h-4 w-4" aria-hidden="true" /> {t("profile")}
-                  </Link>
-                  <Link
-                    href="/settings"
-                    role="menuitem"
-                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <SettingsIcon className="h-4 w-4" aria-hidden="true" /> {t("settings")}
-                  </Link>
-                  <hr className="my-1 border-peach/50" />
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={handleLogout}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
-                  >
-                    <LogoutIcon className="h-4 w-4" aria-hidden="true" /> {t("signOut")}
-                  </button>
-                </div>
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="hidden sm:inline">🔒 Anonymous Mode</span>
+                  <span className="sm:hidden">🔒 Anon</span>
+                </button>
               )}
+
+              <div className="relative" ref={menuRef}>
+                <button
+                  ref={menuButtonRef}
+                  type="button"
+                  className="flex items-center gap-2 rounded-full border border-peach/60 bg-white px-3 py-2 text-sm font-medium text-ink hover:border-berry/30 transition-all"
+                  aria-expanded={menuOpen}
+                  aria-haspopup="menu"
+                  aria-label={tA11y("profileMenu")}
+                  onClick={() => setMenuOpen((open) => !open)}
+                >
+                  <span
+                    className={[
+                      "flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white",
+                      user?.isAnonymous
+                        ? "bg-gradient-to-br from-emerald-600 to-teal-700"
+                        : "bg-gradient-to-br from-rose to-berry",
+                    ].join(" ")}
+                    aria-hidden="true"
+                  >
+                    {user?.isAnonymous ? "🔒" : (user?.name?.[0]?.toUpperCase() ?? "S")}
+                  </span>
+                  <span className="hidden sm:block">
+                    {user?.isAnonymous ? "Anonymous Mode" : (user?.name ?? t("profile"))}
+                  </span>
+                </button>
+
+                {menuOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-full z-50 mt-1 w-52 rounded-2xl border border-peach/60 bg-white p-1.5 shadow-soft"
+                  >
+                    {user?.isAnonymous && (
+                      <>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            useAnonymousModalStore.getState().openModal("shield");
+                          }}
+                        >
+                          <ShieldIcon className="h-4 w-4 text-emerald-600" />
+                          <span>Privacy Shield & Key</span>
+                        </button>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-amber-800 hover:bg-amber-50"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            useAuthStore.getState().togglePanicBlur();
+                          }}
+                        >
+                          <span>👀 Panic Hide (Alt+H)</span>
+                        </button>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-berry hover:bg-peach/30"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            useAnonymousModalStore.getState().openModal("convert");
+                          }}
+                        >
+                          <span>🔗 Link Email (Convert)</span>
+                        </button>
+                        <hr className="my-1 border-peach/50" />
+                      </>
+                    )}
+
+                    <Link
+                      href="/profile"
+                      role="menuitem"
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <PersonIcon className="h-4 w-4" aria-hidden="true" /> {t("profile")}
+                    </Link>
+                    <Link
+                      href="/settings"
+                      role="menuitem"
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink hover:bg-peach/40"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <SettingsIcon className="h-4 w-4" aria-hidden="true" /> {t("settings")}
+                    </Link>
+                    <hr className="my-1 border-peach/50" />
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
+                    >
+                      <LogoutIcon className="h-4 w-4" aria-hidden="true" /> {t("signOut")}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -238,4 +325,13 @@ function LogoutIcon({ className }: { className?: string }) {
 }
 function ToolsIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10"/><path d="M7 12h4"/><path d="M7 16h4"/><path d="M14 12h3"/><path d="M14 16h3"/></svg>;
+}
+
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
 }

@@ -44,12 +44,14 @@ export function middleware(request: NextRequest) {
   const authRaw = request.cookies.get("sakhi-auth")?.value;
   let isAuthenticated = false;
   let onboardingComplete = false;
+  let isAnonymous = false;
 
   if (authRaw) {
     try {
       const parsed = JSON.parse(decodeURIComponent(authRaw));
       isAuthenticated = parsed?.state?.isAuthenticated ?? false;
       onboardingComplete = parsed?.state?.user?.onboardingComplete ?? false;
+      isAnonymous = parsed?.state?.user?.isAnonymous ?? false;
     } catch {
       // invalid cookie — treat as unauthenticated
     }
@@ -68,7 +70,7 @@ export function middleware(request: NextRequest) {
   const isOnboarding = pathnameWithoutLocale === '/onboarding' || pathnameWithoutLocale.startsWith('/onboarding/');
 
   // If already authenticated and onboarded, redirect away from onboarding and auth pages
-  if ((isOnboarding || isAuthPage) && isAuthenticated && onboardingComplete) {
+  if ((isOnboarding || isAuthPage) && isAuthenticated && (onboardingComplete || isAnonymous)) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
@@ -78,8 +80,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/onboarding?redirect=${redirectUrl}`, request.url));
   }
 
-  // Redirect authenticated but not-yet-onboarded users to onboarding from any protected route
-  if (isAuthenticated && !onboardingComplete && isProtected) {
+  // Redirect authenticated but not-yet-onboarded non-anonymous users to onboarding from any protected route
+  if (isAuthenticated && !isAnonymous && !onboardingComplete && isProtected) {
     if (!isOnboarding) {
       const redirectUrl = encodeURIComponent(pathnameWithoutLocale);
       return NextResponse.redirect(new URL(`/${locale}/onboarding?redirect=${redirectUrl}`, request.url));

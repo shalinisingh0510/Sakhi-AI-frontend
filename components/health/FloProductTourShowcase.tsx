@@ -2,6 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/auth-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
+import { authApi } from "@/lib/api";
+import { normalizeUser } from "@/lib/api-config";
 import {
   Sparkles,
   Calendar,
@@ -20,7 +25,22 @@ import {
 type FloMode = "cycle" | "pregnancy" | "ttc" | "hormones";
 
 export function FloProductTourShowcase() {
+  const router = useRouter();
+  const { login } = useAuthStore();
+  const { openModal } = useAnonymousModalStore();
   const [activeMode, setActiveMode] = useState<FloMode>("cycle");
+
+  const handleStartAnonymous = async () => {
+    try {
+      const res = await authApi.createAnonymous();
+      const normalized = normalizeUser(res.user);
+      login(normalized, res.access_token);
+      openModal("shield");
+      router.push("/health/cycle");
+    } catch (e) {
+      console.error("Anonymous start failed:", e);
+    }
+  };
 
   return (
     <div className="space-y-12 py-6">
@@ -40,6 +60,15 @@ export function FloProductTourShowcase() {
         </div>
 
         <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleStartAnonymous}
+            className="rounded-2xl border-2 border-emerald-400 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all flex items-center gap-1.5"
+            title="Start without email"
+          >
+            <ShieldCheck className="h-4 w-4 text-emerald-700" />
+            <span>Track Anonymously 🔒</span>
+          </button>
           <Link
             href="/login?redirect=%2Fhealth%2Ftracker"
             className="rounded-2xl border border-peach/80 bg-white px-4 py-2 text-xs font-semibold text-ink shadow-2xs hover:bg-cream transition-all flex items-center gap-1.5"
@@ -61,10 +90,14 @@ export function FloProductTourShowcase() {
       <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-cream via-[#FFF5F7] to-peach/30 p-6 sm:p-10 border border-peach/50 shadow-sm">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-berry shadow-2xs">
-              <ShieldCheck className="h-4 w-4 text-berry" />
-              <span>100% Private · Anonymous Medical Sanctuary</span>
-            </div>
+            <button
+              type="button"
+              onClick={handleStartAnonymous}
+              className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-300 px-3 py-1 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all"
+            >
+              <ShieldCheck className="h-4 w-4 text-emerald-700" />
+              <span>Flo Health Anonymous Mode Active · Zero Identifiers</span>
+            </button>
 
             <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl lg:text-5xl tracking-tight leading-tight">
               One app, with you for <span className="text-berry">every stage</span> of your life.
@@ -75,18 +108,26 @@ export function FloProductTourShowcase() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleStartAnonymous}
+                className="rounded-2xl border-2 border-emerald-500 bg-emerald-50 px-5 py-3.5 text-sm font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 transition-all flex items-center gap-2"
+              >
+                <ShieldCheck className="h-4 w-4 text-emerald-700" />
+                <span>Track Anonymously (No Email) 🔒</span>
+              </button>
               <Link
                 href="/onboarding?redirect=%2Fhealth%2Ftracker"
                 className="rounded-2xl bg-berry px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-berry/90 transition-all flex items-center gap-2"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>Begin Personalized Assessment</span>
+                <span>Begin Assessment</span>
               </Link>
               <Link
                 href="/tools"
                 className="rounded-2xl border border-peach bg-white/90 px-5 py-3.5 text-sm font-semibold text-ink shadow-2xs hover:bg-white transition-all flex items-center gap-1.5"
               >
-                <span>Explore Free Calculators</span>
+                <span>Calculators</span>
                 <ChevronRight className="h-4 w-4 text-ink/50" />
               </Link>
             </div>

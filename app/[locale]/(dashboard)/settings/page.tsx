@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAuthStore, type SupportedLanguage } from "@/lib/auth-store";
+import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
 import { getHighContrast, setHighContrast } from "@/components/accessibility/AccessibilityInit";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ShieldCheck, Key, EyeOff, UserPlus } from "lucide-react";
 
 const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] = [
   { value: "en", label: "English", native: "English" },
@@ -23,7 +25,8 @@ const LANGUAGES: { value: SupportedLanguage; label: string; native: string }[] =
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, updateUser, logout } = useAuthStore();
+  const { user, updateUser, logout, togglePanicBlur } = useAuthStore();
+  const { openModal } = useAnonymousModalStore();
   const t = useTranslations("Settings");
   const tNav = useTranslations("Navigation");
 
@@ -139,6 +142,83 @@ export default function SettingsPage() {
               ].join(" ")}
             />
           </button>
+        </div>
+      </Card>
+
+      {/* Flo-Grade Anonymous Mode & Privacy Sanctuary */}
+      <Card className="mb-6 border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/40">
+        <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-ink">Flo-Grade Anonymous Mode</h2>
+              <p className="text-xs text-ink/60">Decoupled identity & zero-knowledge tracking</p>
+            </div>
+          </div>
+          <span
+            className={[
+              "rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider",
+              user?.isAnonymous
+                ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                : "bg-stone-100 text-stone-600 border border-stone-200",
+            ].join(" ")}
+          >
+            {user?.isAnonymous ? "Active 🔒" : "Inactive"}
+          </span>
+        </div>
+
+        <p className="text-xs text-ink/75 leading-relaxed mt-2 mb-4">
+          {user?.isAnonymous
+            ? "Your account is running in Anonymous Mode. No name, email, or IP address is tied to your reproductive and mental health logs. Your data is protected by mathematical oblivious decoupling."
+            : "Protect sensitive cycle and health entries. In Anonymous Mode, all records are stored under an abstract token without any personal identifiers."}
+        </p>
+
+        <div className="flex flex-wrap items-center gap-2.5 pt-1 border-t border-peach/40">
+          <Button
+            size="sm"
+            onClick={() => openModal("shield")}
+            className="flex items-center gap-1.5 bg-emerald-800 text-white hover:bg-emerald-900 border-none"
+          >
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>{user?.isAnonymous ? "View Shield & Key" : "Enable Anonymous Mode"}</span>
+          </Button>
+
+          {user?.isAnonymous && (
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => openModal("restore")}
+                className="flex items-center gap-1.5 border-emerald-300 text-emerald-900 hover:bg-emerald-50"
+              >
+                <Key className="h-3.5 w-3.5" />
+                <span>Restore Key</span>
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => openModal("convert")}
+                className="flex items-center gap-1.5 border-emerald-300 text-emerald-900 hover:bg-emerald-50"
+              >
+                <UserPlus className="h-3.5 w-3.5" />
+                <span>Link Email</span>
+              </Button>
+            </>
+          )}
+
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={togglePanicBlur}
+            className="flex items-center gap-1.5 border-peach/80 text-ink/80 hover:bg-peach/30 ml-auto"
+            title="Instant Privacy Hide (Alt+H)"
+          >
+            <EyeOff className="h-3.5 w-3.5 text-amber-600" />
+            <span>Panic Hide (Alt+H)</span>
+          </Button>
         </div>
       </Card>
 

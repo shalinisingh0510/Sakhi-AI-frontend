@@ -31,6 +31,8 @@ export interface User {
   language: SupportedLanguage;
   avatarUrl?: string;
   onboardingComplete: boolean;
+  isAnonymous?: boolean;
+  recoveryKey?: string;
 }
 
 interface AuthState {
@@ -38,12 +40,15 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isPanicBlurred: boolean;
   // Actions
   login: (user: User, token: string) => void;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   setLoading: (loading: boolean) => void;
   completeOnboarding: (ageGroup: AgeGroup, language: SupportedLanguage, name: string) => void;
+  togglePanicBlur: () => void;
+  setPanicBlur: (blurred: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -53,6 +58,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       isLoading: false,
+      isPanicBlurred: false,
 
       login: (user, token) =>
         set({ user, token, isAuthenticated: true, isLoading: false }),
@@ -81,6 +87,11 @@ export const useAuthStore = create<AuthState>()(
               : null,
           };
         }),
+
+      togglePanicBlur: () =>
+        set((state) => ({ isPanicBlurred: !state.isPanicBlurred })),
+
+      setPanicBlur: (blurred) => set({ isPanicBlurred: blurred }),
     }),
     {
       name: "sakhi-auth",
@@ -106,7 +117,10 @@ if (typeof window !== "undefined") {
     const minimalState = {
       state: {
         isAuthenticated: state.isAuthenticated,
-        user: { onboardingComplete: state.user?.onboardingComplete ?? false }
+        user: { 
+          onboardingComplete: state.user?.onboardingComplete ?? false,
+          isAnonymous: state.user?.isAnonymous ?? false
+        }
       }
     };
     document.cookie = `sakhi-auth=${encodeURIComponent(JSON.stringify(minimalState))}; path=/; max-age=31536000; SameSite=Lax`;

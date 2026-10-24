@@ -1,5 +1,7 @@
 import { AppNav } from "@/components/layout/AppNav";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { AnonymousShieldModal } from "@/components/privacy/AnonymousShieldModal";
+import { PanicBlurCurtain } from "@/components/privacy/PanicBlurCurtain";
 
 export default function DashboardLayout({
   children,
@@ -13,6 +15,8 @@ export default function DashboardLayout({
         {children}
       </main>
       <MobileNav />
+      <AnonymousShieldModal />
+      <PanicBlurCurtain />
     </div>
   );
 }

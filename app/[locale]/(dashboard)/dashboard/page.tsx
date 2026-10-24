@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { wellnessApi, learningApi, type WellnessDashboardResponse, type LearningSummary } from "@/lib/api";
 import { HealthCard } from "@/components/dashboard/HealthCard";
 import { LearningCard } from "@/components/dashboard/LearningCard";
+import { AnonymousBanner } from "@/components/privacy/AnonymousBanner";
 
 const QUICK_TILE_META = [
   { href: "/chat", emoji: "??", bg: "from-rose/10 to-blush", border: "border-rose/20" },
@@ -47,12 +48,15 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
+      <AnonymousBanner />
       <section className="mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-moss">{greeting} ??</p>
+            <p className="text-sm font-medium text-moss">{greeting} 🌸</p>
             <h1 className="mt-1 font-display text-3xl font-bold text-ink">
-              {user?.name ? t("hiName", { name: user.name }) : t("welcomeFallback")}
+              {user?.isAnonymous
+                ? "Anonymous Friend 🌸"
+                : (user?.name ? t("hiName", { name: user.name }) : t("welcomeFallback"))}
             </h1>
             <p className="mt-1 text-sm text-ink/60">{t("subtitle")}</p>
           </div>
