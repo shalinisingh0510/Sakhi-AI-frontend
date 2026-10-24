@@ -30,6 +30,7 @@ export function UltrasoundDueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ultrasoundDate, weeks, days, crlMm]);
 
   const formatDateDisplay = (dateStr: string) => {

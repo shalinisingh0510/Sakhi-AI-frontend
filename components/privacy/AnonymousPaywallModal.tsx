@@ -4,19 +4,15 @@ import React, { useState } from "react";
 import {
   Shield,
   CheckCircle2,
-  Lock,
-  Sparkles,
   Zap,
   Clock,
   ArrowRight,
   X,
-  CreditCard,
   RefreshCw,
   HeartHandshake,
 } from "lucide-react";
 import { useAnonymousTimerStore } from "@/lib/anonymous-timer-store";
 import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
-import { useAuthStore } from "@/lib/auth-store";
 
 export function AnonymousPaywallModal() {
   const {
@@ -29,7 +25,6 @@ export function AnonymousPaywallModal() {
   } = useAnonymousTimerStore();
 
   const openAnonymousModal = useAnonymousModalStore((s) => s.openModal);
-  const user = useAuthStore((s) => s.user);
 
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);

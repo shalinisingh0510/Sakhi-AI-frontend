@@ -3,21 +3,16 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Bell,
   CheckCheck,
   Sparkles,
   Zap,
   Droplet,
   BookOpen,
   ArrowRight,
-  Shield,
   Trash2,
   Clock,
-  ExternalLink,
-  Volume2,
 } from "lucide-react";
 import { useNotificationStore } from "@/lib/notification-store";
-import { useAuthStore } from "@/lib/auth-store";
 
 export function NotificationDropdown({
   isOpen,
@@ -38,7 +33,6 @@ export function NotificationDropdown({
     fetchNotifications,
   } = useNotificationStore();
 
-  const token = useAuthStore((s) => s.token);
   const [triggering, setTriggering] = useState(false);
 
   useEffect(() => {

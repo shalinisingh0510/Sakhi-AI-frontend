@@ -13,7 +13,7 @@ import { normalizeUser } from "@/lib/api-config";
 import { useVoice } from "@/lib/use-voice";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { Button } from "@/components/ui/Button";
-import { Shield, Sparkles, Zap, Lock, KeyRound, Clock } from "lucide-react";
+import { Shield, Zap, KeyRound } from "lucide-react";
 
 import { UserMessage } from "@/components/chat/UserMessage";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";

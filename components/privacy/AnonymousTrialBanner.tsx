@@ -16,7 +16,6 @@ import { useAnonymousModalStore } from "@/lib/anonymous-modal-store";
 
 export function AnonymousTrialBanner() {
   const user = useAuthStore((s) => s.user);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const togglePanicBlur = useAuthStore((s) => s.togglePanicBlur);
 
   const {

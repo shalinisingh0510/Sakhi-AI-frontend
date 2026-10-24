@@ -28,6 +28,7 @@ export function OvulationCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cycleLength, lastPeriodDate]);
 
   const formatDateDisplay = (dateStr: string) => {

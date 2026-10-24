@@ -15,7 +15,16 @@ const ROTATING_TOPICS = [
   "learning",
 ];
 
-const LOCAL_TOPIC_TEMPLATES: Record<string, { title: string; body: string; type: any; action_url: string; cta: string }[]> = {
+const LOCAL_TOPIC_TEMPLATES: Record<
+  string,
+  {
+    title: string;
+    body: string;
+    type: ApiNotificationItem["notification_type"];
+    action_url: string;
+    cta: string;
+  }[]
+> = {
   period_cycle: [
     {
       title: "🌸 Cycle Rhythm: Luteal Phase Transition",

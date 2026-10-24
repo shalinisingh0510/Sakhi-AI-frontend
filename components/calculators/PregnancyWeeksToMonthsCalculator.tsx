@@ -27,6 +27,7 @@ export function PregnancyWeeksToMonthsCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weeks, days]);
 
   const formatDateDisplay = (dateStr: string) => {

@@ -30,6 +30,7 @@ export function HcgCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstLevel, secondLevel, timeBetween, timeUnit]);
 
   return (

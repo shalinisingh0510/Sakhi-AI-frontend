@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   Sparkles,
   ShieldCheck,
-  Shield,
   Zap,
   Lock,
   Share2,

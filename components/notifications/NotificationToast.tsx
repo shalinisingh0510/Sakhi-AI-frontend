@@ -4,9 +4,7 @@ import React from "react";
 import Link from "next/link";
 import {
   X,
-  Bell,
   ArrowRight,
-  Shield,
   Sparkles,
   Zap,
   Droplet,

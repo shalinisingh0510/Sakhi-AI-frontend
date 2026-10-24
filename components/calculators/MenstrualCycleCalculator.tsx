@@ -29,6 +29,7 @@ export function MenstrualCycleCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastPeriodDate, periodDuration, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {

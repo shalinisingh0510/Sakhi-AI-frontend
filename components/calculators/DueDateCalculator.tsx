@@ -29,6 +29,7 @@ export function DueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [method, inputDate, cycleLength]);
 
   const formatDateDisplay = (dateStr: string) => {

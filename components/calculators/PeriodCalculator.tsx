@@ -30,6 +30,7 @@ export function PeriodCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forecastMonths, cycleLength, periodDuration, lastPeriodDate]);
 
   const formatDateDisplay = (dateStr: string) => {

@@ -28,6 +28,7 @@ export function IvfDueDateCalculator() {
 
   useEffect(() => {
     handleCalculate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transferDate, transferType]);
 
   const formatDateDisplay = (dateStr: string) => {

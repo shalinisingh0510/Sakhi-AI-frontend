@@ -4,15 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {
   Shield,
-  Heart,
-  Sparkles,
-  Lock,
   Globe,
-  Award,
-  CheckCircle2,
-  ExternalLink,
   EyeOff,
-  Calculator,
   ChevronDown,
 } from "lucide-react";
 import { useAuthStore, type SupportedLanguage } from "@/lib/auth-store";
