@@ -10,6 +10,8 @@ import { useAnonymousTimerStore } from "@/lib/anonymous-timer-store";
 import { authApi } from "@/lib/api";
 import { normalizeUser } from "@/lib/api-config";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
+import { useNotificationStore } from "@/lib/notification-store";
+import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
 import { useTranslations } from "next-intl";
 
 export function AppNav() {
@@ -23,6 +25,10 @@ export function AppNav() {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
+  const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
+
   const { secondsRemaining, isExpired, isPaid, openPaywall } = useAnonymousTimerStore();
   const minutes = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining % 60;
@@ -35,7 +41,6 @@ export function AppNav() {
     { href: "/learn", label: t("learn"), icon: BookIcon },
     { href: "/caregivers", label: t("caregivers"), icon: CaregiverIcon },
     { href: "/tools", label: "Calculators", icon: ToolsIcon },
-    { href: "/search", label: t("search"), icon: SearchIcon },
   ];
 
   useEffect(() => {
@@ -76,6 +81,17 @@ export function AppNav() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!notifDropdownOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [notifDropdownOpen]);
 
   function handleLogout() {
     setMenuOpen(false);
@@ -120,21 +136,28 @@ export function AppNav() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/search"
-            className="rounded-full p-2 text-ink/60 transition-all hover:bg-peach/40"
-            aria-label={t("search")}
-          >
-            <SearchIcon className="h-5 w-5" aria-hidden="true" />
-          </Link>
-          <Link
-            href="/notifications"
-            className="relative rounded-full p-2 text-ink/60 transition-all hover:bg-peach/40"
-            aria-label={t("notifications")}
-          >
-            <BellIcon className="h-5 w-5" aria-hidden="true" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose" aria-hidden="true" />
-          </Link>
+          <div className="relative" ref={notifRef}>
+            <button
+              type="button"
+              onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
+              className="relative rounded-full p-2 text-ink/60 transition-all hover:bg-peach/40"
+              aria-label={t("notifications")}
+              aria-expanded={notifDropdownOpen}
+            >
+              <BellIcon className="h-5 w-5" aria-hidden="true" />
+              {unreadCount > 0 ? (
+                <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-berry px-1 text-[10px] font-bold text-white shadow-xs">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              ) : (
+                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-peach" aria-hidden="true" />
+              )}
+            </button>
+            <NotificationDropdown
+              isOpen={notifDropdownOpen}
+              onClose={() => setNotifDropdownOpen(false)}
+            />
+          </div>
 
           {!isAuthenticated ? (
             <div className="flex items-center gap-2">

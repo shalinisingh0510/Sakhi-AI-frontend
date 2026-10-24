@@ -1319,3 +1319,86 @@ export const mediaApi = {
   getMediaUrl: (token: string, id: string) =>
     request<{ url: string }>(`/media/${id}/url`, { token }),
 };
+
+export interface ApiNotificationItem {
+  id: string;
+  user_id: string;
+  title: string;
+  body: string;
+  notification_type:
+    | "announcement"
+    | "lesson_completed"
+    | "reminder"
+    | "system"
+    | "cycle_alert"
+    | "ovulation_alert"
+    | "energy_insight"
+    | "activity_checkin"
+    | "module_published"
+    | "learning_tip";
+  metadata: Record<string, string>;
+  is_read: boolean;
+  created_at: string;
+  read_at?: string | null;
+}
+
+export interface EngineTickResponse {
+  triggered: boolean;
+  reason: string;
+  next_topic: string;
+  next_trigger_in_seconds: number;
+  notification: ApiNotificationItem | null;
+  interval_hours: number;
+}
+
+export const notificationApi = {
+  list: (token: string, page: number = 1, pageSize: number = 20) =>
+    request<ApiNotificationItem[]>(`/notifications?page=${page}&page_size=${pageSize}`, { token }),
+
+  getUnreadCount: (token: string) =>
+    request<{ unread_count: number }>("/notifications/unread-count", { token }),
+
+  markRead: (token: string, id: string) =>
+    request<ApiNotificationItem>(`/notifications/${id}/read`, {
+      method: "PATCH",
+      token,
+    }),
+
+  markAllRead: (token: string) =>
+    request<{ updated_count: number }>("/notifications/read-all", {
+      method: "POST",
+      token,
+    }),
+
+  deleteNotification: (token: string, id: string) =>
+    request<void>(`/notifications/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+
+  engineTick: (token: string, topic?: string, force: boolean = false) =>
+    request<EngineTickResponse>("/notifications/engine/tick", {
+      method: "POST",
+      body: { topic, force },
+      token,
+    }),
+
+  publishModule: (
+    token: string,
+    data: { module_title: string; module_id: string; category?: string; summary?: string }
+  ) =>
+    request<ApiNotificationItem[]>("/notifications/engine/publish-module", {
+      method: "POST",
+      body: data,
+      token,
+    }),
+
+  getEngineStatus: (token: string) =>
+    request<{
+      engine_active: boolean;
+      cadence_hours: number;
+      supported_topics: string[];
+      next_scheduled_topic: string;
+      last_dispatched_at: string | null;
+    }>("/notifications/engine/status", { token }),
+};
